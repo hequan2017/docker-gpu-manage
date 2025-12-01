@@ -479,7 +479,9 @@
       width="900px" 
       destroy-on-close
       class="terminal-dialog"
-      @close="closeTerminal"
+      :close-on-click-modal="true"
+      :close-on-press-escape="true"
+      @close="handleTerminalClose"
     >
       <div class="terminal-toolbar">
         <div class="toolbar-left">
@@ -496,14 +498,14 @@
             >
               <el-option label="/bin/bash" value="bash">
                 <div class="shell-option">
-                  <el-icon class="shell-icon"><Terminal /></el-icon>
+                  <el-icon class="shell-icon"><Monitor /></el-icon>
                   <span class="shell-name">/bin/bash</span>
                   <span class="shell-desc">Bash Shell</span>
                 </div>
               </el-option>
               <el-option label="/bin/sh" value="sh">
                 <div class="shell-option">
-                  <el-icon class="shell-icon"><Terminal /></el-icon>
+                  <el-icon class="shell-icon"><Monitor /></el-icon>
                   <span class="shell-name">/bin/sh</span>
                   <span class="shell-desc">POSIX Shell</span>
                 </div>
@@ -552,7 +554,7 @@ import { getDictFunc, formatDate, formatBoolean, filterDict ,filterDataSource, r
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useAppStore } from "@/pinia"
-import { CircleCheck, Cpu, Warning, Loading, ArrowDown, VideoPlay, VideoPause, RefreshRight, Document, Monitor, Terminal } from '@element-plus/icons-vue'
+import { CircleCheck, Cpu, Warning, Loading, ArrowDown, VideoPlay, VideoPause, RefreshRight, Document, Monitor } from '@element-plus/icons-vue'
 
 // 导出组件
 import ExportExcel from '@/components/exportExcel/exportExcel.vue'
@@ -1291,15 +1293,32 @@ const reconnectTerminal = () => {
   connectTerminal()
 }
 
+// 处理终端对话框关闭（在对话框完全关闭后触发）
+const handleTerminalClose = () => {
+  // 清理所有资源
+  closeTerminal()
+}
+
 const closeTerminal = () => {
+  // 清理WebSocket连接
   if (terminalWs) {
-    terminalWs.close()
+    try {
+      terminalWs.close()
+    } catch (e) {
+      console.error('关闭WebSocket失败:', e)
+    }
     terminalWs = null
   }
+  // 清理终端实例
   if (terminal) {
-    terminal.dispose()
+    try {
+      terminal.dispose()
+    } catch (e) {
+      console.error('清理终端失败:', e)
+    }
     terminal = null
   }
+  // 清理窗口大小监听
   if (resizeHandler) {
     window.removeEventListener('resize', resizeHandler)
     resizeHandler = null
