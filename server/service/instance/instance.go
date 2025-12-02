@@ -190,7 +190,8 @@ func (instanceService *InstanceService) GetInstanceInfoList(ctx context.Context,
 
 	// 权限控制：普通用户只能看到自己创建的实例
 	if !isAdmin {
-		db = db.Where("instance.user_id = ?", userID)
+		userIDInt64 := int64(userID)
+		db = db.Where("instance.user_id = ?", userIDInt64)
 	}
 
 	if info.ImageId != nil {
@@ -222,7 +223,8 @@ func (instanceService *InstanceService) GetInstanceInfoList(ctx context.Context,
 		countDB = countDB.Where("created_at BETWEEN ? AND ?", info.CreatedAtRange[0], info.CreatedAtRange[1])
 	}
 	if !isAdmin {
-		countDB = countDB.Where("user_id = ?", userID)
+		userIDInt64 := int64(userID)
+		countDB = countDB.Where("user_id = ?", userIDInt64)
 	}
 	if info.ImageId != nil {
 		countDB = countDB.Where("image_id = ?", *info.ImageId)

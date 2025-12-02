@@ -1165,8 +1165,7 @@ const openTerminalDialog = async (row) => {
 
 // 显示SSH连接信息
 const showSshConnectionInfo = (row) => {
-  // 获取服务器IP（从当前访问地址获取，或使用默认IP）
-  const serverIp = '192.168.112.148'
+  const serverIp = '192.168.112.148' 
   
   // 获取用户名（从实例的创建用户获取，如果没有则提示用户输入）
   const username = row.userName || 'your_username'
