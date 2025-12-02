@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	instanceModel "github.com/flipped-aurora/gin-vue-admin/server/model/instance"
 	instanceReq "github.com/flipped-aurora/gin-vue-admin/server/model/instance/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -30,6 +31,14 @@ func (instanceApi *InstanceApi) CreateInstance(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
+	// 自动设置当前用户ID（如果前端没有传递）
+	userID := utils.GetUserID(c)
+	if userID > 0 && inst.UserId == nil {
+		userIDInt64 := int64(userID)
+		inst.UserId = &userIDInt64
+	}
+
 	err = instanceService.CreateInstance(ctx, &inst)
 	if err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
@@ -53,7 +62,18 @@ func (instanceApi *InstanceApi) DeleteInstance(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	ID := c.Query("ID")
-	err := instanceService.DeleteInstance(ctx, ID)
+	if ID == "" {
+		response.FailWithMessage("实例ID不能为空", c)
+		return
+	}
+
+	// 获取当前用户ID和角色ID
+	userID := utils.GetUserID(c)
+	authorityId := utils.GetUserAuthorityId(c)
+	// 判断是否是管理员（管理员的AuthorityId通常是888）
+	isAdmin := authorityId == 888
+
+	err := instanceService.DeleteInstance(ctx, ID, userID, isAdmin)
 	if err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败:"+err.Error(), c)
@@ -75,7 +95,18 @@ func (instanceApi *InstanceApi) DeleteInstanceByIds(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	IDs := c.QueryArray("IDs[]")
-	err := instanceService.DeleteInstanceByIds(ctx, IDs)
+	if len(IDs) == 0 {
+		response.FailWithMessage("请选择要删除的实例", c)
+		return
+	}
+
+	// 获取当前用户ID和角色ID
+	userID := utils.GetUserID(c)
+	authorityId := utils.GetUserAuthorityId(c)
+	// 判断是否是管理员（管理员的AuthorityId通常是888）
+	isAdmin := authorityId == 888
+
+	err := instanceService.DeleteInstanceByIds(ctx, IDs, userID, isAdmin)
 	if err != nil {
 		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败:"+err.Error(), c)
@@ -154,7 +185,14 @@ func (instanceApi *InstanceApi) GetInstanceList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	list, total, err := instanceService.GetInstanceInfoList(ctx, pageInfo)
+
+	// 获取当前用户ID和角色ID
+	userID := utils.GetUserID(c)
+	authorityId := utils.GetUserAuthorityId(c)
+	// 判断是否是管理员（管理员的AuthorityId通常是888）
+	isAdmin := authorityId == 888
+
+	list, total, err := instanceService.GetInstanceInfoList(ctx, pageInfo, userID, isAdmin)
 	if err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败:"+err.Error(), c)

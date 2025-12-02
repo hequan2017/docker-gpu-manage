@@ -37,4 +37,7 @@ type Server struct {
 
 	// MCP配置
 	MCP MCP `mapstructure:"mcp" json:"mcp" yaml:"mcp"`
+
+	// SSH跳板机配置
+	Jumpbox Jumpbox `mapstructure:"jumpbox" json:"jumpbox" yaml:"jumpbox"`
 }

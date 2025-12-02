@@ -14,6 +14,12 @@ import (
 	"go.uber.org/zap"
 )
 
+// InstanceWithUser 包含用户信息的实例结构体
+type InstanceWithUser struct {
+	instanceModel.Instance
+	UserName string `json:"userName"` // 创建用户名
+}
+
 type InstanceService struct{}
 
 var dockerService = &DockerService{}
@@ -91,11 +97,19 @@ func (instanceService *InstanceService) CreateInstance(ctx context.Context, inst
 }
 
 // DeleteInstance 删除实例管理记录并删除Docker容器
-func (instanceService *InstanceService) DeleteInstance(ctx context.Context, ID string) (err error) {
+func (instanceService *InstanceService) DeleteInstance(ctx context.Context, ID string, userID uint, isAdmin bool) (err error) {
 	// 1. 获取实例信息
 	var inst instanceModel.Instance
 	if err = global.GVA_DB.Where("id = ?", ID).First(&inst).Error; err != nil {
 		return fmt.Errorf("获取实例信息失败: %v", err)
+	}
+
+	// 权限检查：普通用户只能删除自己创建的实例
+	if !isAdmin {
+		userIDInt64 := int64(userID)
+		if inst.UserId == nil || *inst.UserId != userIDInt64 {
+			return fmt.Errorf("无权删除此实例")
+		}
 	}
 
 	// 2. 如果有容器ID，先删除Docker容器
@@ -119,11 +133,15 @@ func (instanceService *InstanceService) DeleteInstance(ctx context.Context, ID s
 }
 
 // DeleteInstanceByIds 批量删除实例管理记录并删除Docker容器
-func (instanceService *InstanceService) DeleteInstanceByIds(ctx context.Context, IDs []string) (err error) {
+func (instanceService *InstanceService) DeleteInstanceByIds(ctx context.Context, IDs []string, userID uint, isAdmin bool) (err error) {
 	// 逐个删除以确保容器也被删除
 	for _, id := range IDs {
-		if delErr := instanceService.DeleteInstance(ctx, id); delErr != nil {
+		if delErr := instanceService.DeleteInstance(ctx, id, userID, isAdmin); delErr != nil {
 			global.GVA_LOG.Warn("删除实例失败", zap.String("id", id), zap.Error(delErr))
+			// 如果是权限错误，直接返回
+			if delErr.Error() == "无权删除此实例" {
+				return delErr
+			}
 		}
 	}
 	return nil
@@ -138,46 +156,96 @@ func (instanceService *InstanceService) UpdateInstance(ctx context.Context, inst
 
 // GetInstance 根据ID获取实例管理记录
 // Author [yourname](https://github.com/yourname)
-func (instanceService *InstanceService) GetInstance(ctx context.Context, ID string) (inst instanceModel.Instance, err error) {
-	err = global.GVA_DB.Where("id = ?", ID).First(&inst).Error
+func (instanceService *InstanceService) GetInstance(ctx context.Context, ID string) (inst InstanceWithUser, err error) {
+	var instance instanceModel.Instance
+	err = global.GVA_DB.Where("id = ?", ID).First(&instance).Error
+	if err != nil {
+		return
+	}
+
+	inst.Instance = instance
+	// 查询用户信息
+	if instance.UserId != nil {
+		var username string
+		global.GVA_DB.Table("sys_users").Where("id = ?", *instance.UserId).Select("username").Scan(&username)
+		inst.UserName = username
+	}
 	return
 }
 
 // GetInstanceInfoList 分页获取实例管理记录
 // Author [yourname](https://github.com/yourname)
-func (instanceService *InstanceService) GetInstanceInfoList(ctx context.Context, info instanceReq.InstanceSearch) (list []instanceModel.Instance, total int64, err error) {
+func (instanceService *InstanceService) GetInstanceInfoList(ctx context.Context, info instanceReq.InstanceSearch, userID uint, isAdmin bool) (list []InstanceWithUser, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
-	// 创建db
-	db := global.GVA_DB.Model(&instanceModel.Instance{})
-	var instances []instanceModel.Instance
+	// 创建db，使用 Left Join 关联用户表
+	db := global.GVA_DB.Table("instance").
+		Select("instance.*, sys_users.username as user_name").
+		Joins("LEFT JOIN sys_users ON instance.user_id = sys_users.id")
+	var instances []InstanceWithUser
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if len(info.CreatedAtRange) == 2 {
 		db = db.Where("created_at BETWEEN ? AND ?", info.CreatedAtRange[0], info.CreatedAtRange[1])
 	}
 
+	// 权限控制：普通用户只能看到自己创建的实例
+	if !isAdmin {
+		db = db.Where("instance.user_id = ?", userID)
+	}
+
 	if info.ImageId != nil {
-		db = db.Where("image_id = ?", *info.ImageId)
+		db = db.Where("instance.image_id = ?", *info.ImageId)
 	}
 	if info.SpecId != nil {
-		db = db.Where("spec_id = ?", *info.SpecId)
+		db = db.Where("instance.spec_id = ?", *info.SpecId)
 	}
 	if info.UserId != nil {
-		db = db.Where("user_id = ?", *info.UserId)
+		db = db.Where("instance.user_id = ?", *info.UserId)
 	}
 	if info.NodeId != nil {
-		db = db.Where("node_id = ?", *info.NodeId)
+		db = db.Where("instance.node_id = ?", *info.NodeId)
 	}
 	if info.ContainerId != nil && *info.ContainerId != "" {
-		db = db.Where("container_id LIKE ?", "%"+*info.ContainerId+"%")
+		db = db.Where("instance.container_id LIKE ?", "%"+*info.ContainerId+"%")
 	}
 	if info.Name != nil && *info.Name != "" {
-		db = db.Where("name LIKE ?", "%"+*info.Name+"%")
+		db = db.Where("instance.name LIKE ?", "%"+*info.Name+"%")
 	}
 	if info.ContainerStatus != nil && *info.ContainerStatus != "" {
-		db = db.Where("container_status = ?", *info.ContainerStatus)
+		db = db.Where("instance.container_status = ?", *info.ContainerStatus)
 	}
-	err = db.Count(&total).Error
+
+	// 使用单独的查询来统计总数，避免 JOIN 影响计数
+	countDB := global.GVA_DB.Model(&instanceModel.Instance{})
+	// 应用相同的过滤条件
+	if len(info.CreatedAtRange) == 2 {
+		countDB = countDB.Where("created_at BETWEEN ? AND ?", info.CreatedAtRange[0], info.CreatedAtRange[1])
+	}
+	if !isAdmin {
+		countDB = countDB.Where("user_id = ?", userID)
+	}
+	if info.ImageId != nil {
+		countDB = countDB.Where("image_id = ?", *info.ImageId)
+	}
+	if info.SpecId != nil {
+		countDB = countDB.Where("spec_id = ?", *info.SpecId)
+	}
+	if info.UserId != nil {
+		countDB = countDB.Where("user_id = ?", *info.UserId)
+	}
+	if info.NodeId != nil {
+		countDB = countDB.Where("node_id = ?", *info.NodeId)
+	}
+	if info.ContainerId != nil && *info.ContainerId != "" {
+		countDB = countDB.Where("container_id LIKE ?", "%"+*info.ContainerId+"%")
+	}
+	if info.Name != nil && *info.Name != "" {
+		countDB = countDB.Where("name LIKE ?", "%"+*info.Name+"%")
+	}
+	if info.ContainerStatus != nil && *info.ContainerStatus != "" {
+		countDB = countDB.Where("container_status = ?", *info.ContainerStatus)
+	}
+	err = countDB.Count(&total).Error
 	if err != nil {
 		return
 	}
@@ -313,12 +381,12 @@ type AvailableNode struct {
 	Name              string  `json:"name"`
 	Region            string  `json:"region"`
 	GpuName           string  `json:"gpuName"`
-	GpuCount          int64   `json:"gpuCount"`          // 节点总GPU数量
-	AvailableGpu      int64   `json:"availableGpu"`      // 可用GPU数量
+	GpuCount          int64   `json:"gpuCount"`     // 节点总GPU数量
+	AvailableGpu      int64   `json:"availableGpu"` // 可用GPU数量
 	Cpu               string  `json:"cpu"`
-	AvailableCpu      int64   `json:"availableCpu"`      // 可用CPU核心数
+	AvailableCpu      int64   `json:"availableCpu"` // 可用CPU核心数
 	Memory            string  `json:"memory"`
-	AvailableMemory   int64   `json:"availableMemory"`   // 可用内存(GB)
+	AvailableMemory   int64   `json:"availableMemory"` // 可用内存(GB)
 	SystemDisk        string  `json:"systemDisk"`
 	DataDisk          string  `json:"dataDisk"`
 	AvailableDataDisk int64   `json:"availableDataDisk"` // 可用数据盘(GB)

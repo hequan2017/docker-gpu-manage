@@ -85,8 +85,11 @@ Docker容器        后端创建后自动回填
 
 
 
-普通用户	任意（非888） 可以创建， 只能看到自己创建的实例，删除自己的实例。 列表接口必须根据当前登录用户的 userId 进行数据过滤。
-管理员（Admin）	888	     可以创建 。 可以看到所有用户创建的实例，删除所有的实例。	查询列表接口中，如果用户 authorityId = 888，则应返回所有数据，跳过 userId 过滤。
+普通用户	 可以创建， 只能看到自己创建的实例，删除自己的实例。 列表接口必须根据当前登录用户的 userId 进行数据过滤。
+管理员    admin     可以创建 。 可以看到所有用户创建的实例，删除所有的实例。	
+
+
+
 
 实例管理  中增加操作
 启动 重启 关闭容器，查看日志，终端xterm.js 等功能，通过对接docker api。
@@ -96,3 +99,108 @@ Docker容器        后端创建后自动回填
 
 删除实例时，同时删除容器。必须容器删除掉，才能删除实例。否则报错。
 
+# SSH跳板机功能开发计划
+
+## 功能需求
+
+1. SSH服务器监听2026端口
+2. 用户通过账号密码认证
+3. 认证成功后展示用户创建的所有容器列表（格式：序号 实例名称-容器ID-算力节点）
+4. 用户输入序号后，自动连接到对应的容器
+
+## 技术实现方案
+
+### 1. 依赖包添加
+
+- 在 `go.mod` 中添加 `golang.org/x/crypto/ssh` 用于SSH服务器实现
+
+### 2. 创建SSH跳板机服务模块
+
+**文件：`server/service/jumpbox/jumpbox.go`**
+
+- 实现SSH服务器监听（端口2026）
+- 实现用户认证逻辑（对接系统用户表）
+- 实现交互式容器列表展示
+- 实现容器连接逻辑（通过Docker Exec或SSH）
+
+**文件：`server/service/jumpbox/auth.go`**
+
+- 实现SSH密码认证
+- 验证用户名和密码（对接sys_users表）
+
+**文件：`server/service/jumpbox/session.go`**
+
+- 处理SSH会话
+- 展示容器列表
+- 处理用户输入选择
+- 建立到容器的连接
+
+### 3. 容器连接方式
+
+基于现有的 `terminal.go` 实现，使用Docker Exec方式连接到容器：
+
+- 通过算力节点信息获取Docker客户端
+- 使用 `docker exec` 进入容器
+- 转发SSH会话到容器内部
+
+### 4. 启动SSH服务器
+
+**文件：`server/initialize/jumpbox.go`**
+
+- 在系统初始化时启动SSH跳板机服务
+- 在 `server/initialize/router.go` 中调用初始化
+
+### 5. 配置管理
+
+**文件：`server/config/jumpbox.go`**
+
+- 添加SSH跳板机配置（端口、密钥等）
+- 在 `config.yaml` 中添加配置项
+
+## 关键实现点
+
+### 用户认证
+
+- 从SSH连接获取用户名和密码
+- 查询 `sys_users` 表验证用户
+- 使用系统现有的密码加密方式验证
+
+### 容器列表获取
+
+- 根据认证成功的用户ID查询实例
+- 使用 `GetInstanceInfoList` 方法获取用户创建的实例
+- 关联查询算力节点名称
+- 格式化显示：`序号 实例名称-容器ID-算力节点名称`
+
+### 容器连接
+
+- 根据选择的实例ID获取实例信息
+- 获取算力节点信息（包含Docker连接信息）
+- 使用Docker Exec建立交互式shell连接
+- 转发SSH会话的输入输出到容器
+
+## 文件清单
+
+### 新增文件
+
+- `server/service/jumpbox/jumpbox.go` - SSH服务器主逻辑
+- `server/service/jumpbox/auth.go` - 认证逻辑
+- `server/service/jumpbox/session.go` - 会话处理
+- `server/initialize/jumpbox.go` - 初始化SSH服务
+- `server/config/jumpbox.go` - 配置管理
+
+### 修改文件
+
+- `server/go.mod` - 添加SSH依赖
+- `server/config/config.go` - 添加跳板机配置结构
+- `server/config.yaml` - 添加跳板机配置项
+- `server/initialize/router.go` - 调用跳板机初始化
+
+## 注意事项
+
+1. SSH服务器需要独立goroutine运行，不阻塞主服务
+2. 需要处理SSH密钥生成和管理
+3. 容器连接失败时的错误处理
+4. 会话超时和断开连接的处理
+5. 日志记录SSH连接和操作
+6. 管理员 admin 登录 可以看到所有节点。

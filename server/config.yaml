@@ -99,6 +99,11 @@ mcp:
     url_prefix: ""
     addr: 8889
     separate: false
+jumpbox:
+    enabled: true
+    port: 2026
+    host-key: ""
+    banner: "欢迎使用SSH跳板机服务\r\n"
 minio:
     endpoint: yourEndpoint
     access-key-id: yourAccessKeyId

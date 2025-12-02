@@ -117,6 +117,12 @@
 
             <el-table-column align="left" label="实例名称" prop="name" width="120" />
 
+            <el-table-column align="left" label="创建用户" prop="userName" width="120">
+              <template #default="scope">
+                <span>{{ scope.row.userName || '-' }}</span>
+              </template>
+            </el-table-column>
+
             <el-table-column align="left" label="容器状态" prop="containerStatus" width="100">
               <template #default="scope">
                 <el-tag :type="getStatusType(scope.row.containerStatus)" size="small">
@@ -125,11 +131,21 @@
               </template>
             </el-table-column>
 
-            <el-table-column align="left" label="备注" prop="remark" width="120" />
+            <!-- <el-table-column align="left" label="备注" prop="remark" width="120" /> -->
 
-        <el-table-column align="left" label="操作" fixed="right" min-width="420">
+        <el-table-column align="left" label="基本信息" fixed="right" min-width="150">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)"><el-icon style="margin-right: 5px"><InfoFilled /></el-icon>查看</el-button>
+            <el-button 
+              type="success" 
+              link 
+              class="table-button" 
+              @click="showSshConnectionInfo(scope.row)"
+            ><el-icon style="margin-right: 3px"><Connection /></el-icon>SSH连接</el-button>
+            </template>
+        </el-table-column>
+        <el-table-column align="left" label="容器操作" fixed="right" min-width="350">
+            <template #default="scope">
             <el-button 
               type="success" 
               link 
@@ -424,10 +440,13 @@
 </el-descriptions-item>
                     <el-descriptions-item label="实例名称">
     {{ detailForm.name }}
-</el-descriptions-item>
+    </el-descriptions-item>
+                    <el-descriptions-item label="创建用户">
+    {{ detailForm.userName || '-' }}
+    </el-descriptions-item>
                     <el-descriptions-item label="容器状态">
     {{ detailForm.containerStatus }}
-</el-descriptions-item>
+    </el-descriptions-item>
                     <el-descriptions-item label="备注">
     {{ detailForm.remark }}
 </el-descriptions-item>
@@ -554,7 +573,7 @@ import { getDictFunc, formatDate, formatBoolean, filterDict ,filterDataSource, r
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useAppStore } from "@/pinia"
-import { CircleCheck, Cpu, Warning, Loading, ArrowDown, VideoPlay, VideoPause, RefreshRight, Document, Monitor } from '@element-plus/icons-vue'
+import { CircleCheck, Cpu, Warning, Loading, ArrowDown, VideoPlay, VideoPause, RefreshRight, Document, Monitor, Connection } from '@element-plus/icons-vue'
 
 // 导出组件
 import ExportExcel from '@/components/exportExcel/exportExcel.vue'
@@ -1142,6 +1161,51 @@ const openTerminalDialog = async (row) => {
   
   await nextTick()
   initTerminal()
+}
+
+// 显示SSH连接信息
+const showSshConnectionInfo = (row) => {
+  // 获取服务器IP（从当前访问地址获取，或使用默认IP）
+  const serverIp = '192.168.112.148'
+  
+  // 获取用户名（从实例的创建用户获取，如果没有则提示用户输入）
+  const username = row.userName || 'your_username'
+  const sshPort = 2026
+  
+  const sshCommand = `ssh ${username}@${serverIp} -p ${sshPort}`
+  
+  ElMessageBox.alert(
+    `<div style="text-align: left;">
+      <p style="margin-bottom: 10px; font-weight: bold;">请使用以下SSH命令连接跳板机：</p>
+      <p style="margin-bottom: 10px;">
+        <code style="background: #f5f5f5; padding: 8px 12px; border-radius: 4px; display: inline-block; font-size: 14px; color: #409eff;">${sshCommand}</code>
+      </p>
+      <p style="margin-bottom: 5px; color: #666; font-size: 12px;">提示：</p>
+      <ul style="margin: 5px 0; padding-left: 20px; color: #666; font-size: 12px;">
+        <li>连接后输入系统密码进行认证</li>
+        <li>认证成功后可以看到您创建的所有容器列表</li>
+        <li>输入序号即可连接到对应的容器</li>
+      </ul>
+    </div>`,
+    'SSH连接信息',
+    {
+      dangerouslyUseHTMLString: true,
+      confirmButtonText: '复制命令',
+      cancelButtonText: '关闭',
+      showCancelButton: true,
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          // 复制命令到剪贴板
+          navigator.clipboard.writeText(sshCommand).then(() => {
+            ElMessage.success('SSH命令已复制到剪贴板')
+          }).catch(() => {
+            ElMessage.error('复制失败，请手动复制')
+          })
+        }
+        done()
+      }
+    }
+  )
 }
 
 const initTerminal = async () => {
