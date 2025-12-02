@@ -310,29 +310,35 @@
               :row-class-name="getRowClassName"
             >
               <el-table-column prop="name" label="主机" width="120" />
-              <el-table-column prop="gpuName" label="GPU型号" width="120" />
-              <el-table-column label="剩余GPU数量" width="120">
+              <el-table-column prop="gpuName" label="GPU型号" width="100" />
+              <el-table-column label="GPU数量" width="100">
                 <template #default="scope">
                   <span class="available-count">{{ scope.row.availableGpu }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="CPU核数" width="100">
+              <el-table-column label="CPU" width="80">
                 <template #default="scope">
                   {{ scope.row.availableCpu }}
                 </template>
               </el-table-column>
-              <el-table-column label="内存" width="100">
+              <el-table-column label="内存" width="80">
                 <template #default="scope">
                   {{ scope.row.availableMemory }}GB
                 </template>
               </el-table-column>
-              <!-- <el-table-column prop="systemDisk" label="系统盘" width="100" /> -->
-              <el-table-column label="剩余数据盘" width="120">
+              <el-table-column label="系统盘" width="80">
+                <template #default="scope">
+                  {{ scope.row.availableSystemDisk }}GB
+                </template>
+              </el-table-column>
+
+              <el-table-column label="数据盘" width="80">
                 <template #default="scope">
                   {{ scope.row.availableDataDisk }}GB
                 </template>
               </el-table-column>
-              <el-table-column prop="region" label="区域" width="100" />
+
+              <el-table-column prop="region" label="区域" width="90" />
               <el-table-column label="价格" width="100">
                 <template #default="scope">
                   <span class="price-text">¥{{ scope.row.pricePerHour }}/时</span>
@@ -429,7 +435,12 @@
 </el-descriptions-item>
                     <el-descriptions-item label="产品规格">
     <template #default="scope">
-        <span>{{ filterDataSource(dataSource.specId,detailForm.specId) }}</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>{{ filterDataSource(dataSource.specId,detailForm.specId) }}</span>
+          <span v-if="getSpecInfo(detailForm.specId)?.system_disk_gb" style="color: #909399; font-size: 12px;">
+            (系统盘: {{ getSpecInfo(detailForm.specId).system_disk_gb }}GB)
+          </span>
+        </div>
     </template>
 </el-descriptions-item>
                     <el-descriptions-item label="算力节点">
@@ -702,6 +713,12 @@ const formData = ref({
     if (!specId || !dataSource.value.specId) return '-'
     const spec = dataSource.value.specId.find(item => item.value === specId)
     return spec ? spec.name : '-'
+  }
+
+  // 获取产品规格详细信息
+  const getSpecInfo = (specId) => {
+    if (!specId || !dataSource.value.specId) return null
+    return dataSource.value.specId.find(item => item.value === specId)
   }
 
 
