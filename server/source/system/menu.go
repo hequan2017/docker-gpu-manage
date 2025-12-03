@@ -62,6 +62,10 @@ func (i *initMenu) InitializeData(ctx context.Context) (next context.Context, er
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "https://www.gin-vue-admin.com", Name: "https://www.gin-vue-admin.com", Component: "/", Sort: 0, Meta: Meta{Title: "官方网站", Icon: "customer-gva"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "state", Name: "state", Component: "view/system/state.vue", Sort: 8, Meta: Meta{Title: "服务器状态", Icon: "cloudy"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "plugin", Name: "plugin", Component: "view/routerHolder.vue", Sort: 6, Meta: Meta{Title: "插件系统", Icon: "cherry"}},
+		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "imageRegistry", Name: "imageRegistry", Component: "view/imageregistry/imageRegistry/imageRegistry.vue", Sort: 0, Meta: Meta{Title: "镜像库", Icon: "crop"}},
+		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "computeNode", Name: "computeNode", Component: "view/computenode/computeNode/computeNode.vue", Sort: 0, Meta: Meta{Title: "算力节点", Icon: "chicken"}},
+		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "productSpec", Name: "productSpec", Component: "view/product/productSpec/productSpec.vue", Sort: 0, Meta: Meta{Title: "产品规格", Icon: "baseball"}},
+		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "instance", Name: "instance", Component: "view/instance/instance/instance.vue", Sort: 0, Meta: Meta{Title: "实例管理", Icon: "briefcase"}},
 	}
 
 	// 先创建父级菜单（ParentId = 0 的菜单）

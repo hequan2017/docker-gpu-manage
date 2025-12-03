@@ -287,6 +287,250 @@ jumpbox:
 - **容器操作**: 创建、启动、停止、重启、删除、日志查看、终端连接
 - **显存切分**: 支持HAMi显存切分，通过环境变量和卷挂载实现GPU显存虚拟化
 
+### 📦 部署指南
+
+#### 环境要求
+
+**后端环境：**
+- Go 1.23+ 
+- MySQL 5.7+ / PostgreSQL / SQLite / MSSQL / Oracle
+- Redis（可选，用于缓存和会话管理）
+- Docker（用于管理GPU容器）
+
+**前端环境：**
+- Node.js 20+
+- npm 或 pnpm
+
+#### 方式一：本地开发部署
+
+##### 1. 克隆项目
+
+```bash
+git clone <repository-url>
+cd docker-gpu-manage
+```
+
+##### 2. 配置数据库
+
+编辑 `server/config.yaml` 文件，配置数据库连接信息：
+
+```yaml
+mysql:
+  path: 127.0.0.1          # 数据库地址
+  port: "3306"             # 数据库端口
+  config: charset=utf8mb4&parseTime=True&loc=Local
+  db-name: docker-gpu      # 数据库名称（首次初始化会自动创建）
+  username: root           # 数据库用户名
+  password: your_password  # 数据库密码
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: error
+  log-zap: false
+
+system:
+  db-type: mysql          # 数据库类型：mysql/pgsql/sqlite/mssql/oracle
+  addr: 8888              # 后端服务端口
+```
+
+**注意：** 首次部署时，数据库配置中的 `db-name`、`username`、`password` 可以留空，系统会通过Web界面引导初始化。
+
+##### 3. 启动后端服务
+
+```bash
+cd server
+
+# 安装依赖
+go mod download
+
+# 启动服务
+go run main.go
+```
+
+后端服务默认运行在 `http://localhost:8888`
+
+##### 4. 初始化数据库
+
+**方法一：通过Web界面初始化（推荐）**
+
+1. 启动前端服务（见步骤5）
+2. 访问 `http://localhost:8080`
+3. 系统会自动检测数据库是否已初始化
+4. 如果未初始化，会跳转到数据库初始化页面
+5. 填写数据库连接信息：
+   - 数据库类型（MySQL/PostgreSQL/SQLite/MSSQL/Oracle）
+   - 数据库地址和端口
+   - 数据库名称（如果不存在会自动创建）
+   - 用户名和密码
+6. 点击"初始化"按钮，系统会自动创建数据库和所有表结构
+7. 初始化完成后，会自动创建默认管理员账号（用户名：`admin`，密码：`123456`）
+
+**方法二：手动初始化**
+
+如果数据库已存在，系统会在启动时自动执行数据库迁移，创建所有必要的表结构。
+
+##### 5. 启动前端服务
+
+```bash
+cd web
+
+# 安装依赖
+npm install
+# 或使用 pnpm
+pnpm install
+
+# 启动开发服务器
+npm run dev
+# 或
+pnpm dev
+```
+
+前端服务默认运行在 `http://localhost:8080`
+
+##### 6. 访问系统
+
+- 前端地址：`http://localhost:8080`
+- 后端API：`http://localhost:8888`
+- Swagger文档：`http://localhost:8888/swagger/index.html`
+
+**默认管理员账号：**
+- 用户名：`admin`
+- 密码：`123456`
+
+**首次登录后请及时修改密码！**
+
+#### 方式二：Docker 部署
+
+##### 1. 使用 Docker Compose 一键部署
+
+```bash
+cd deploy/docker-compose
+
+# 修改 docker-compose.yaml 中的数据库配置（可选）
+# 默认配置：
+# - MySQL 端口：13306
+# - Redis 端口：16379
+# - 后端服务端口：8888
+# - 前端服务端口：8080
+
+# 启动所有服务
+docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f
+```
+
+##### 2. 初始化数据库
+
+1. 等待所有容器启动完成（约1-2分钟）
+2. 访问 `http://localhost:8080`
+3. 按照Web界面提示完成数据库初始化
+
+##### 3. 访问系统
+
+- 前端地址：`http://localhost:8080`
+- 后端API：`http://localhost:8888`
+- MySQL：`localhost:13306`
+- Redis：`localhost:16379`
+
+##### 4. 停止服务
+
+```bash
+cd deploy/docker-compose
+docker-compose down
+
+# 如需删除数据卷（会清空数据库）
+docker-compose down -v
+```
+
+#### 方式三：Kubernetes 部署
+
+项目提供了 Kubernetes 部署配置文件，位于 `deploy/kubernetes/` 目录。
+
+```bash
+cd deploy/kubernetes
+
+# 部署后端服务
+kubectl apply -f server/
+
+# 部署前端服务
+kubectl apply -f web/
+```
+
+详细配置请参考 `deploy/kubernetes/` 目录下的配置文件。
+
+#### 配置说明
+
+##### 后端配置（server/config.yaml）
+
+**重要配置项：**
+
+```yaml
+# 系统配置
+system:
+  db-type: mysql          # 数据库类型
+  addr: 8888              # 服务监听地址和端口
+  use-redis: false        # 是否使用Redis（建议生产环境开启）
+
+# SSH跳板机配置
+jumpbox:
+  enabled: true            # 是否启用SSH跳板机
+  port: 2026              # SSH监听端口
+
+# JWT配置
+jwt:
+  signing-key: your-key    # JWT签名密钥（生产环境请修改）
+  expires-time: 7d         # Token过期时间
+```
+
+##### 前端配置
+
+前端API地址配置在 `web/src/utils/request.js` 中，默认指向 `http://localhost:8888`。
+
+#### 常见问题
+
+**1. 数据库连接失败**
+- 检查数据库服务是否启动
+- 检查 `config.yaml` 中的数据库配置是否正确
+- 检查数据库用户是否有创建数据库的权限
+
+**2. 前端无法连接后端**
+- 检查后端服务是否正常启动
+- 检查前端配置中的API地址是否正确
+- 检查防火墙和端口是否开放
+
+**3. Docker容器无法连接**
+- 检查Docker服务是否运行
+- 检查Docker TLS配置是否正确（如果使用TLS）
+- 检查网络连接和防火墙设置
+
+**4. SSH跳板机无法连接**
+- 检查 `jumpbox.enabled` 是否为 `true`
+- 检查SSH端口是否被占用
+- 检查防火墙是否开放SSH端口（默认2026）
+
+#### 生产环境建议
+
+1. **安全性**
+   - 修改默认管理员密码
+   - 修改JWT签名密钥
+   - 启用HTTPS
+   - 配置防火墙规则
+
+2. **性能优化**
+   - 启用Redis缓存
+   - 配置数据库连接池
+   - 使用Nginx反向代理
+   - 启用Gzip压缩
+
+3. **监控和日志**
+   - 配置日志轮转
+   - 设置日志级别
+   - 配置监控告警
+   - 定期备份数据库
+
 ### 项目结构
 
 ```

@@ -202,6 +202,42 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{ApiGroup: "版本控制", Method: "POST", Path: "/sysVersion/importVersion", Description: "同步版本"},
 		{ApiGroup: "版本控制", Method: "DELETE", Path: "/sysVersion/deleteSysVersion", Description: "删除版本"},
 		{ApiGroup: "版本控制", Method: "DELETE", Path: "/sysVersion/deleteSysVersionByIds", Description: "批量删除版本"},
+
+		{ApiGroup: "算力节点", Method: "POST", Path: "/computeNode/createComputeNode", Description: "新增算力节点"},
+		{ApiGroup: "算力节点", Method: "DELETE", Path: "/computeNode/deleteComputeNode", Description: "删除算力节点"},
+		{ApiGroup: "算力节点", Method: "DELETE", Path: "/computeNode/deleteComputeNodeByIds", Description: "批量删除算力节点"},
+		{ApiGroup: "算力节点", Method: "PUT", Path: "/computeNode/updateComputeNode", Description: "更新算力节点"},
+		{ApiGroup: "算力节点", Method: "GET", Path: "/computeNode/findComputeNode", Description: "根据ID获取算力节点"},
+		{ApiGroup: "算力节点", Method: "GET", Path: "/computeNode/getComputeNodeList", Description: "获取算力节点列表"},
+
+		{ApiGroup: "镜像库", Method: "POST", Path: "/imageRegistry/createImageRegistry", Description: "新增镜像库"},
+		{ApiGroup: "镜像库", Method: "DELETE", Path: "/imageRegistry/deleteImageRegistry", Description: "删除镜像库"},
+		{ApiGroup: "镜像库", Method: "DELETE", Path: "/imageRegistry/deleteImageRegistryByIds", Description: "批量删除镜像库"},
+		{ApiGroup: "镜像库", Method: "PUT", Path: "/imageRegistry/updateImageRegistry", Description: "更新镜像库"},
+		{ApiGroup: "镜像库", Method: "GET", Path: "/imageRegistry/findImageRegistry", Description: "根据ID获取镜像库"},
+		{ApiGroup: "镜像库", Method: "GET", Path: "/imageRegistry/getImageRegistryList", Description: "获取镜像库列表"},
+
+		{ApiGroup: "产品规格", Method: "POST", Path: "/productSpec/createProductSpec", Description: "新增产品规格"},
+		{ApiGroup: "产品规格", Method: "DELETE", Path: "/productSpec/deleteProductSpec", Description: "删除产品规格"},
+		{ApiGroup: "产品规格", Method: "DELETE", Path: "/productSpec/deleteProductSpecByIds", Description: "批量删除产品规格"},
+		{ApiGroup: "产品规格", Method: "PUT", Path: "/productSpec/updateProductSpec", Description: "更新产品规格"},
+		{ApiGroup: "产品规格", Method: "GET", Path: "/productSpec/findProductSpec", Description: "根据ID获取产品规格"},
+		{ApiGroup: "产品规格", Method: "GET", Path: "/productSpec/getProductSpecList", Description: "获取产品规格列表"},
+
+		{ApiGroup: "实例管理", Method: "POST", Path: "/instance/createInstance", Description: "新增实例管理"},
+		{ApiGroup: "实例管理", Method: "DELETE", Path: "/instance/deleteInstance", Description: "删除实例管理"},
+		{ApiGroup: "实例管理", Method: "DELETE", Path: "/instance/deleteInstanceByIds", Description: "批量删除实例管理"},
+		{ApiGroup: "实例管理", Method: "PUT", Path: "/instance/updateInstance", Description: "更新实例管理"},
+		{ApiGroup: "实例管理", Method: "GET", Path: "/instance/findInstance", Description: "根据ID获取实例管理"},
+		{ApiGroup: "实例管理", Method: "GET", Path: "/instance/getInstanceList", Description: "获取实例管理列表"},
+		{ApiGroup: "实例管理", Method: "GET", Path: "/instance/getContainerStats", Description: "获取容器统计信息"},
+
+		{ApiGroup: "instance", Method: "GET", Path: "/instance/getAvailableNodes", Description: "根据产品规格获取可用算力节点"},
+		{ApiGroup: "instance", Method: "GET", Path: "/instance/getContainerLogs", Description: "获取容器日志"},
+		{ApiGroup: "instance", Method: "POST", Path: "/instance/restartContainer", Description: "重启容器"},
+		{ApiGroup: "instance", Method: "POST", Path: "/instance/startContainer", Description: "启动容器"},
+		{ApiGroup: "instance", Method: "POST", Path: "/instance/stopContainer", Description: "停止容器"},
+		{ApiGroup: "instance", Method: "GET", Path: "/instance/terminal", Description: "容器终端WebSocket"},
 	}
 	if err := db.Create(&entities).Error; err != nil {
 		return ctx, errors.Wrap(err, sysModel.SysApi{}.TableName()+"表数据初始化失败!")
