@@ -318,27 +318,7 @@ cd docker-gpu-manage
 
 ##### 2. 配置数据库
 
-编辑 `server/config.yaml` 文件，配置数据库连接信息：
-
-```yaml
-mysql:
-  path: 127.0.0.1          # 数据库地址
-  port: "3306"             # 数据库端口
-  config: charset=utf8mb4&parseTime=True&loc=Local
-  db-name: docker-gpu      # 数据库名称（首次初始化会自动创建）
-  username: root           # 数据库用户名
-  password: your_password  # 数据库密码
-  max-idle-conns: 10
-  max-open-conns: 100
-  log-mode: error
-  log-zap: false
-
-system:
-  db-type: mysql          # 数据库类型：mysql/pgsql/sqlite/mssql/oracle
-  addr: 8888              # 后端服务端口
-```
-
-**注意：** 首次部署时，数据库配置中的 `db-name`、`username`、`password` 可以留空，系统会通过Web界面引导初始化。
+系统会通过Web界面引导初始化。
 
 ##### 3. 启动后端服务
 
