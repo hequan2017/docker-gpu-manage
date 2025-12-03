@@ -313,6 +313,7 @@ jumpbox:
 ```bash
 git clone <repository-url>
 cd docker-gpu-manage
+\mv server/config.yaml.bak  server/config.yaml
 ```
 
 ##### 2. 配置数据库
