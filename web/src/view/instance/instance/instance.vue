@@ -102,7 +102,7 @@
           </template>
         </el-table-column>
 
-            <el-table-column align="left" label="镜像" prop="imageId" width="120">
+            <el-table-column align="left" label="镜像" prop="imageId" width="180">
     <template #default="scope">
         <span>{{ filterDataSource(dataSource.imageId,scope.row.imageId) }}</span>
     </template>
@@ -204,7 +204,7 @@
     <el-dialog 
       v-model="createDialogVisible" 
       title="新增实例" 
-      width="900px" 
+      width="1200px" 
       :close-on-click-modal="false"
       destroy-on-close
       class="create-instance-dialog"
@@ -223,6 +223,7 @@
               filterable 
               style="width: 100%"
               size="large"
+              @change="onImageChange"
             >
               <el-option 
                 v-for="item in dataSource.imageId" 
@@ -241,9 +242,13 @@
             <span class="step-title">选择显卡规格</span>
           </div>
           <div class="step-content">
-            <div class="spec-cards">
+            <div v-if="!createForm.imageId" class="empty-tip">
+              <el-icon><Warning /></el-icon>
+              <span>请先选择镜像</span>
+            </div>
+            <div v-else class="spec-cards">
               <div 
-                v-for="spec in dataSource.specId" 
+                v-for="spec in filteredSpecs" 
                 :key="spec.value"
                 class="spec-card"
                 :class="{ 'selected': createForm.specId === spec.value }"
@@ -260,6 +265,7 @@
                   <div class="spec-details">
                     <span v-if="spec.cpu_cores">CPU: {{ spec.cpu_cores }}核</span>
                     <span v-if="spec.memory_gb">内存: {{ spec.memory_gb }}GB</span>
+                    <span v-if="spec.memory_capacity">显存: {{ spec.memory_capacity }}GB</span>
                     <span v-if="spec.system_disk_gb">系统盘: {{ spec.system_disk_gb }}GB</span>
                     <span v-if="spec.data_disk_gb">数据盘: {{ spec.data_disk_gb }}GB</span>
                   </div>
@@ -309,37 +315,42 @@
               @current-change="selectNode"
               :row-class-name="getRowClassName"
             >
-              <el-table-column prop="name" label="主机" width="120" />
-              <el-table-column prop="gpuName" label="GPU型号" width="100" />
-              <el-table-column label="GPU数量" width="100">
+              <el-table-column prop="name" label="主机(可用资源)" width="120" />
+              <el-table-column prop="gpuName" label="GPU型号" width="120" />
+              <el-table-column label="GPU数量" width="120">
                 <template #default="scope">
                   <span class="available-count">{{ scope.row.availableGpu }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="CPU" width="80">
+              <el-table-column label="CPU" width="110">
                 <template #default="scope">
                   {{ scope.row.availableCpu }}
                 </template>
               </el-table-column>
-              <el-table-column label="内存" width="80">
+              <el-table-column label="内存" width="100">
                 <template #default="scope">
                   {{ scope.row.availableMemory }}GB
                 </template>
               </el-table-column>
-              <el-table-column label="系统盘" width="80">
+              <el-table-column label="显存" width="100">
+                <template #default="scope">
+                  {{ scope.row.memoryCapacity || 0 }}GB
+                </template>
+              </el-table-column>
+              <el-table-column label="系统盘" width="100">
                 <template #default="scope">
                   {{ scope.row.availableSystemDisk }}GB
                 </template>
               </el-table-column>
 
-              <el-table-column label="数据盘" width="80">
+              <el-table-column label="数据盘" width="100">
                 <template #default="scope">
                   {{ scope.row.availableDataDisk }}GB
                 </template>
               </el-table-column>
 
-              <el-table-column prop="region" label="区域" width="90" />
-              <el-table-column label="价格" width="100">
+              <el-table-column prop="region" label="区域" width="100" />
+              <el-table-column label="价格" width="120">
                 <template #default="scope">
                   <span class="price-text">¥{{ scope.row.pricePerHour }}/时</span>
                 </template>
@@ -435,8 +446,30 @@
 </el-descriptions-item>
                     <el-descriptions-item label="产品规格">
     <template #default="scope">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span>{{ filterDataSource(dataSource.specId,detailForm.specId) }}</span>
+        <div>
+          <div v-if="getSpecInfo(detailForm.specId)" style="font-size: 12px; color: #666;">
+            <div v-if="getSpecInfo(detailForm.specId).gpu_model">
+              GPU: {{ getSpecInfo(detailForm.specId).gpu_model }} x {{ getSpecInfo(detailForm.specId).gpu_count || 0 }}
+            </div>
+            <div v-if="getSpecInfo(detailForm.specId).cpu_cores">
+              CPU: {{ getSpecInfo(detailForm.specId).cpu_cores }}核
+            </div>
+            <div v-if="getSpecInfo(detailForm.specId).memory_gb">
+              内存: {{ getSpecInfo(detailForm.specId).memory_gb }}GB
+            </div>
+            <div v-if="getSpecInfo(detailForm.specId).memory_capacity">
+              显存: {{ getSpecInfo(detailForm.specId).memory_capacity }}GB
+            </div>
+            <div v-if="getSpecInfo(detailForm.specId).system_disk_gb">
+              系统盘: {{ getSpecInfo(detailForm.specId).system_disk_gb }}GB
+            </div>
+            <div v-if="getSpecInfo(detailForm.specId).data_disk_gb">
+              数据盘: {{ getSpecInfo(detailForm.specId).data_disk_gb }}GB
+            </div>
+            <div v-if="getSpecInfo(detailForm.specId).price_per_hour" style="margin-top: 4px; color: #409EFF;">
+              价格: ¥{{ getSpecInfo(detailForm.specId).price_per_hour }}/小时
+            </div>
+          </div>
         </div>
     </template>
 </el-descriptions-item>
@@ -1083,6 +1116,40 @@ const openCreateDialog = () => {
   availableNodes.value = []
   selectedSpec.value = null
   createDialogVisible.value = true
+}
+
+// 获取当前选择的镜像信息
+const selectedImage = computed(() => {
+  if (!createForm.value.imageId || !dataSource.value.imageId) return null
+  return dataSource.value.imageId.find(item => item.value === createForm.value.imageId)
+})
+
+// 根据镜像的显存分割支持情况过滤显卡规格
+const filteredSpecs = computed(() => {
+  if (!selectedImage.value || !dataSource.value.specId) {
+    return []
+  }
+  const imageSupportMemorySplit = selectedImage.value.supportMemorySplit || false
+  
+  return dataSource.value.specId.filter(spec => {
+    const specSupportMemorySplit = spec.supportMemorySplit || false
+    // 如果镜像不支持显存分割，只显示不支持显存分割的规格
+    // 如果镜像支持显存分割，显示所有规格
+    if (!imageSupportMemorySplit) {
+      return !specSupportMemorySplit
+    } else {
+      return true // 显示所有规格
+    }
+  })
+})
+
+// 镜像变更处理
+const onImageChange = () => {
+  // 重置规格和节点选择
+  createForm.value.specId = undefined
+  createForm.value.nodeId = undefined
+  selectedSpec.value = null
+  availableNodes.value = []
 }
 
 // 选择产品规格

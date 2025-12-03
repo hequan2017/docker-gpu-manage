@@ -18,6 +18,9 @@
         <el-form-item label="是否上架:" prop="isOnShelf">
     <el-switch v-model="formData.isOnShelf" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
 </el-form-item>
+        <el-form-item label="是否支持显存切分:" prop="supportMemorySplit">
+    <el-switch v-model="formData.supportMemorySplit" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
+</el-form-item>
         <el-form-item label="备注:" prop="remark">
     <el-input v-model="formData.remark" :clearable="true" placeholder="请输入备注" />
 </el-form-item>
@@ -61,6 +64,7 @@ const formData = ref({
             description: '',
             source: '',
             isOnShelf: false,
+            supportMemorySplit: false,
             remark: '',
         })
 // 验证规则
@@ -79,6 +83,11 @@ const rule = reactive({
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
+               }],
+               supportMemorySplit : [{
+                   required: true,
+                   message: '请选择是否支持显存切分',
+                   trigger: ['change','blur'],
                }],
 })
 

@@ -267,7 +267,8 @@ func (instanceService *InstanceService) GetInstanceDataSource(ctx context.Contex
 
 	// 只返回已上架的镜像
 	imageId := make([]map[string]any, 0)
-	global.GVA_DB.Table("image_registry").Where("deleted_at IS NULL AND is_on_shelf = ?", true).Select("name as label,id as value").Scan(&imageId)
+	global.GVA_DB.Table("image_registry").Where("deleted_at IS NULL AND is_on_shelf = ?", true).
+		Select("name as label, id as value, support_memory_split as supportMemorySplit").Scan(&imageId)
 	res["imageId"] = imageId
 
 	// 节点列表（初始为空，需要根据产品规格动态获取）
@@ -282,7 +283,7 @@ func (instanceService *InstanceService) GetInstanceDataSource(ctx context.Contex
 	// 只返回已上架的产品规格，并包含详细信息用于前端显示
 	specId := make([]map[string]any, 0)
 	global.GVA_DB.Table("product_spec").Where("deleted_at IS NULL AND is_on_shelf = ?", true).
-		Select("id as value, name, gpu_model, gpu_count, cpu_cores, memory_gb, system_disk_gb, data_disk_gb, price_per_hour").
+		Select("id as value, name, gpu_model, gpu_count, memory_capacity, cpu_cores, memory_gb, system_disk_gb, data_disk_gb, price_per_hour, support_memory_split as supportMemorySplit").
 		Scan(&specId)
 	// 为每个规格生成显示标签
 	for i := range specId {
@@ -406,6 +407,7 @@ type AvailableNode struct {
 	AvailableCpu        int64   `json:"availableCpu"` // 可用CPU核心数
 	Memory              string  `json:"memory"`
 	AvailableMemory     int64   `json:"availableMemory"` // 可用内存(GB)
+	MemoryCapacity      int64   `json:"memoryCapacity"`  // 显存容量(GB)
 	SystemDisk          string  `json:"systemDisk"`
 	AvailableSystemDisk int64   `json:"availableSystemDisk"` // 可用系统盘(GB)
 	DataDisk            string  `json:"dataDisk"`
@@ -435,18 +437,26 @@ func (instanceService *InstanceService) GetAvailableNodes(ctx context.Context, s
 
 	// 3. 统计每个节点已被实例占用的资源
 	type UsedResource struct {
-		NodeId         int64 `json:"nodeId"`
-		GpuUsed        int64 `json:"gpuUsed"`
-		CpuUsed        int64 `json:"cpuUsed"`
-		MemUsed        int64 `json:"memUsed"`
-		SystemDiskUsed int64 `json:"systemDiskUsed"`
-		DataDiskUsed   int64 `json:"dataDiskUsed"`
+		NodeId             int64   `json:"nodeId"`
+		GpuUsed            int64   `json:"gpuUsed"`
+		CpuUsed            int64   `json:"cpuUsed"`
+		MemUsed            int64   `json:"memUsed"`
+		MemoryCapacityUsed int64   `json:"memoryCapacityUsed"` // 已使用的显存容量（累加值）
+		CardMemoryUsage    []int64 `json:"cardMemoryUsage"`    // 每张卡已使用的显存容量
+		SystemDiskUsed     int64   `json:"systemDiskUsed"`
+		DataDiskUsed       int64   `json:"dataDiskUsed"`
 	}
 	usedResources := make(map[int64]UsedResource)
 
 	// 查询每个节点已创建的实例所占用的资源
 	var instances []instanceModel.Instance
 	global.GVA_DB.Where("deleted_at IS NULL").Find(&instances)
+
+	// 先获取所有节点信息，用于计算每张卡的显存容量
+	nodeInfoMap := make(map[int64]*computenode.ComputeNode)
+	for i := range allNodes {
+		nodeInfoMap[int64(allNodes[i].ID)] = &allNodes[i]
+	}
 
 	for _, inst := range instances {
 		if inst.NodeId == nil || inst.SpecId == nil {
@@ -457,9 +467,32 @@ func (instanceService *InstanceService) GetAvailableNodes(ctx context.Context, s
 		if err := global.GVA_DB.Where("id = ?", *inst.SpecId).First(&instSpec).Error; err != nil {
 			continue
 		}
+		// 获取该实例使用的镜像，检查是否支持显存切分
+		var image imageregistry.ImageRegistry
+		supportMemorySplit := false
+		if inst.ImageId != nil {
+			if err := global.GVA_DB.Where("id = ?", *inst.ImageId).First(&image).Error; err == nil {
+				if image.SupportMemorySplit != nil {
+					supportMemorySplit = *image.SupportMemorySplit
+				}
+			}
+		}
 		nodeId := *inst.NodeId
 		used := usedResources[nodeId]
 		used.NodeId = nodeId
+
+		// 记录分配前的状态
+		beforeCardUsage := make([]int64, len(used.CardMemoryUsage))
+		copy(beforeCardUsage, used.CardMemoryUsage)
+
+		// 初始化卡显存使用数组
+		if used.CardMemoryUsage == nil {
+			used.CardMemoryUsage = make([]int64, 0)
+		}
+
+		// 获取节点信息
+		nodeInfo, hasNodeInfo := nodeInfoMap[nodeId]
+
 		if instSpec.GpuCount != nil {
 			used.GpuUsed += *instSpec.GpuCount
 		}
@@ -469,6 +502,111 @@ func (instanceService *InstanceService) GetAvailableNodes(ctx context.Context, s
 		if instSpec.MemoryGb != nil {
 			used.MemUsed += *instSpec.MemoryGb
 		}
+
+		// 显存容量计算：按卡分配
+		if instSpec.MemoryCapacity != nil && instSpec.GpuCount != nil && *instSpec.GpuCount > 0 {
+			memoryNeeded := *instSpec.MemoryCapacity
+			gpuCount := *instSpec.GpuCount
+
+			// 计算每张卡需要的显存
+			memoryPerCard := memoryNeeded / gpuCount
+
+			// 获取节点每张卡的显存容量
+			perCardCapacity := int64(0)
+			if hasNodeInfo && nodeInfo.GpuCount != nil && nodeInfo.MemoryCapacity != nil && *nodeInfo.GpuCount > 0 {
+				perCardCapacity = *nodeInfo.MemoryCapacity / *nodeInfo.GpuCount
+			}
+
+			// 确保卡显存使用数组有足够的长度
+			if hasNodeInfo && nodeInfo.GpuCount != nil {
+				totalCards := int(*nodeInfo.GpuCount)
+				for len(used.CardMemoryUsage) < totalCards {
+					used.CardMemoryUsage = append(used.CardMemoryUsage, 0)
+				}
+			}
+
+			// 分配显存到卡上
+			if supportMemorySplit && perCardCapacity > 0 {
+				// 支持显存切分：可以分配到任意卡上
+				// 优先分配到已有使用但未满的卡上，如果都满了，再分配到新卡上
+				for i := 0; i < int(gpuCount); i++ {
+					// 找到可以分配的卡（有剩余空间的卡）
+					found := false
+					// 优先查找已有使用但未满的卡
+					for j := range used.CardMemoryUsage {
+						remaining := perCardCapacity - used.CardMemoryUsage[j]
+						if remaining >= memoryPerCard {
+							used.CardMemoryUsage[j] += memoryPerCard
+							used.MemoryCapacityUsed += memoryPerCard
+							found = true
+							break
+						}
+					}
+					// 如果没找到可用卡，分配到新卡上（完全未使用的卡）
+					if !found && len(used.CardMemoryUsage) < int(*nodeInfo.GpuCount) {
+						used.CardMemoryUsage = append(used.CardMemoryUsage, memoryPerCard)
+						used.MemoryCapacityUsed += memoryPerCard
+					} else if !found {
+						// 没有可用卡，累加到总使用量（这种情况不应该发生，但为了安全）
+						used.MemoryCapacityUsed += memoryPerCard
+						global.GVA_LOG.Warn("无法分配到卡，累加到总使用量",
+							zap.Int64("显存", memoryPerCard))
+					}
+				}
+
+				// 重新计算总使用显存，确保与卡使用情况一致
+				totalCardUsage := int64(0)
+				for _, usage := range used.CardMemoryUsage {
+					totalCardUsage += usage
+				}
+				used.MemoryCapacityUsed = totalCardUsage
+			} else {
+				// 不支持显存切分：每张卡必须完全分配给一个实例，不能部分使用
+				// 如果每张卡需要的显存等于每张卡的容量，可以分配
+				if perCardCapacity > 0 && memoryPerCard == perCardCapacity {
+					for i := 0; i < int(gpuCount); i++ {
+						// 找到完全未使用的卡（使用量为0）
+						found := false
+						for j := range used.CardMemoryUsage {
+							if used.CardMemoryUsage[j] == 0 {
+								used.CardMemoryUsage[j] = perCardCapacity
+								used.MemoryCapacityUsed += perCardCapacity
+								found = true
+								break
+							}
+						}
+						if !found && len(used.CardMemoryUsage) < int(*nodeInfo.GpuCount) {
+							used.CardMemoryUsage = append(used.CardMemoryUsage, perCardCapacity)
+							used.MemoryCapacityUsed += perCardCapacity
+						}
+					}
+				} else if perCardCapacity > 0 && memoryPerCard < perCardCapacity {
+					// 如果每张卡需要的显存小于每张卡的容量，不支持显存切分时无法分配
+					// 但为了统计，累加到总使用量（实际无法分配）
+					used.MemoryCapacityUsed += memoryNeeded
+					global.GVA_LOG.Warn("不支持切分且显存不匹配，无法分配",
+						zap.Int64("每张卡需要", memoryPerCard),
+						zap.Int64("每张卡容量", perCardCapacity))
+				} else {
+					// 如果每张卡需要的显存大于每张卡的容量，无法分配，但累加到总使用量
+					used.MemoryCapacityUsed += memoryNeeded
+					global.GVA_LOG.Warn("显存需求超过卡容量，无法分配",
+						zap.Int64("每张卡需要", memoryPerCard),
+						zap.Int64("每张卡容量", perCardCapacity))
+				}
+
+				// 重新计算总使用显存，确保与卡使用情况一致
+				totalCardUsage := int64(0)
+				for _, usage := range used.CardMemoryUsage {
+					totalCardUsage += usage
+				}
+				used.MemoryCapacityUsed = totalCardUsage
+			}
+		} else if instSpec.MemoryCapacity != nil {
+			// 如果没有GPU数量，直接累加
+			used.MemoryCapacityUsed += *instSpec.MemoryCapacity
+		}
+
 		if instSpec.SystemDiskGb != nil {
 			used.SystemDiskUsed += *instSpec.SystemDiskGb
 		}
@@ -513,20 +651,32 @@ func (instanceService *InstanceService) GetAvailableNodes(ctx context.Context, s
 			availableGpu = totalGpu - used.GpuUsed
 		}
 
-		// 解析节点CPU (假设格式为数字或"8核"这样的格式)
-		totalCpu := parseResourceValue(node.Cpu)
+		// 获取节点CPU
+		totalCpu := int64(0)
+		if node.Cpu != nil {
+			totalCpu = *node.Cpu
+		}
 		availableCpu := totalCpu - used.CpuUsed
 
-		// 解析节点内存
-		totalMem := parseResourceValue(node.Memory)
+		// 获取节点内存
+		totalMem := int64(0)
+		if node.Memory != nil {
+			totalMem = *node.Memory
+		}
 		availableMem := totalMem - used.MemUsed
 
-		// 解析节点系统盘
-		totalSystemDisk := parseResourceValue(node.SystemDisk)
+		// 获取节点系统盘
+		totalSystemDisk := int64(0)
+		if node.SystemDisk != nil {
+			totalSystemDisk = *node.SystemDisk
+		}
 		availableSystemDisk := totalSystemDisk - used.SystemDiskUsed
 
-		// 解析节点数据盘
-		totalDataDisk := parseResourceValue(node.DataDisk)
+		// 获取节点数据盘
+		totalDataDisk := int64(0)
+		if node.DataDisk != nil {
+			totalDataDisk = *node.DataDisk
+		}
 		availableDataDisk := totalDataDisk - used.DataDiskUsed
 
 		// 检查是否满足规格要求
@@ -546,13 +696,141 @@ func (instanceService *InstanceService) GetAvailableNodes(ctx context.Context, s
 		if spec.DataDiskGb != nil {
 			requiredDataDisk = *spec.DataDiskGb
 		}
+		requiredMemoryCapacity := int64(0)
+		if spec.MemoryCapacity != nil {
+			requiredMemoryCapacity = *spec.MemoryCapacity
+		}
+
+		// 获取节点显存容量并计算可用显存容量
+		totalMemoryCapacity := int64(0)
+		if node.MemoryCapacity != nil {
+			totalMemoryCapacity = *node.MemoryCapacity
+		}
+
+		// 计算每张卡的显存容量
+		perCardCapacity := int64(0)
+		if node.GpuCount != nil && *node.GpuCount > 0 && totalMemoryCapacity > 0 {
+			perCardCapacity = totalMemoryCapacity / *node.GpuCount
+		}
+
+		// 检查显存容量是否满足要求（按卡分配方式）
+		if requiredMemoryCapacity > 0 && needGpu && requiredGpu > 0 && perCardCapacity > 0 {
+			// 计算每张卡需要的显存
+			requiredMemoryPerCard := requiredMemoryCapacity / requiredGpu
+
+			// 初始化卡显存使用数组（如果还没有）
+			if used.CardMemoryUsage == nil {
+				used.CardMemoryUsage = make([]int64, 0)
+			}
+
+			// 确保数组长度足够
+			totalCards := int64(0)
+			if node.GpuCount != nil {
+				totalCards = *node.GpuCount
+			}
+			for len(used.CardMemoryUsage) < int(totalCards) {
+				used.CardMemoryUsage = append(used.CardMemoryUsage, 0)
+			}
+
+			// 检查是否有足够的卡可以满足显存需求
+			// 假设支持显存切分，可以分配到任意有剩余空间的卡上
+			// 创建一个临时数组来模拟分配，检查是否可以满足需求
+			tempCardUsage := make([]int64, len(used.CardMemoryUsage))
+			copy(tempCardUsage, used.CardMemoryUsage)
+
+			canAllocate := true
+			for i := int64(0); i < requiredGpu; i++ {
+				found := false
+				// 查找可以分配的卡（有足够剩余空间的卡）
+				for j := range tempCardUsage {
+					remaining := perCardCapacity - tempCardUsage[j]
+					if remaining >= requiredMemoryPerCard {
+						tempCardUsage[j] += requiredMemoryPerCard
+						found = true
+						break
+					}
+				}
+				// 如果没找到可用卡，检查是否有新卡可用
+				if !found {
+					if len(tempCardUsage) < int(totalCards) {
+						// 有新卡可用
+						tempCardUsage = append(tempCardUsage, requiredMemoryPerCard)
+						found = true
+					}
+				}
+				if !found {
+					global.GVA_LOG.Warn("无法找到可用卡",
+						zap.Int64("节点ID", int64(node.ID)),
+						zap.Int64("需要GPU索引", i),
+						zap.Int64("需要显存", requiredMemoryPerCard),
+						zap.Any("当前卡使用情况", tempCardUsage))
+					canAllocate = false
+					break
+				}
+			}
+
+			// 如果无法分配，跳过该节点
+			if !canAllocate {
+				continue
+			}
+
+			// 显存检查通过（按卡分配），说明有足够的卡可以满足需求
+			// 显存检查已经确保了有 requiredGpu 张卡可以分配，所以GPU检查也应该通过
+			// 直接设置可用GPU为需求数量，跳过后续的GPU检查
+			if needGpu {
+				availableGpu = requiredGpu
+			}
+		} else if requiredMemoryCapacity > 0 {
+			// 如果没有GPU需求，使用简单累加方式
+			availableMemoryCapacity := totalMemoryCapacity - used.MemoryCapacityUsed
+			if availableMemoryCapacity < requiredMemoryCapacity {
+				continue
+			}
+		}
 
 		// 资源不足则跳过（如果需要GPU才检查GPU资源）
 		if needGpu && availableGpu < requiredGpu {
 			continue
 		}
-		if availableCpu < requiredCpu || availableMem < requiredMem || availableSystemDisk < requiredSystemDisk || availableDataDisk < requiredDataDisk {
+		if availableCpu < requiredCpu {
 			continue
+		}
+		if availableMem < requiredMem {
+			continue
+		}
+		if availableSystemDisk < requiredSystemDisk {
+			continue
+		}
+		if availableDataDisk < requiredDataDisk {
+			continue
+		}
+
+		// 计算可用显存容量
+		availableMemoryCapacity := int64(0)
+		if node.MemoryCapacity != nil && node.GpuCount != nil && *node.GpuCount > 0 {
+			totalMemoryCapacity := *node.MemoryCapacity
+			perCardCapacity := totalMemoryCapacity / *node.GpuCount
+
+			// 如果显存是按卡分配的，根据卡的使用情况计算可用显存
+			if len(used.CardMemoryUsage) > 0 && perCardCapacity > 0 {
+				// 计算所有卡的剩余显存总和
+				for _, cardUsage := range used.CardMemoryUsage {
+					if cardUsage < perCardCapacity {
+						availableMemoryCapacity += perCardCapacity - cardUsage
+					}
+				}
+				// 如果还有未使用的卡槽，也加上
+				totalCards := int64(*node.GpuCount)
+				if len(used.CardMemoryUsage) < int(totalCards) {
+					availableMemoryCapacity += perCardCapacity * (totalCards - int64(len(used.CardMemoryUsage)))
+				}
+			} else {
+				// 如果没有按卡分配，使用简单累加方式
+				availableMemoryCapacity = totalMemoryCapacity - used.MemoryCapacityUsed
+			}
+		} else if node.MemoryCapacity != nil {
+			// 如果没有GPU，使用简单累加方式
+			availableMemoryCapacity = *node.MemoryCapacity - used.MemoryCapacityUsed
 		}
 
 		// 构建可用节点信息
@@ -577,16 +855,18 @@ func (instanceService *InstanceService) GetAvailableNodes(ctx context.Context, s
 			availableNode.GpuCount = *node.GpuCount
 		}
 		if node.Cpu != nil {
-			availableNode.Cpu = *node.Cpu
+			availableNode.Cpu = strconv.FormatInt(*node.Cpu, 10)
 		}
 		if node.Memory != nil {
-			availableNode.Memory = *node.Memory
+			availableNode.Memory = strconv.FormatInt(*node.Memory, 10)
 		}
+		// 返回可用显存容量，而不是总显存容量
+		availableNode.MemoryCapacity = availableMemoryCapacity
 		if node.SystemDisk != nil {
-			availableNode.SystemDisk = *node.SystemDisk
+			availableNode.SystemDisk = strconv.FormatInt(*node.SystemDisk, 10)
 		}
 		if node.DataDisk != nil {
-			availableNode.DataDisk = *node.DataDisk
+			availableNode.DataDisk = strconv.FormatInt(*node.DataDisk, 10)
 		}
 		if node.PublicIp != nil {
 			availableNode.PublicIp = *node.PublicIp

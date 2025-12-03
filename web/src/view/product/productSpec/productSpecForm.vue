@@ -10,25 +10,31 @@
     <el-input v-model="formData.gpuModel" :clearable="true" placeholder="请输入显卡型号" />
 </el-form-item>
         <el-form-item label="显卡数量:" prop="gpuCount">
-    <el-input v-model.number="formData.gpuCount" :clearable="true" placeholder="请输入显卡数量" />
+    <el-input-number v-model="formData.gpuCount" :min="0" :controls="true" style="width: 100%" placeholder="请输入显卡数量" />
+</el-form-item>
+        <el-form-item label="显存容量(GB):" prop="memoryCapacity">
+    <el-input-number v-model="formData.memoryCapacity" :min="0" :controls="true" style="width: 100%" placeholder="请输入显存容量" />
 </el-form-item>
         <el-form-item label="CPU核心数:" prop="cpuCores">
-    <el-input v-model.number="formData.cpuCores" :clearable="true" placeholder="请输入CPU核心数" />
+    <el-input-number v-model="formData.cpuCores" :min="0" :controls="true" style="width: 100%" placeholder="请输入CPU核心数" />
 </el-form-item>
         <el-form-item label="内存(GB):" prop="memoryGb">
-    <el-input v-model.number="formData.memoryGb" :clearable="true" placeholder="请输入内存(GB)" />
+    <el-input-number v-model="formData.memoryGb" :min="0" :controls="true" style="width: 100%" placeholder="请输入内存(GB)" />
 </el-form-item>
         <el-form-item label="系统盘容量(GB):" prop="systemDiskGb">
-    <el-input v-model.number="formData.systemDiskGb" :clearable="true" placeholder="请输入系统盘容量(GB)" />
+    <el-input-number v-model="formData.systemDiskGb" :min="0" :controls="true" style="width: 100%" placeholder="请输入系统盘容量(GB)" />
 </el-form-item>
         <el-form-item label="数据盘容量(GB):" prop="dataDiskGb">
-    <el-input v-model.number="formData.dataDiskGb" :clearable="true" placeholder="请输入数据盘容量(GB)" />
+    <el-input-number v-model="formData.dataDiskGb" :min="0" :controls="true" style="width: 100%" placeholder="请输入数据盘容量(GB)" />
 </el-form-item>
         <el-form-item label="价格/小时:" prop="pricePerHour">
     <el-input-number v-model="formData.pricePerHour" style="width:100%" :precision="2" :clearable="true" />
 </el-form-item>
         <el-form-item label="是否上架:" prop="isOnShelf">
     <el-switch v-model="formData.isOnShelf" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
+</el-form-item>
+        <el-form-item label="是否支持显存分割:" prop="supportMemorySplit">
+    <el-switch v-model="formData.supportMemorySplit" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
 </el-form-item>
         <el-form-item label="备注:" prop="remark">
     <el-input v-model="formData.remark" :clearable="true" placeholder="请输入备注" />
@@ -71,12 +77,14 @@ const formData = ref({
             name: '',
             gpuModel: '',
             gpuCount: 0,
+            memoryCapacity: 0,
             cpuCores: 0,
             memoryGb: 0,
             systemDiskGb: 0,
             dataDiskGb: 0,
             pricePerHour: 0,
             isOnShelf: false,
+            supportMemorySplit: false,
             remark: '',
         })
 // 验证规则
@@ -92,6 +100,11 @@ const rule = reactive({
                    trigger: ['input','blur'],
                }],
                isOnShelf : [{
+                   required: true,
+                   message: '',
+                   trigger: ['input','blur'],
+               }],
+               supportMemorySplit : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],

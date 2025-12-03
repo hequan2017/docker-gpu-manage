@@ -10,37 +10,40 @@
     <el-input v-model="formData.region" :clearable="true" placeholder="请输入区域" />
 </el-form-item>
         <el-form-item label="CPU:" prop="cpu">
-    <el-input v-model="formData.cpu" :clearable="true" placeholder="请输入CPU" />
+    <el-input-number v-model="formData.cpu" :min="0" :controls="true" style="width: 100%" placeholder="请输入CPU" />
 </el-form-item>
         <el-form-item label="内存:" prop="memory">
-    <el-input v-model="formData.memory" :clearable="true" placeholder="请输入内存" />
+    <el-input-number v-model="formData.memory" :min="0" :controls="true" style="width: 100%" placeholder="请输入内存" />
 </el-form-item>
         <el-form-item label="系统盘容量:" prop="systemDisk">
-    <el-input v-model="formData.systemDisk" :clearable="true" placeholder="请输入系统盘容量" />
+    <el-input-number v-model="formData.systemDisk" :min="0" :controls="true" style="width: 100%" placeholder="请输入系统盘容量" />
 </el-form-item>
         <el-form-item label="数据盘容量:" prop="dataDisk">
-    <el-input v-model="formData.dataDisk" :clearable="true" placeholder="请输入数据盘容量" />
+    <el-input-number v-model="formData.dataDisk" :min="0" :controls="true" style="width: 100%" placeholder="请输入数据盘容量" />
+</el-form-item>
+<el-form-item label="显卡名称:" prop="gpuName">
+    <el-input v-model="formData.gpuName" :clearable="true" placeholder="请输入显卡名称" />
+</el-form-item>
+        <el-form-item label="显卡数量:" prop="gpuCount">
+    <el-input-number v-model="formData.gpuCount" :min="0" :controls="true" style="width: 100%" placeholder="请输入显卡数量" />
+</el-form-item>
+        <el-form-item label="显存容量:" prop="memoryCapacity">
+    <el-input-number v-model="formData.memoryCapacity" :min="0" :controls="true" style="width: 100%" placeholder="请输入显存容量" />
 </el-form-item>
         <el-form-item label="IP地址公网:" prop="publicIp">
-    <el-input v-model="formData.publicIp" :clearable="true" placeholder="请输入IP地址公网" />
+    <el-input v-model="formData.publicIp" :clearable="true" placeholder="请输入IP地址公网（例如：192.168.1.1）" @input="handleIpInput('publicIp', $event)" />
 </el-form-item>
         <el-form-item label="IP地址内网:" prop="privateIp">
-    <el-input v-model="formData.privateIp" :clearable="true" placeholder="请输入IP地址内网" />
+    <el-input v-model="formData.privateIp" :clearable="true" placeholder="请输入IP地址内网（例如：192.168.1.1）" @input="handleIpInput('privateIp', $event)" />
 </el-form-item>
         <el-form-item label="SSH端口:" prop="sshPort">
-    <el-input v-model.number="formData.sshPort" :clearable="true" placeholder="请输入SSH端口" />
+    <el-input-number v-model="formData.sshPort" :min="0" :max="65535" :controls="true" style="width: 100%" placeholder="请输入SSH端口" />
 </el-form-item>
         <el-form-item label="用户名:" prop="username">
     <el-input v-model="formData.username" :clearable="true" placeholder="请输入用户名" />
 </el-form-item>
         <el-form-item label="密码:" prop="password">
     <el-input v-model="formData.password" :clearable="true" placeholder="请输入密码" />
-</el-form-item>
-        <el-form-item label="显卡名称:" prop="gpuName">
-    <el-input v-model="formData.gpuName" :clearable="true" placeholder="请输入显卡名称" />
-</el-form-item>
-        <el-form-item label="显卡数量:" prop="gpuCount">
-    <el-input v-model.number="formData.gpuCount" :clearable="true" placeholder="请输入显卡数量" />
 </el-form-item>
         <el-form-item label="Docker连接地址:" prop="dockerAddress">
     <el-input v-model="formData.dockerAddress" :clearable="true" placeholder="请输入Docker连接地址" />
@@ -100,10 +103,10 @@ const type = ref('')
 const formData = ref({
             name: '',
             region: '',
-            cpu: '',
-            memory: '',
-            systemDisk: '',
-            dataDisk: '',
+            cpu: 0,
+            memory: 0,
+            systemDisk: 0,
+            dataDisk: 0,
             publicIp: '',
             privateIp: '',
             sshPort: 0,
@@ -111,6 +114,7 @@ const formData = ref({
             password: '',
             gpuName: '',
             gpuCount: 0,
+            memoryCapacity: 0,
             dockerAddress: '',
             useTls: false,
             caCert: '',
@@ -130,15 +134,20 @@ const rule = reactive({
                    required: true,
                    message: '请输入公网IP地址',
                    trigger: ['input','blur'],
+               },
+               {
+                   pattern: /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
+                   message: '请输入正确的IP地址格式',
+                   trigger: ['input','blur'],
                }],
                privateIp : [{
                    required: true,
                    message: '请输入内网IP地址',
                    trigger: ['input','blur'],
-               }],
-               sshPort : [{
-                   required: true,
-                   message: '请输入SSH端口',
+               },
+               {
+                   pattern: /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
+                   message: '请输入正确的IP地址格式',
                    trigger: ['input','blur'],
                }],
                isOnShelf : [{
@@ -149,6 +158,19 @@ const rule = reactive({
 })
 
 const elFormRef = ref()
+
+// 处理IP地址输入，只允许数字和点
+const handleIpInput = (field, value) => {
+  // 只允许数字和点
+  const filtered = value.replace(/[^\d.]/g, '')
+  // 限制点的数量，最多3个点
+  const parts = filtered.split('.')
+  if (parts.length > 4) {
+    formData.value[field] = parts.slice(0, 4).join('.')
+  } else {
+    formData.value[field] = filtered
+  }
+}
 
 // 初始化方法
 const init = async () => {

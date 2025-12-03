@@ -13,6 +13,7 @@ type ImageRegistry struct {
   Description  *string `json:"description" form:"description" gorm:"comment:镜像库描述;column:description;size:1000;"`  //描述
   Source  *string `json:"source" form:"source" gorm:"comment:镜像库来源;column:source;size:255;"`  //来源
   IsOnShelf  *bool `json:"isOnShelf" form:"isOnShelf" gorm:"default:true;comment:是否上架;column:is_on_shelf;" binding:"required"`  //是否上架
+  SupportMemorySplit  *bool `json:"supportMemorySplit" form:"supportMemorySplit" gorm:"default:false;comment:是否支持显存切分;column:support_memory_split;" binding:"required"`  //是否支持显存切分
   Remark  *string `json:"remark" form:"remark" gorm:"comment:备注信息;column:remark;size:1000;"`  //备注
 }
 

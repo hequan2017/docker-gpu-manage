@@ -88,6 +88,9 @@
             <el-table-column align="left" label="是否上架" prop="isOnShelf" width="120">
     <template #default="scope">{{ formatBoolean(scope.row.isOnShelf) }}</template>
 </el-table-column>
+            <el-table-column align="left" label="是否支持显存切分" prop="supportMemorySplit" width="150">
+    <template #default="scope">{{ formatBoolean(scope.row.supportMemorySplit) }}</template>
+</el-table-column>
             <!-- <el-table-column align="left" label="备注" prop="remark" width="200" /> -->
 
         <el-table-column align="left" label="操作" fixed="right" :min-width="appStore.operateMinWith">
@@ -137,6 +140,9 @@
             <el-form-item label="是否上架:" prop="isOnShelf">
     <el-switch v-model="formData.isOnShelf" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
 </el-form-item>
+            <el-form-item label="是否支持显存切分:" prop="supportMemorySplit">
+    <el-switch v-model="formData.supportMemorySplit" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
+</el-form-item>
             <el-form-item label="备注:" prop="remark">
     <el-input v-model="formData.remark" :clearable="true" placeholder="请输入备注" />
 </el-form-item>
@@ -158,7 +164,10 @@
     {{ detailForm.source }}
 </el-descriptions-item>
                     <el-descriptions-item label="是否上架">
-    {{ detailForm.isOnShelf }}
+    {{ formatBoolean(detailForm.isOnShelf) }}
+</el-descriptions-item>
+                    <el-descriptions-item label="是否支持显存切分">
+    {{ formatBoolean(detailForm.supportMemorySplit) }}
 </el-descriptions-item>
                     <el-descriptions-item label="备注">
     {{ detailForm.remark }}
@@ -211,6 +220,7 @@ const formData = ref({
             description: '',
             source: '',
             isOnShelf: false,
+            supportMemorySplit: false,
             remark: '',
         })
 
@@ -244,6 +254,12 @@ const rule = reactive({
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
+               },
+              ],
+               supportMemorySplit : [{
+                   required: true,
+                   message: '请选择是否支持显存切分',
+                   trigger: ['change','blur'],
                },
               ],
 })
@@ -408,6 +424,7 @@ const closeDialog = () => {
         description: '',
         source: '',
         isOnShelf: false,
+        supportMemorySplit: false,
         remark: '',
         }
 }
