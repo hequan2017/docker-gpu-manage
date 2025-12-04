@@ -547,6 +547,36 @@ func cpuSetCount(set string) int {
 	return total
 }
 
+// getAssignedCPUs 计算容器分配（可用）的 CPU 核数
+// 优先顺序：cpuset -> NanoCPUs -> CPUQuota/CPUPeriod -> CPUCount -> 0(未知)
+func (d *DockerService) getAssignedCPUs(ctx context.Context, cli *client.Client, containerID string) float64 {
+	inspect, err := cli.ContainerInspect(ctx, containerID)
+	if err != nil || inspect.HostConfig == nil {
+		return 0
+	}
+	hc := inspect.HostConfig
+	// 1) cpuset 限定（最严格、最准确）
+	if hc.CpusetCpus != "" {
+		c := cpuSetCount(hc.CpusetCpus)
+		if c > 0 {
+			return float64(c)
+		}
+	}
+	// 2) NanoCPUs（以 1e9 为 1 核）
+	if hc.NanoCPUs > 0 {
+		return float64(hc.NanoCPUs) / 1e9
+	}
+	// 3) CPUQuota/CPUPeriod（cgroup v1 常见限制）
+	if hc.CPUQuota > 0 && hc.CPUPeriod > 0 {
+		return float64(hc.CPUQuota) / float64(hc.CPUPeriod)
+	}
+	// 4) CPUCount（Windows 或部分平台）
+	if hc.CPUCount > 0 {
+		return float64(hc.CPUCount)
+	}
+	return 0
+}
+
 // TestDockerConnection 测试Docker连接
 func (d *DockerService) TestDockerConnection(ctx context.Context, node *computenode.ComputeNode) (bool, string) {
 	if node.DockerAddress == nil || *node.DockerAddress == "" {
@@ -582,10 +612,9 @@ type ContainerStats struct {
 	GPUMemoryUsageRate float64 `json:"gpuMemoryUsageRate"`           // GPU显存使用率(%) - 当产品规格中显卡数量>0时返回
 }
 
-// 显存采集缓存（15秒刷新）
+// 显存采集缓存（无TTL校验）
 var (
 	statsCache sync.Map // key: cacheKey(node, containerID) -> cachedStats
-	cacheTTL   = 20 * time.Second
 )
 
 type cachedStats struct {
@@ -899,15 +928,36 @@ func (d *DockerService) getContainerStatsViaCLI(ctx context.Context, node *compu
 	}
 
 	// 转换字段
-	cpu := parsePercent(sl.CPUPerc)
+	cpuHostPercent := parsePercent(sl.CPUPerc) // 相对于整机（所有核）的百分比
 	memUsedBytes, memLimitBytes := parseUsedTotal(sl.MemUsage)
 	memPerc := parsePercent(sl.MemPerc)
 	// 不再采集网络和块设备I/O
 	pids := parseInt64(sl.PIDs)
 
+	// docker CLI 的 CPUPerc 已经是“核百分比”（1核满载≈100，2核≈200）
+	// 需要根据容器分配的 CPU 数进行归一化
+	var assigned float64 = 0
+	if node != nil {
+		if cliTmp, err := d.CreateDockerClient(node); err == nil {
+			defer cliTmp.Close()
+			assigned = d.getAssignedCPUs(ctx, cliTmp, containerID)
+		}
+	}
+	if assigned <= 0 {
+		assigned = 1 // 兜底，防止除零
+	}
+	raw := cpuHostPercent
+	norm := raw / assigned
+	if norm < 0 {
+		norm = 0
+	}
+	if norm > 100 {
+		norm = 100
+	}
+
 	return &ContainerStats{
-		CPUUsagePercent:    cpu, // docker CLI 已经是归一化到单核100%*numCPU的总百分比，适合直接显示
-		CPUUsagePercentRaw: cpu, // 这里保持一致（CLI输出即为原始）
+		CPUUsagePercent:    norm,
+		CPUUsagePercentRaw: raw,
 		MemoryUsage:        memUsedBytes,
 		MemoryLimit:        memLimitBytes,
 		MemoryUsagePercent: memPerc,
@@ -994,14 +1044,6 @@ func parseBytes(s string) int64 {
 
 // GetContainerStats 获取容器统计信息
 func (d *DockerService) GetContainerStats(ctx context.Context, node *computenode.ComputeNode, containerID string) (*ContainerStats, error) {
-	// 先检查缓存，15秒内直接返回，减少开销&实现自动刷新
-	ck := cacheKey(node, containerID)
-	if v, ok := statsCache.Load(ck); ok {
-		cs := v.(cachedStats)
-		if time.Since(cs.at) < cacheTTL {
-			return cs.stats, nil
-		}
-	}
 
 	// 优先走 docker stats --no-stream（与Docker CLI一致）
 	if stats, err := d.getContainerStatsViaCLI(ctx, node, containerID); err == nil && stats != nil {
@@ -1014,7 +1056,7 @@ func (d *DockerService) GetContainerStats(ctx context.Context, node *computenode
 				stats.GPUMemoryUsageRate = gr
 			}
 		}
-		statsCache.Store(ck, cachedStats{at: time.Now(), stats: stats})
+		statsCache.Store(cacheKey(node, containerID), cachedStats{at: time.Now(), stats: stats})
 		return stats, nil
 	}
 
@@ -1044,9 +1086,8 @@ func (d *DockerService) GetContainerStats(ctx context.Context, node *computenode
 		curr = prev
 	}
 
-	// CPU 计算（见上方算法）
+	// CPU 计算（multi-core 原始百分比 raw 和按容器配额归一化的 norm）
 	var rawCPUPercent float64
-	var normCPUPercent float64
 	numCPUs := curr.CPUStats.OnlineCPUs
 	if numCPUs == 0 {
 		numCPUs = uint32(len(curr.CPUStats.CPUUsage.PercpuUsage))
@@ -1078,8 +1119,12 @@ func (d *DockerService) GetContainerStats(ctx context.Context, node *computenode
 			rawCPUPercent = (cpuDelta / systemDelta) * float64(numCPUs) * 100.0
 		}
 	}
-	if numCPUs > 0 {
-		normCPUPercent = rawCPUPercent / float64(numCPUs)
+
+	// 根据容器配额计算 0-100 的归一化百分比
+	assigned := d.getAssignedCPUs(ctx, cli, containerID)
+	normCPUPercent := rawCPUPercent
+	if assigned > 0 {
+		normCPUPercent = rawCPUPercent / assigned
 	}
 	if normCPUPercent < 0 {
 		normCPUPercent = 0
@@ -1111,6 +1156,6 @@ func (d *DockerService) GetContainerStats(ctx context.Context, node *computenode
 		GPUMemorySizeGB:    gm,
 		GPUMemoryUsageRate: gr,
 	}
-	statsCache.Store(ck, cachedStats{at: time.Now(), stats: res})
+	statsCache.Store(cacheKey(node, containerID), cachedStats{at: time.Now(), stats: res})
 	return res, nil
 }

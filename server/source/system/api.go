@@ -231,7 +231,6 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{ApiGroup: "实例管理", Method: "PUT", Path: "/instance/updateInstance", Description: "更新实例管理"},
 		{ApiGroup: "实例管理", Method: "GET", Path: "/instance/findInstance", Description: "根据ID获取实例管理"},
 		{ApiGroup: "实例管理", Method: "GET", Path: "/instance/getInstanceList", Description: "获取实例管理列表"},
-		{ApiGroup: "实例管理", Method: "GET", Path: "/instance/getContainerStats", Description: "获取容器统计信息"},
 
 		{ApiGroup: "instance", Method: "GET", Path: "/instance/getAvailableNodes", Description: "根据产品规格获取可用算力节点"},
 		{ApiGroup: "instance", Method: "GET", Path: "/instance/getContainerLogs", Description: "获取容器日志"},

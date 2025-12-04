@@ -176,7 +176,7 @@
 - ✅ 单卡显存显示：在选择主机时显示单卡可用显存大小，便于判断是否满足需求
 - ✅ 实例名称校验：实例名称仅支持字母、数字、横线和下划线，不支持中文
 - ✅ 资源分配优化：支持按卡分配显存，更精确地管理GPU资源
-- ✅ 容器创建时如启用显存切分：从“算力节点”的 HAMi-core 目录字段读取路径，挂载到容器 /libvgpu/build，并自动注入 LD_PRELOAD、CUDA_DEVICE_MEMORY_LIMIT、CUDA_DEVICE_SM_LIMIT 环境变量；如未配置则使用默认路径 /root/HAMi-core-main/build
+- ✅ 容器创建时如启用显存切分：从“算力节点”的 HAMi-core 目录字段读取路径，挂载到容器 /libvgpu/build，并自动注入 LD_PRELOAD、CUDA_DEVICE_MEMORY_LIMIT、CUDA_DEVICE_SM_LIMIT 环境变量；如未配置则使用默认路径 /root/HAMi-core/build
 
 **资源监控：**
 - ✅ **CPU使用率**：实时显示 CPU 使用百分比（进度条）
@@ -349,6 +349,20 @@ go run main.go
 
 后端服务默认运行在 `http://localhost:8888`
 
+##### 开发调试（可选）
+
+- 后端热重载（gowatch）：
+  ```bash
+  go install github.com/silenceper/gowatch@latest
+  cd server && gowatch
+  ```
+- 常用地址速查：
+  - Swagger: http://127.0.0.1:8888/swagger/index.html
+  - SSE: http://127.0.0.1:8888/sse
+  - Message: http://127.0.0.1:8888/message
+  - Web: http://127.0.0.1:8080
+
+
 ##### 4. 初始化数据库
 
 **方法一：通过Web界面初始化（推荐）**
@@ -500,7 +514,20 @@ jwt:
 
 ##### 前端配置
 
-前端API地址配置在 `web/src/utils/request.js` 中，默认指向 `http://localhost:8888`。
+前端通过环境变量控制后端地址与代理，主要变量（位于 web/.env.*）：
+
+```env
+VITE_BASE_API=/api            # 前端请求前缀（开发模式由 Vite 代理到后端）
+VITE_BASE_PATH=http://127.0.0.1
+VITE_SERVER_PORT=8888         # 后端端口
+VITE_CLI_PORT=8080            # 前端开发端口
+VITE_FILE_API=/uploads/file   # 静态/上传文件基础路径
+```
+
+说明：
+- 开发模式：/api 将被 Vite 代理到 `${VITE_BASE_PATH}:${VITE_SERVER_PORT}/`（详见 web/vite.config.js）。
+- 生产部署：建议由 Nginx/网关将 `/api` 反向代理到后端服务。
+- 代码中 `web/src/utils/request.js` 使用 `import.meta.env.VITE_BASE_API` 作为 Axios 的 baseURL。
 
 #### 常见问题
 

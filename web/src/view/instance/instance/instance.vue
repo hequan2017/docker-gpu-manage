@@ -504,58 +504,42 @@
       <div class="stats-item">
         <div class="stats-label">
           <span>CPU使用率</span>
-          <span class="stats-value">{{ containerStats.cpuUsagePercent?.toFixed(2) || '0.00' }}%</span>
+          <span class="stats-value">{{ (detailForm.cpuUsagePercent ?? 0).toFixed(2) }}%</span>
         </div>
         <el-progress 
-          :percentage="parseFloat(containerStats.cpuUsagePercent?.toFixed(2) || 0)" 
-          :color="getProgressColor(containerStats.cpuUsagePercent)"
+          :percentage="Number(((detailForm.cpuUsagePercent ?? 0).toFixed(2)))" 
+          :color="getProgressColor(detailForm.cpuUsagePercent)"
           :stroke-width="12"
         />
       </div>
       <div class="stats-item" style="margin-top: 16px;">
         <div class="stats-label">
           <span>内存使用率</span>
-          <span class="stats-value">{{ containerStats.memoryUsagePercent?.toFixed(2) || '0.00' }}%</span>
+          <span class="stats-value">{{ (detailForm.memoryUsagePercent ?? 0).toFixed(2) }}%</span>
         </div>
         <el-progress 
-          :percentage="parseFloat(containerStats.memoryUsagePercent?.toFixed(2) || 0)" 
-          :color="getProgressColor(containerStats.memoryUsagePercent)"
+          :percentage="Number(((detailForm.memoryUsagePercent ?? 0).toFixed(2)))" 
+          :color="getProgressColor(detailForm.memoryUsagePercent)"
           :stroke-width="12"
         />
-        <div class="stats-detail" v-if="containerStats.memoryUsage && containerStats.memoryLimit">
-          <span>{{ formatBytes(containerStats.memoryUsage) }} / {{ formatBytes(containerStats.memoryLimit) }}</span>
-        </div>
       </div>
       
       <!-- GPU 显存 -->
       <div class="stats-item" style="margin-top: 16px;" v-if="shouldShowGpuStats">
         <div class="stats-label">
           <span>显存使用率</span>
-          <span class="stats-value">{{ (containerStats.gpuMemoryUsageRate ?? 0).toFixed(2) }}%</span>
+          <span class="stats-value">{{ (detailForm.gpuMemoryUsageRate ?? 0).toFixed(2) }}%</span>
         </div>
         <el-progress 
-          :percentage="parseFloat(((containerStats.gpuMemoryUsageRate ?? 0).toFixed(2)))" 
-          :color="getProgressColor(containerStats.gpuMemoryUsageRate)"
+          :percentage="Number(((detailForm.gpuMemoryUsageRate ?? 0).toFixed(2)))" 
+          :color="getProgressColor(detailForm.gpuMemoryUsageRate)"
           :stroke-width="12"
         />
-        <div class="stats-detail" v-if="containerStats.gpuMemorySizeGB">
-          <span>{{ gpuUsedText }}</span>
-        </div>
       </div>
 
-
-      
-      <!-- 进程数 -->
-      <div class="stats-item" style="margin-top: 12px;">
-        <div class="stats-label">
-          <span>进程数</span>
-          <span class="stats-value">{{ containerStats.pids || 0 }}</span>
-        </div>
-      </div>
-      
       <el-button 
         size="small" 
-        @click="refreshContainerStats" 
+        @click="refreshDetail" 
         :loading="statsLoading"
         style="margin-top: 12px;"
       >
@@ -681,7 +665,6 @@ import {
   stopContainer,
   restartContainer,
   getContainerLogs,
-  getContainerStats,
   getTerminalWsUrl
 } from '@/api/instance/instance'
 import { getJumpboxConfig } from '@/api/system'
@@ -979,29 +962,19 @@ const detailForm = ref({})
 // 查看详情控制标记
 const detailShow = ref(false)
 
-// 容器统计信息
-const containerStats = ref({
-  cpuUsagePercent: 0,
-  memoryUsage: 0,
-  memoryLimit: 0,
-  memoryUsagePercent: 0,
-  pids: 0,
-  gpuMemorySizeGB: 0,
-  gpuMemoryUsageRate: 0
-})
+// 详情刷新状态与定时器（每30秒拉一次实例详情，读取表中指标）
 const statsLoading = ref(false)
 let statsTimer = null
 
 // 打开详情弹窗
 const openDetailShow = () => {
   detailShow.value = true
-  // 如果容器正在运行，自动获取统计信息并定时刷新
+  // 如果容器正在运行，定时刷新实例详情（30秒）
   if (detailForm.value.containerId && detailForm.value.containerStatus === 'running') {
-    refreshContainerStats()
-    // 每10秒刷新一次
+    refreshDetail()
     statsTimer = setInterval(() => {
-      refreshContainerStats()
-    }, 10000)
+      refreshDetail()
+    }, 30000)
   }
 }
 
@@ -1015,41 +988,15 @@ const getDetails = async (row) => {
   }
 }
 
-// 刷新容器统计信息
-const refreshContainerStats = async () => {
-  if (!detailForm.value.ID || !detailForm.value.containerId) {
-    return
-  }
-  
-  // 检查容器状态，只有运行中的容器才获取统计信息
-  if (detailForm.value.containerStatus !== 'running') {
-    return
-  }
-  
+// 刷新实例详情（从表里拉取指标字段）
+const refreshDetail = async () => {
+  if (!detailForm.value.ID) return
   statsLoading.value = true
   try {
-    const res = await getContainerStats({ ID: detailForm.value.ID })
+    const res = await findInstance({ ID: detailForm.value.ID })
     if (res.code === 0 && res.data) {
-      containerStats.value = {
-        cpuUsagePercent: res.data.cpuUsagePercent || 0,
-        memoryUsage: res.data.memoryUsage || 0,
-        memoryLimit: res.data.memoryLimit || 0,
-        memoryUsagePercent: res.data.memoryUsagePercent || 0,
-        networkRx: res.data.networkRx || 0,
-        networkTx: res.data.networkTx || 0,
-        blockRead: res.data.blockRead || 0,
-        blockWrite: res.data.blockWrite || 0,
-        pids: res.data.pids || 0,
-        gpuMemorySizeGB: res.data.gpuMemorySizeGB || 0,
-        gpuMemoryUsageRate: res.data.gpuMemoryUsageRate || 0
-      }
-    } else {
-      // 如果获取失败（可能是实例不存在或已删除），静默处理
-      console.warn('获取容器统计信息失败:', res.msg || '未知错误')
+      detailForm.value = res.data
     }
-  } catch (error) {
-    // 静默处理错误，避免影响用户体验
-    console.warn('获取容器统计信息失败:', error)
   } finally {
     statsLoading.value = false
   }

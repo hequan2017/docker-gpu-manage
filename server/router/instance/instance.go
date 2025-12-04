@@ -26,7 +26,6 @@ func (s *InstanceRouter) InitInstanceRouter(Router *gin.RouterGroup, PublicRoute
 		instanceRouterWithoutRecord.POST("stopContainer", instanceApi.StopContainer)        // 停止容器
 		instanceRouterWithoutRecord.POST("restartContainer", instanceApi.RestartContainer)  // 重启容器
 		instanceRouterWithoutRecord.GET("getContainerLogs", instanceApi.GetContainerLogs)   // 获取容器日志
-		instanceRouterWithoutRecord.GET("getContainerStats", instanceApi.GetContainerStats) // 获取容器统计信息
 		instanceRouterWithoutRecord.GET("terminal", instanceApi.ContainerTerminal)          // 容器终端WebSocket
 	}
 	{

@@ -348,31 +348,6 @@ func (instanceApi *InstanceApi) RestartContainer(c *gin.Context) {
 	response.OkWithMessage("重启成功", c)
 }
 
-// GetContainerStats 获取容器统计信息
-// @Tags Instance
-// @Summary 获取容器统计信息
-// @Security ApiKeyAuth
-// @Accept application/json
-// @Produce application/json
-// @Param ID query string true "实例ID"
-// @Success 200 {object} response.Response{data=object,msg=string} "获取成功"
-// @Router /instance/getContainerStats [get]
-func (instanceApi *InstanceApi) GetContainerStats(c *gin.Context) {
-	ctx := c.Request.Context()
-	ID := c.Query("ID")
-	if ID == "" {
-		response.FailWithMessage("实例ID不能为空", c)
-		return
-	}
-	stats, err := instanceService.GetContainerStats(ctx, ID)
-	if err != nil {
-		global.GVA_LOG.Error("获取容器统计信息失败!", zap.Error(err))
-		response.FailWithMessage("获取容器统计信息失败:"+err.Error(), c)
-		return
-	}
-	response.OkWithData(stats, c)
-}
-
 // GetContainerLogs 获取容器日志
 // @Tags Instance
 // @Summary 获取容器日志

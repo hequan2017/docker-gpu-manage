@@ -1,106 +1,88 @@
-# gin-vue-admin web
+# 前端（Web）说明
 
-## Project setup
+基于 Vue 3 + Vite + Element Plus 的前端工程，配合 gin-vue-admin 后端使用。
 
-```
+## 环境要求
+- Node.js 20+
+- npm 或 pnpm
+
+## 快速开始
+```bash
+# 安装依赖（任选其一）
 npm install
-```
+# 或
+pnpm install
 
-### Compiles and hot-reloads for development
+# 启动开发服务（默认 http://127.0.0.1:8080）
+npm run dev
 
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-
-```
+# 生产构建
 npm run build
+
+# 本地预览打包产物
+npm run preview
 ```
 
-### Run your tests
+## 环境变量（.env.development 示例）
+在项目根目录 web/ 下新建 .env.development（或根据需要新建 .env.production 等），并填写：
 
+```env
+# 前端调用后端的基础前缀，开发模式下将由 Vite 代理到后端
+VITE_BASE_API=/api
+
+# 后端地址与端口（供开发代理与日志展示使用）
+VITE_BASE_PATH=http://127.0.0.1
+VITE_SERVER_PORT=8888
+
+# 前端开发服务端口
+VITE_CLI_PORT=8080
+
+# 静态文件/上传文件基础路径（与后端保持一致）
+VITE_FILE_API=/uploads/file
 ```
-npm run test
-```
 
-### Lints and fixes files
+说明：
+- 开发模式下，请求以 VITE_BASE_API（默认 /api）为前缀的接口将被 Vite 代理到 `${VITE_BASE_PATH}:${VITE_SERVER_PORT}/`，配置位于 vite.config.js 的 server.proxy。
+- 生产部署时，可将前端静态资源由 Web 服务器（如 Nginx）托管，并将 /api 反向代理到后端服务。
 
-```
-npm run lint
-```
+## 可用脚本
+- npm run dev：启动开发服务器（vite）
+- npm run build：生产构建
+- npm run preview：本地预览构建产物
+- npm run serve：同 dev（等价启动参数）
+- npm run limit-build：在低内存环境下的构建辅助脚本
 
-整理代码结构
-
-```lua
+## 目录结构（简要）
+```text
 web
- ├── babel.config.js
  ├── Dockerfile
- ├── favicon.ico
- ├── index.html                 -- 主页面
- ├── limit.js                   -- 助手代码
- ├── package.json               -- 包管理器代码
- ├── src                        -- 源代码
- │   ├── api                    -- api 组
- │   ├── App.vue                -- 主页面
- │   ├── assets                 -- 静态资源
- │   ├── components             -- 全局组件
- │   ├── core                   -- gva 组件包
- │   │   ├── config.js          -- gva网站配置文件
- │   │   ├── gin-vue-admin.js   -- 注册欢迎文件
- │   │   └── global.js          -- 统一导入文件
- │   ├── directive              -- v-auth 注册文件
- │   ├── main.js                -- 主文件
- │   ├── permission.js          -- 路由中间件
- │   ├── pinia                  -- pinia 状态管理器，取代vuex
- │   │   ├── index.js           -- 入口文件
- │   │   └── modules            -- modules
- │   │       ├── dictionary.js
- │   │       ├── router.js
- │   │       └── user.js
- │   ├── router                 -- 路由声明文件
- │   │   └── index.js
- │   ├── style                  -- 全局样式
- │   │   ├── base.scss
- │   │   ├── basics.scss
- │   │   ├── element_visiable.scss  -- 此处可以全局覆盖 element-plus 样式
- │   │   ├── iconfont.css           -- 顶部几个icon的样式文件
- │   │   ├── main.scss
- │   │   ├── mobile.scss
- │   │   └── newLogin.scss
- │   ├── utils                  -- 方法包库
- │   │   ├── asyncRouter.js     -- 动态路由相关
- │   │   ├── bus.js             -- 全局mitt声明文件
- │   │   ├── date.js            -- 日期相关
- │   │   ├── dictionary.js      -- 获取字典方法
- │   │   ├── downloadImg.js     -- 下载图片方法
- │   │   ├── format.js          -- 格式整理相关
- │   │   ├── image.js           -- 图片相关方法
- │   │   ├── page.js            -- 设置页面标题
- │   │   ├── request.js         -- 请求
- │   │   └── stringFun.js       -- 字符串文件
- |   ├── view -- 主要view代码
- |   |   ├── about -- 关于我们
- |   |   ├── dashboard -- 面板
- |   |   ├── error -- 错误
- |   |   ├── example --上传案例
- |   |   ├── iconList -- icon列表
- |   |   ├── init -- 初始化数据
- |   |   |   ├── index -- 新版本
- |   |   |   ├── init -- 旧版本
- |   |   ├── layout  --  layout约束页面
- |   |   |   ├── aside
- |   |   |   ├── bottomInfo     -- bottomInfo
- |   |   |   ├── screenfull     -- 全屏设置
- |   |   |   ├── setting        -- 系统设置
- |   |   |   └── index.vue      -- base 约束
- |   |   ├── login              --登录
- |   |   ├── person             --个人中心
- |   |   ├── superAdmin         -- 超级管理员操作
- |   |   ├── system             -- 系统检测页面
- |   |   ├── systemTools        -- 系统配置相关页面
- |   |   └── routerHolder.vue   -- page 入口页面
- ├── vite.config.js             -- vite 配置文件
- └── yarn.lock
-
+ ├── index.html
+ ├── package.json
+ ├── vite.config.js
+ ├── src
+ │   ├── api                   # 后端接口封装
+ │   ├── assets                # 静态资源与图标
+ │   ├── components            # 公共组件
+ │   ├── core                  # GVA 配置/启动横幅等
+ │   ├── directive             # 指令（如 v-auth）
+ │   ├── hooks                 # 通用 hooks
+ │   ├── main.js               # 入口文件
+ │   ├── pinia                 # 状态管理
+ │   ├── router                # 路由
+ │   ├── style                 # 全局样式
+ │   ├── utils                 # 工具库（request、format 等）
+ │   └── view                  # 页面视图
+ └── .env.*                    # 环境变量文件（可选）
 ```
+
+## 开发代理说明
+- 源码中统一通过 `import.meta.env.VITE_BASE_API` 作为接口前缀（默认 `/api`）。
+- Vite 在开发模式将 `/api` 代理到 `${VITE_BASE_PATH}:${VITE_SERVER_PORT}/`。
+- 示例：前端调用 `/api/instance/getContainerStats`，实际转发到 `http://127.0.0.1:8888/instance/getContainerStats`。
+
+## 常见问题
+- 若前端无法访问后端，请检查：
+  - 后端是否已在 8888 端口启动；
+  - .env.development 的 VITE_BASE_PATH、VITE_SERVER_PORT 是否与后端一致；
+  - 浏览器控制台与网络面板中的请求地址是否带有 `/api` 前缀；
+  - vite.config.js 中代理配置是否生效。

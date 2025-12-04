@@ -186,17 +186,6 @@ export const getContainerLogs = (params) => {
   })
 }
 
-// @Tags Instance
-// @Summary 获取容器统计信息
-// @Security ApiKeyAuth
-// @Router /instance/getContainerStats [get]
-export const getContainerStats = (params) => {
-  return service({
-    url: '/instance/getContainerStats',
-    method: 'get',
-    params
-  })
-}
 
 // 获取终端WebSocket地址
 export const getTerminalWsUrl = (ID, shell = 'bash') => {

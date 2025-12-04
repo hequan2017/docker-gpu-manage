@@ -1070,42 +1070,6 @@ func (instanceService *InstanceService) RestartContainer(ctx context.Context, ID
 	return global.GVA_DB.Model(&inst).Update("container_status", status).Error
 }
 
-// GetContainerStats 获取容器统计信息
-func (instanceService *InstanceService) GetContainerStats(ctx context.Context, ID string) (*ContainerStats, error) {
-	inst, node, err := instanceService.getInstanceAndNode(ID)
-	if err != nil {
-		return nil, err
-	}
-	if inst.ContainerId == nil || *inst.ContainerId == "" {
-		return nil, fmt.Errorf("容器ID为空")
-	}
-
-	// 获取容器统计信息
-	stats, err := dockerService.GetContainerStats(ctx, node, *inst.ContainerId)
-	if err != nil {
-		return nil, err
-	}
-
-	// 检查产品规格中是否有GPU（显卡数量>0）
-	// 如果没有GPU，则清空GPU显存相关字段
-	if inst.SpecId != nil && *inst.SpecId > 0 {
-		var spec product.ProductSpec
-		if err := global.GVA_DB.Where("id = ?", *inst.SpecId).First(&spec).Error; err == nil {
-			// 如果产品规格中显卡数量为0或为空，则清空GPU显存字段
-			if spec.GpuCount == nil || *spec.GpuCount == 0 {
-				stats.GPUMemorySizeGB = 0.0
-				stats.GPUMemoryUsageRate = 0.0
-			}
-		}
-	} else {
-		// 如果没有规格ID，则清空GPU显存字段
-		stats.GPUMemorySizeGB = 0.0
-		stats.GPUMemoryUsageRate = 0.0
-	}
-
-	return stats, nil
-}
-
 // GetContainerLogs 获取容器日志
 func (instanceService *InstanceService) GetContainerLogs(ctx context.Context, ID string, tail string) (string, error) {
 	inst, node, err := instanceService.getInstanceAndNode(ID)
