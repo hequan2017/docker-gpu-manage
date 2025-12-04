@@ -101,6 +101,7 @@
 | 显卡名称 | string | | GPU 型号 |
 | 显卡数量 | int | | GPU 数量 |
 | 显存容量 | int | | 单卡显存容量(GB) |
+| HAMi-core目录 | string |  | 节点HAMi-core build目录路径，用于显存切分挂载，示例：/root/HAMi-core-main/build |
 | Docker连接地址 | string | | Docker API 地址 |
 | 使用TLS | bool | | 默认启用 |
 | CA证书 | text | | TLS CA 证书 |
@@ -175,6 +176,7 @@
 - ✅ 单卡显存显示：在选择主机时显示单卡可用显存大小，便于判断是否满足需求
 - ✅ 实例名称校验：实例名称仅支持字母、数字、横线和下划线，不支持中文
 - ✅ 资源分配优化：支持按卡分配显存，更精确地管理GPU资源
+- ✅ 容器创建时如启用显存切分：从“算力节点”的 HAMi-core 目录字段读取路径，挂载到容器 /libvgpu/build，并自动注入 LD_PRELOAD、CUDA_DEVICE_MEMORY_LIMIT、CUDA_DEVICE_SM_LIMIT 环境变量；如未配置则使用默认路径 /root/HAMi-core-main/build
 
 **资源监控：**
 - ✅ **CPU使用率**：实时显示 CPU 使用百分比（进度条）
