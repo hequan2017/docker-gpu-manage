@@ -225,6 +225,7 @@
 jumpbox:
   enabled: true          # 是否启用SSH跳板机
   port: 2026            # SSH监听端口（默认2026）
+  server-ip: "192.168.112.148"
   host-key: ""          # SSH主机密钥路径（可选，不设置则自动生成）
   banner: "欢迎使用SSH跳板机服务\r\n"  # SSH欢迎信息
 ```
@@ -330,6 +331,17 @@ go mod download
 
 # 启动服务
 go run main.go
+```
+
+```json
+#添加mcp
+{
+  "mcpServers": {
+    "GVA Helper": {
+      "url": "http://127.0.0.1:8888/sse"
+    }
+  }
+}
 ```
 
 后端服务默认运行在 `http://localhost:8888`
