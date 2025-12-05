@@ -10,27 +10,11 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/computenode"
 	instanceModel "github.com/flipped-aurora/gin-vue-admin/server/model/instance"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/product"
-	"github.com/gogf/gf/v2/os/gcron"
 	"go.uber.org/zap"
 )
 
-// StartContainerStatusCheckCron 启动容器状态检查定时任务
-// 每30秒检查一次所有容器的运行状态，并刷新CPU/内存/GPU显存使用率
-func StartContainerStatusCheckCron() {
-	// 使用 gcron 创建定时任务，每30秒执行一次
-	// cron 表达式格式：秒 分钟 小时 日 月 星期
-	_, err := gcron.AddSingleton(context.Background(), "*/30 * * * * *", func(ctx context.Context) {
-		checkAllContainerStatusAndMetrics(ctx)
-	}, "container-status-metrics-check")
-	if err != nil {
-		global.GVA_LOG.Error("启动容器状态/指标检查定时任务失败", zap.Error(err))
-		return
-	}
-	global.GVA_LOG.Info("容器状态/指标检查定时任务已启动，每30秒检查一次")
-}
-
 // checkAllContainerStatusAndMetrics 检查所有容器的状态并刷新监控指标（并发版本）
-func checkAllContainerStatusAndMetrics(ctx context.Context) {
+func CheckAllContainerStatusAndMetrics(ctx context.Context) {
 	// 获取所有有容器ID的实例（未删除的）
 	var instances []instanceModel.Instance
 	if err := global.GVA_DB.Where("deleted_at IS NULL AND container_id IS NOT NULL AND container_id != ''").Find(&instances).Error; err != nil {
@@ -40,7 +24,7 @@ func checkAllContainerStatusAndMetrics(ctx context.Context) {
 
 	total := len(instances)
 	if total == 0 {
-		global.GVA_LOG.Info("没有需要检查的容器实例")
+		global.GVA_LOG.Debug("没有需要检查的容器实例")
 		return
 	}
 
@@ -136,10 +120,7 @@ func checkAllContainerStatusAndMetrics(ctx context.Context) {
 	// 等待所有 goroutine 完成
 	wg.Wait()
 
-	global.GVA_LOG.Info("容器状态/指标检查完成（并发模式）",
-		zap.Int("总数", total),
-		zap.Int64("成功", atomic.LoadInt64(&successCount)),
-		zap.Int64("失败", atomic.LoadInt64(&failCount)))
+	// 已移除定时任务汇总日志，避免控制台噪声
 }
 
 // roundToTwoDecimals 将浮点数保留 2 位小数

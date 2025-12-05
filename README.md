@@ -198,10 +198,10 @@
 - 管理员：可以操作所有实例
 
 **定时任务：**
-- ✅ 容器状态自动检查：每30秒自动检查所有容器的运行状态
-- ✅ 节点Docker状态检查：每5分钟检查所有算力节点的 Docker 连接状态，并更新节点的 DockerStatus 字段（connected/failed）
-- ✅ 状态自动同步：自动将Docker容器的实际状态同步到数据库
-- ✅ 使用 gcron 定时任务框架，稳定可靠
+- ✅ 单一合并任务：每30秒执行一次，顺序为 1) 检查所有算力节点的 Docker 连接状态并更新 DockerStatus（connected/failed）；2) 检查所有容器的运行状态并刷新 CPU/内存/GPU 显存使用率
+- ✅ 状态自动同步：自动将 Docker 容器的实际状态同步到数据库
+- ✅ 使用 gcron 定时任务框架（initialize/timer.go 内的 system-health-check），稳定可靠
+- ✅ 日志优化：移除定时任务完成的汇总 Info 日志，仅保留必要的 Error/Warn 及少量 Debug 日志，降低控制台噪声
 
 **数据卷管理：**
 - ✅ 删除容器时自动删除所有挂载的命名数据卷

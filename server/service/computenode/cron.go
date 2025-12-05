@@ -7,27 +7,11 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	model "github.com/flipped-aurora/gin-vue-admin/server/model/computenode"
 	instanceSvc "github.com/flipped-aurora/gin-vue-admin/server/service/instance"
-	"github.com/gogf/gf/v2/os/gcron"
 	"go.uber.org/zap"
 )
 
-// StartDockerStatusCheckCron 启动Docker状态检查定时任务
-// 每5分钟检查一次所有算力节点的 Docker 连接是否正常
-func StartDockerStatusCheckCron() {
-	// 每5分钟（在每个5分钟周期的第0秒触发）
-	// 表达式：秒 分 时 日 月 周
-	_, err := gcron.AddSingleton(context.Background(), "0 */5 * * * *", func(ctx context.Context) {
-		checkAllNodeDockerStatus(ctx)
-	}, "docker-status-check")
-	if err != nil {
-		global.GVA_LOG.Error("启动Docker状态检查定时任务失败", zap.Error(err))
-		return
-	}
-	global.GVA_LOG.Info("Docker状态检查定时任务已启动，每5分钟检查一次")
-}
-
-// checkAllNodeDockerStatus 检查所有节点的 Docker 状态并更新数据库
-func checkAllNodeDockerStatus(ctx context.Context) {
+// CheckAllNodeDockerStatus 检查所有节点的 Docker 状态并更新数据库
+func CheckAllNodeDockerStatus(ctx context.Context) {
 	var nodes []model.ComputeNode
 	if err := global.GVA_DB.Where("deleted_at IS NULL").Find(&nodes).Error; err != nil {
 		global.GVA_LOG.Error("查询算力节点失败", zap.Error(err))
@@ -48,7 +32,7 @@ func checkAllNodeDockerStatus(ctx context.Context) {
 		if connected {
 			status := "connected"
 			_ = global.GVA_DB.Model(n).Where("id = ?", n.ID).Update("docker_status", status).Error
-			global.GVA_LOG.Debug("Docker连接正常", zap.Uint("nodeId", n.ID), zap.String("name", safeStr(n.Name)))
+			// global.GVA_LOG.Debug("Docker连接正常", zap.Uint("nodeId", n.ID), zap.String("name", safeStr(n.Name)))
 			success++
 		} else {
 			status := "failed"
@@ -61,7 +45,7 @@ func checkAllNodeDockerStatus(ctx context.Context) {
 		time.Sleep(100 * time.Millisecond)
 	}
 
-	global.GVA_LOG.Info("Docker状态检查完成", zap.Int("总节点", len(nodes)), zap.Int("正常", success), zap.Int("异常", failed))
+	// 已移除定时任务汇总日志，避免控制台噪声
 }
 
 func safeStr(p *string) string {

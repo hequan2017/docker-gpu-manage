@@ -1,15 +1,18 @@
 package initialize
 
 import (
+	"context"
 	"fmt"
 
 	computeNodeSvc "github.com/flipped-aurora/gin-vue-admin/server/service/computenode"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/instance"
 	"github.com/flipped-aurora/gin-vue-admin/server/task"
 
+	"github.com/gogf/gf/v2/os/gcron"
 	"github.com/robfig/cron/v3"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"go.uber.org/zap"
 )
 
 func Timer() {
@@ -38,8 +41,16 @@ func Timer() {
 		//}
 	}()
 
-	// 启动容器状态检查定时任务（使用 gcron，每30秒检查一次）
-	instance.StartContainerStatusCheckCron()
-	// 启动算力节点 Docker 状态检查定时任务（使用 gcron，每5分钟检查一次）
-	computeNodeSvc.StartDockerStatusCheckCron()
+	// 合并一个定时任务：每30秒执行一次，依次检查Docker状态和容器指标
+	_, err := gcron.AddSingleton(context.Background(), "*/30 * * * * *", func(ctx context.Context) {
+		// 先检查节点 Docker 状态，确保后续容器检查的依赖健康
+		computeNodeSvc.CheckAllNodeDockerStatus(ctx)
+		// 再检查容器状态与指标
+		instance.CheckAllContainerStatusAndMetrics(ctx)
+	}, "system-health-check")
+	if err != nil {
+		global.GVA_LOG.Error("启动合并定时任务失败", zap.Error(err))
+	} else {
+		global.GVA_LOG.Info("合并定时任务已启动，每30秒执行一次")
+	}
 }
