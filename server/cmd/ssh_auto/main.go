@@ -18,7 +18,7 @@ func main() {
 	const (
 		user     = "admin"
 		addr     = "192.168.112.148:2026"
-		targetID = "46b74368c919"
+		targetID = "c61c436b3ef7"
 	)
 
 	password := os.Getenv("SSH_PASSWORD")

@@ -17,7 +17,8 @@
     "go.toolsEnvVars": {
       "GOPROXY": "https://goproxy.cn,direct",
       "GONOPROXY": "none;"
-    }
+    },
+    "powershell.cwd": "backend"
   },
   "launch": {
     "version": "0.2.0",
