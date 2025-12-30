@@ -4,66 +4,59 @@
       <div class="w-full md:w-1/2">
         <el-card class="min-w-96">
           <template #header>
-            <el-divider>gin-vue-admin</el-divider>
+            <el-divider>天启算力平台</el-divider>
           </template>
           <div>
-            <div class="w-full flex items-center justify-center">
-              <a href="https://github.com/flipped-aurora/gin-vue-admin">
-                  <img
-                    class="org-img dom-center"
-                    src="@/assets/logo.png"
-                    alt="gin-vue-admin"
-                  />
-                </a>
+            <div class="w-full flex items-center justify-center mb-6">
+              <!-- Docker GPU Logo -->
+              <div class="w-32 h-32 rounded-full bg-blue-500 flex items-center justify-center">
+                <svg viewBox="0 0 640 512" class="w-16 h-16 text-white" fill="currentColor">
+                  <path d="M349.9 236.3h-66.1v-59.4h66.1v59.4zm0-204.3h-66.1v60.7h66.1V32zm78.2 144.8H362v59.4h66.1v-59.4zm-156.3-72.1h-66.1v60.1h66.1v-60.1zm78.1 0h-66.1v60.1h66.1v-60.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1l-13.3-8.9zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm-78.1-72.1h-66.1v60.1h66.1v-60.1z"/>
+                </svg>
+              </div>
             </div>
-            <div class="w-full flex items-center justify-around">
-              <a href="https://github.com/flipped-aurora/gin-vue-admin">
-                  <img
-                    class="dom-center"
-                    src="https://img.shields.io/github/watchers/flipped-aurora/gin-vue-admin.svg?label=Watch"
-                    alt=""
-                  />
-                </a>
-                <a href="https://github.com/flipped-aurora/gin-vue-admin">
-                  <img
-                    class="dom-center"
-                    src="https://img.shields.io/github/stars/flipped-aurora/gin-vue-admin.svg?style=social"
-                    alt=""
-                  />
-                </a>
-                <a href="https://github.com/flipped-aurora/gin-vue-admin">
-                  <img
-                    class="dom-center"
-                    src="https://img.shields.io/github/forks/flipped-aurora/gin-vue-admin.svg?label=Fork"
-                    alt=""
-                  />
-                </a>
+            <div class="text-center">
+              <h2 class="text-2xl font-bold mb-4">Docker GPU 算力管理平台</h2>
+              <p class="text-gray-600 dark:text-gray-300 mb-2">高效、灵活、智能的容器化 GPU 资源调度平台</p>
             </div>
           </div>
         </el-card>
         <el-card class="min-w-96 mt-5">
           <template #header>
-            <div>flipped-aurora团队</div>
+            <div>平台特性</div>
           </template>
-          <div>
-            <div class="w-full flex items-center justify-center">
-                <a href="https://github.com/flipped-aurora">
-                  <img
-                    class="org-img dom-center"
-                    src="@/assets/flipped-aurora.png"
-                    alt="flipped-aurora"
-                  />
-                </a>
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l4.59-4.59L18 11l-6 6z"/>
+                </svg>
               </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 mt-4">
-              <div v-for="(item, index) in members" :key="index" class="min-h-10 flex items-center">
-                <a :href="item.html_url" class="flex items-center group">
-                  <img class="w-8 h-8 rounded-full" :src="item.avatar_url" />
-                  <el-link
-                    class="text-blue-700 ml-2 text-lg font-bold font-sans break-all"
-                    >{{ item.login }}</el-link
-                  >
-                </a>
+              <div>
+                <h3 class="font-semibold">GPU 资源监控</h3>
+                <p class="text-gray-500 text-sm">实时监控 GPU 使用率、显存、温度等关键指标</p>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold">容器化部署</h3>
+                <p class="text-gray-500 text-sm">基于 Docker 的一键部署，快速启动 AI 训练环境</p>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold">智能调度</h3>
+                <p class="text-gray-500 text-sm">自动分配空闲 GPU 资源，最大化算力利用率</p>
               </div>
             </div>
           </div>
@@ -72,28 +65,30 @@
       <div class="w-full md:w-1/2">
         <el-card>
           <template #header>
-            <div>提交记录</div>
+            <div>系统信息</div>
           </template>
-          <div class="h-[calc(100vh-300px)] overflow-y-auto">
-            <el-timeline>
-              <el-timeline-item
-                v-for="(item, index) in dataTimeline"
-                :key="index"
-                :timestamp="item.from"
-                placement="top"
-              >
-                <el-card>
-                  <h4>{{ item.title }}</h4>
-                  <p>{{ item.message }}</p>
-                </el-card>
-              </el-timeline-item>
-            </el-timeline>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center py-2 border-b dark:border-gray-700">
+              <span class="text-gray-600 dark:text-gray-300">平台名称</span>
+              <span class="font-semibold">天启算力平台</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b dark:border-gray-700">
+              <span class="text-gray-600 dark:text-gray-300">前端框架</span>
+              <span class="font-semibold">Vue 3 + Element Plus</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b dark:border-gray-700">
+              <span class="text-gray-600 dark:text-gray-300">后端框架</span>
+              <span class="font-semibold">Gin (Golang)</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b dark:border-gray-700">
+              <span class="text-gray-600 dark:text-gray-300">容器技术</span>
+              <span class="font-semibold">Docker</span>
+            </div>
+            <div class="flex justify-between items-center py-2">
+              <span class="text-gray-600 dark:text-gray-300">GPU 支持</span>
+              <span class="font-semibold">NVIDIA CUDA</span>
+            </div>
           </div>
-         <div class="w-full flex items-center justify-center">
-          <el-button class="load-more" type="primary" link @click="loadMore">
-            Load more
-          </el-button>
-         </div>
         </el-card>
       </div>
     </div>
@@ -101,59 +96,12 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-  import { Commits, Members } from '@/api/github'
-  import { formatTimeToStr } from '@/utils/date'
-  const page = ref(0)
-
   defineOptions({
     name: 'About'
   })
-
-  const loadMore = () => {
-    page.value++
-    loadCommits()
-  }
-
-  const dataTimeline = ref([])
-  const loadCommits = () => {
-    Commits(page.value).then(({ data }) => {
-      data.forEach((element) => {
-        if (element.commit.message) {
-          dataTimeline.value.push({
-            from: formatTimeToStr(element.commit.author.date, 'yyyy-MM-dd'),
-            title: element.commit.author.name,
-            showDayAndMonth: true,
-            message: element.commit.message
-          })
-        }
-      })
-    })
-  }
-
-  const members = ref([])
-  const loadMembers = () => {
-    Members().then(({ data }) => {
-      members.value = data
-      members.value.sort()
-    })
-  }
-
-  loadCommits()
-  loadMembers()
 </script>
 
 <style scoped>
-  .avatar-img {
-    float: left;
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    margin-top: 15px;
-  }
-
   .org-img {
     height: 150px;
     width: 150px;

@@ -7,14 +7,6 @@
         <p class="text-lg">
           常见问题为当前此角色无当前路由，如果确定要使用本路由，请到角色管理进行分配
         </p>
-        <p>
-          项目地址：<a
-            href="https://github.com/flipped-aurora/gin-vue-admin"
-            target="_blank"
-            class="text-blue-600"
-            >https://github.com/flipped-aurora/gin-vue-admin</a
-          >
-        </p>
         <el-button @click="toDashboard">返回首页</el-button>
       </div>
     </div>
