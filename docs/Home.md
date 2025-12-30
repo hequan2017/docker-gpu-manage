@@ -1,12 +1,12 @@
-# 天启算力管理平台 Wiki
+# 天启算力管理平台文档
 
-欢迎来到 **天启算力管理平台（Docker GPU Manage）** 的 Wiki 文档！
+欢迎来到 **天启算力管理平台（Docker GPU Manage）** 的项目文档！
 
 ## 📖 项目简介
 
 天启算力管理平台是一个企业级的 GPU 容器化资源管理和调度系统，基于 **Gin + Vue3** 现代化技术栈构建，旨在帮助组织高效、安全地管理和分配 GPU 算力资源。
 
-![系统截图](https://raw.githubusercontent.com/hequan2017/docker-gpu-manage/main/docs/4.png)
+![系统截图](./4.png)
 
 ## 🎯 解决的痛点
 
@@ -33,12 +33,12 @@
 
 | 页面 | 描述 |
 |------|------|
-| [🚀 快速开始](Quick-Start) | 环境准备与快速部署指南 |
-| [📦 功能模块](Features) | 详细功能说明 |
-| [⚙️ 配置说明](Configuration) | 配置文件详解 |
-| [🔧 API 文档](API-Reference) | 后端 API 接口文档 |
-| [🐳 Docker 部署](Docker-Deployment) | Docker 与 K8s 部署方案 |
-| [❓ 常见问题](FAQ) | 常见问题与解决方案 |
+| [🚀 快速开始](./Quick-Start.md) | 环境准备与快速部署指南 |
+| [📦 功能模块](./Features.md) | 详细功能说明 |
+| [⚙️ 配置说明](./Configuration.md) | 配置文件详解 |
+| [🔧 API 文档](./API-Reference.md) | 后端 API 接口文档 |
+| [🐳 Docker 部署](./Docker-Deployment.md) | Docker 与 K8s 部署方案 |
+| [❓ 常见问题](./FAQ.md) | 常见问题与解决方案 |
 
 ## 🛠️ 技术栈
 
@@ -79,10 +79,10 @@
 <details>
 <summary>点击展开更多截图</summary>
 
-![系统截图1](https://raw.githubusercontent.com/hequan2017/docker-gpu-manage/main/docs/1.png)
-![系统截图2](https://raw.githubusercontent.com/hequan2017/docker-gpu-manage/main/docs/2.png)
-![系统截图3](https://raw.githubusercontent.com/hequan2017/docker-gpu-manage/main/docs/3.png)
-![系统截图5](https://raw.githubusercontent.com/hequan2017/docker-gpu-manage/main/docs/5.png)
+![系统截图1](./1.png)
+![系统截图2](./2.png)
+![系统截图3](./3.png)
+![系统截图5](./5.png)
 
 </details>
 
@@ -96,5 +96,4 @@
 
 ---
 
-> 💡 如有问题，请查阅 [常见问题](FAQ) 或提交 [Issue](https://github.com/hequan2017/docker-gpu-manage/issues)
-
+> 💡 如有问题，请查阅 [常见问题](./FAQ.md) 或提交 [Issue](https://github.com/hequan2017/docker-gpu-manage/issues)
