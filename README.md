@@ -341,13 +341,13 @@ go run main.go
 {
   "mcpServers": {
     "GVA Helper": {
-      "url": "http://127.0.0.1:8888/sse"
+      "url": "http://127.0.0.1:8890/sse"
     }
   }
 }
 ```
 
-后端服务默认运行在 `http://localhost:8888`
+后端服务默认运行在 `http://localhost:8890`
 
 ##### 开发调试（可选）
 
@@ -357,9 +357,9 @@ go run main.go
   cd server && gowatch
   ```
 - 常用地址速查：
-  - Swagger: http://127.0.0.1:8888/swagger/index.html
-  - SSE: http://127.0.0.1:8888/sse
-  - Message: http://127.0.0.1:8888/message
+  - Swagger: http://127.0.0.1:8890/swagger/index.html
+  - SSE: http://127.0.0.1:8890/sse
+  - Message: http://127.0.0.1:8890/message
   - Web: http://127.0.0.1:8080
 
 
@@ -416,8 +416,8 @@ pnpm dev
 ##### 6. 访问系统
 
 - 前端地址：`http://localhost:8080`
-- 后端API：`http://localhost:8888`
-- Swagger文档：`http://localhost:8888/swagger/index.html`
+- 后端API：`http://localhost:8890`
+- Swagger文档：`http://localhost:8890/swagger/index.html`
 
 **默认管理员账号：**
 - 用户名：`admin`
@@ -436,7 +436,7 @@ cd deploy/docker-compose
 # 默认配置：
 # - MySQL 端口：13306
 # - Redis 端口：16379
-# - 后端服务端口：8888
+# - 后端服务端口：8890
 # - 前端服务端口：8080
 
 # 启动所有服务
@@ -458,7 +458,7 @@ docker-compose logs -f
 ##### 3. 访问系统
 
 - 前端地址：`http://localhost:8080`
-- 后端API：`http://localhost:8888`
+- 后端API：`http://localhost:8890`
 - MySQL：`localhost:13306`
 - Redis：`localhost:16379`
 
@@ -498,7 +498,7 @@ kubectl apply -f web/
 # 系统配置
 system:
   db-type: mysql          # 数据库类型
-  addr: 8888              # 服务监听地址和端口
+  addr: 8890              # 服务监听地址和端口
   use-redis: false        # 是否使用Redis（建议生产环境开启）
 
 # SSH跳板机配置
@@ -519,7 +519,7 @@ jwt:
 ```env
 VITE_BASE_API=/api            # 前端请求前缀（开发模式由 Vite 代理到后端）
 VITE_BASE_PATH=http://127.0.0.1
-VITE_SERVER_PORT=8888         # 后端端口
+VITE_SERVER_PORT=8890         # 后端端口
 VITE_CLI_PORT=8080            # 前端开发端口
 VITE_FILE_API=/uploads/file   # 静态/上传文件基础路径
 ```

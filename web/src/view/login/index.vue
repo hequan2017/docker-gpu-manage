@@ -20,7 +20,7 @@
                 {{ $GIN_VUE_ADMIN.appName }}
               </p>
               <p class="text-center text-sm font-normal text-gray-500 mt-2.5">
-                A management platform using Golang and Vue
+                高效便捷的GPU算力资源管理平台
               </p>
             </div>
             <el-form
@@ -102,23 +102,6 @@
     </div>
 
     <BottomInfo class="left-0 right-0 absolute bottom-3 mx-auto w-full z-20">
-      <div class="links items-center justify-center gap-2 hidden md:flex">
-        <a href="https://www.gin-vue-admin.com/" target="_blank">
-          <img src="@/assets/docs.png" class="w-8 h-8" alt="文档" />
-        </a>
-        <a href="https://support.qq.com/product/371961" target="_blank">
-          <img src="@/assets/kefu.png" class="w-8 h-8" alt="客服" />
-        </a>
-        <a
-          href="https://github.com/flipped-aurora/gin-vue-admin"
-          target="_blank"
-        >
-          <img src="@/assets/github.png" class="w-8 h-8" alt="github" />
-        </a>
-        <a href="https://space.bilibili.com/322210472" target="_blank">
-          <img src="@/assets/video.png" class="w-8 h-8" alt="视频站" />
-        </a>
-      </div>
     </BottomInfo>
   </div>
 </template>

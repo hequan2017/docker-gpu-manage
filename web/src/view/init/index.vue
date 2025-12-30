@@ -16,7 +16,7 @@
           <div
             class="font-sans text-4xl font-bold text-center mb-4 dark:text-white"
           >
-            GIN-VUE-ADMIN
+            天启算力平台
           </div>
           <p class="text-gray-600 dark:text-gray-300 mb-2">初始化须知</p>
           <p class="text-gray-600 dark:text-gray-300 mb-2">
