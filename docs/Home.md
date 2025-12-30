@@ -90,10 +90,6 @@
 
 欢迎提交 Issue 和 Pull Request！
 
-## 📄 许可证
-
-本项目采用 MIT 许可证。
-
 ---
 
 > 💡 如有问题，请查阅 [常见问题](./FAQ.md) 或提交 [Issue](https://github.com/hequan2017/docker-gpu-manage/issues)

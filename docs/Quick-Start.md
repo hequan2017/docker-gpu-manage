@@ -185,7 +185,7 @@ cd HAMi-core
 
 ## 下一步
 
-- [📦 功能模块](Features) - 了解详细功能
-- [⚙️ 配置说明](Configuration) - 深入了解配置项
-- [❓ 常见问题](FAQ) - 解决部署问题
+- [📦 功能模块](./Features.md) - 了解详细功能
+- [⚙️ 配置说明](./Configuration.md) - 深入了解配置项
+- [❓ 常见问题](./FAQ.md) - 解决部署问题
 
