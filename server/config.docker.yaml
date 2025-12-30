@@ -277,7 +277,7 @@ cors:
           allow-credentials: true # 布尔值
 mcp:
     name: GVA_MCP
-    version: v1.0.0
+    version: v2025.12.30
     sse_path: /sse
     message_path: /message
     url_prefix: ''
