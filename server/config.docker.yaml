@@ -1,4 +1,4 @@
-# github.com/flipped-aurora/gin-vue-admin/server Global Configuration
+# tianqi Global Configuration
 
 # jwt configuration
 jwt:
@@ -10,7 +10,7 @@ jwt:
 zap:
     level: info
     format: console
-    prefix: "[github.com/flipped-aurora/gin-vue-admin/server]"
+    prefix: "[tianqi]"
     director: log
     show-line: true
     encode-level: LowercaseColorLevelEncoder
@@ -97,7 +97,7 @@ captcha:
     open-captcha-timeout: 3600 # open-captcha大于0时才生效
 
 # mysql connect configuration
-# 未初始化之前请勿手动修改数据库信息！！！如果一定要手动初始化请看（https://gin-vue-admin.com/docs/first_master）
+# 未初始化之前请勿手动修改数据库信息！！！如果一定要手动初始化请看（https://tianqi.com/docs/first_master）
 mysql:
     path: ""
     port: ""
@@ -111,7 +111,7 @@ mysql:
     log-zap: false
 
 # pgsql connect configuration
-# 未初始化之前请勿手动修改数据库信息！！！如果一定要手动初始化请看（https://gin-vue-admin.com/docs/first_master）
+# 未初始化之前请勿手动修改数据库信息！！！如果一定要手动初始化请看（https://tianqi.com/docs/first_master）
 pgsql:
     path: ""
     port: ""
@@ -276,7 +276,7 @@ cors:
           expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type
           allow-credentials: true # 布尔值
 mcp:
-    name: GVA_MCP
+    name: TIANQI_MCP
     version: v2025.12.30
     sse_path: /sse
     message_path: /message

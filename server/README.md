@@ -1,6 +1,6 @@
 # Docker GPU Manage（服务端）说明
 
-本项目基于 gin-vue-admin，提供面向 GPU 工作负载的 Docker 实例生命周期管理与监控能力，支持远程 Docker 主机（含 TLS 双向认证）、GPU 分配、显存分割（HAMi）、系统/数据盘配置、容器日志与运行指标采集等。
+本项目基于 tianqi，提供面向 GPU 工作负载的 Docker 实例生命周期管理与监控能力，支持远程 Docker 主机（含 TLS 双向认证）、GPU 分配、显存分割（HAMi）、系统/数据盘配置、容器日志与运行指标采集等。
 
 后端核心容器管理逻辑位于：backend/service/instance/docker.go
 

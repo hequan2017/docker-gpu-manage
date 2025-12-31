@@ -92,7 +92,7 @@ local:
     path: uploads/file
     store-path: uploads/file
 mcp:
-    name: GVA_MCP
+    name: TIANQI_MCP
     version: v2025.12.30
     sse_path: /sse
     message_path: /message
@@ -247,7 +247,7 @@ tencent-cos:
     path-prefix: github.com/flipped-aurora/gin-vue-admin/server
 zap:
     level: info
-    prefix: '[github.com/flipped-aurora/gin-vue-admin/server]'
+    prefix: '[tianqi]'
     format: console
     director: log
     encode-level: LowercaseColorLevelEncoder
