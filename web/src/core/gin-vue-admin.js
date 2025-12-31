@@ -1,19 +1,22 @@
-/*
- * 天启算力平台 web框架组
- *
- * */
-// 加载网站配置文件夹
 import { register } from './global'
-import packageInfo from '../../package.json'
+import { viteLogo } from './config'
+import { initErrorHandler } from './error-handel'
 
-export default {
-  install: (app) => {
+// Vue 插件对象
+const ginVueAdmin = {
+  install(app) {
+    // 注册图标和全局配置
     register(app)
-    console.log(`
-       欢迎使用 天启算力平台
-       当前版本:v${packageInfo.version}
-       默认自动化文档地址:http://127.0.0.1:${import.meta.env.VITE_SERVER_PORT}/swagger/index.html
-       默认前端文件运行地址:http://127.0.0.1:${import.meta.env.VITE_CLI_PORT}
-    `)
+    
+    // 初始化错误处理
+    initErrorHandler(app)
+    
+    // 显示启动信息
+    if (import.meta.env) {
+      viteLogo(import.meta.env)
+    }
   }
 }
+
+export default ginVueAdmin
+

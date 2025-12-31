@@ -95,7 +95,7 @@
         </el-table-column>
         <el-table-column align="left" label="数据库" width="120">
           <template #default="scope">
-            <span>{{ scope.row.dbName || 'GVA库' }}</span>
+            <span>{{ scope.row.dbName || 'tianqi库' }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -256,7 +256,7 @@
               v-model="prompt"
               :clearable="true"
               :rows="5"
-              placeholder="试试描述你要做的导出功能让AI帮你完成，在此之前请选择你需要导出的表所在的业务库，如不做选择，则默认使用gva库"
+              placeholder="试试描述你要做的导出功能让AI帮你完成，在此之前请选择你需要导出的表所在的业务库，如不做选择，则默认使用tianqi库"
             />
             <el-button
               class="absolute bottom-2 right-2"

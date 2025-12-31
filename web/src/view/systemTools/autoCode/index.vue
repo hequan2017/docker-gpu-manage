@@ -296,7 +296,7 @@
             <el-form-item label="业务库" prop="businessDB" class="w-full">
               <template #label>
                 <el-tooltip
-                  content="注：需要提前到db-list自行配置多数据库，此项为空则会使用gva本库创建自动化代码(global.GVA_DB),填写后则会创建指定库的代码(global.MustGetGlobalDBByDBName(dbname))"
+                  content="注：需要提前到db-list自行配置多数据库，此项为空则会使用tianqi本库创建自动化代码(global.GVA_DB),填写后则会创建指定库的代码(global.MustGetGlobalDBByDBName(dbname))"
                   placement="bottom"
                   effect="light"
                 >
@@ -356,7 +356,7 @@
                       placement="top"
                       effect="light"
                   >
-                    <el-form-item label="使用GVA结构">
+                    <el-form-item label="使用tianqi结构">
                       <el-checkbox v-model="form.gvaModel" @change="useGva" />
                     </el-form-item>
                   </el-tooltip>
@@ -1170,7 +1170,7 @@
   const useGva = (e) => {
     if (e && form.value.fields.length) {
       ElMessageBox.confirm(
-        '如果您开启GVA默认结构，会自动添加ID,CreatedAt,UpdatedAt,DeletedAt字段，此行为将自动清除您目前在下方创建的重名字段，是否继续？',
+        '如果您开启tianqi默认结构，会自动添加ID,CreatedAt,UpdatedAt,DeletedAt字段，此行为将自动清除您目前在下方创建的重名字段，是否继续？',
         '注意',
         {
           confirmButtonText: '继续',

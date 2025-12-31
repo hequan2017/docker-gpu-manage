@@ -6,11 +6,10 @@ import ElementPlus from 'element-plus'
 
 import 'element-plus/dist/index.css'
 // 引入前端初始化相关内容
-import './core/gin-vue-admin'
+import run from '@/core/gin-vue-admin.js'
 // 引入封装的router
 import router from '@/router/index'
 import '@/permission'
-import run from '@/core/gin-vue-admin.js'
 import auth from '@/directive/auth'
 import clickOutSide from '@/directive/clickOutSide'
 import { store } from '@/pinia'

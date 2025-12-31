@@ -162,7 +162,7 @@
           <el-col :span="4">
             <el-select
               v-model="middleDate.dataSource.dbName"
-              placeholder="数据库【不填则为GVA库】"
+              placeholder="数据库【不填则为tianqi库】"
               @change="dbNameChange"
               clearable
             >

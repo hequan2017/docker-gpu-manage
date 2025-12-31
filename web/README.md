@@ -1,6 +1,6 @@
 # 前端（Web）说明
 
-基于 Vue 3 + Vite + Element Plus 的前端工程，配合 gin-vue-admin 后端使用。
+基于 Vue 3 + Vite + Element Plus 的前端工程，配合 tianqi 后端使用。
 
 ## 环境要求
 - Node.js 20+
@@ -63,7 +63,7 @@ web
  │   ├── api                   # 后端接口封装
  │   ├── assets                # 静态资源与图标
  │   ├── components            # 公共组件
- │   ├── core                  # GVA 配置/启动横幅等
+ │   ├── core                  # 配置/启动横幅等
  │   ├── directive             # 指令（如 v-auth）
  │   ├── hooks                 # 通用 hooks
  │   ├── main.js               # 入口文件
