@@ -62,6 +62,7 @@ func (i *initMenu) InitializeData(ctx context.Context) (next context.Context, er
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "https://www.tianqi.com", Name: "https://www.tianqi.com", Component: "/", Sort: 0, Meta: Meta{Title: "官方网站", Icon: "customer-gva"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "state", Name: "state", Component: "view/system/state.vue", Sort: 8, Meta: Meta{Title: "服务器状态", Icon: "cloudy"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "plugin", Name: "plugin", Component: "view/routerHolder.vue", Sort: 6, Meta: Meta{Title: "插件系统", Icon: "cherry"}},
+		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "portForward", Name: "portForward", Component: "view/routerHolder.vue", Sort: 10, Meta: Meta{Title: "端口转发", Icon: "position"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "imageRegistry", Name: "imageRegistry", Component: "view/imageregistry/imageRegistry/imageRegistry.vue", Sort: 0, Meta: Meta{Title: "镜像库", Icon: "crop"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "computeNode", Name: "computeNode", Component: "view/computenode/computeNode/computeNode.vue", Sort: 0, Meta: Meta{Title: "算力节点", Icon: "chicken"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "productSpec", Name: "productSpec", Component: "view/product/productSpec/productSpec.vue", Sort: 0, Meta: Meta{Title: "产品规格", Icon: "baseball"}},
@@ -113,6 +114,9 @@ func (i *initMenu) InitializeData(ctx context.Context) (next context.Context, er
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["plugin"], Path: "pubPlug", Name: "pubPlug", Component: "view/systemTools/pubPlug/pubPlug.vue", Sort: 3, Meta: Meta{Title: "打包插件", Icon: "files"}},
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["plugin"], Path: "plugin-email", Name: "plugin-email", Component: "plugin/email/view/index.vue", Sort: 4, Meta: Meta{Title: "邮件插件", Icon: "message"}},
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["plugin"], Path: "anInfo", Name: "anInfo", Component: "plugin/announcement/view/info.vue", Sort: 5, Meta: Meta{Title: "公告管理[示例]", Icon: "scaleToOriginal"}},
+
+		// portForward子菜单
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["portForward"], Path: "portForwardRules", Name: "portForwardRules", Component: "plugin/portforward/view/portForward.vue", Sort: 1, Meta: Meta{Title: "转发规则", Icon: "list"}},
 	}
 
 	// 创建子菜单

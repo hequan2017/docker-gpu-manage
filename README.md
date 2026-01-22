@@ -60,6 +60,7 @@
 - 🖥️ **算力节点管理**：管理多个 GPU 算力节点，支持 TLS 安全连接，自动测试 Docker 连接状态
 - 📦 **镜像库管理**：统一管理 Docker 镜像仓库，支持显存切分配置
 - 💰 **产品规格管理**：定义 GPU 产品规格和定价，支持无显卡规格（GPU=0）和显存切分
+- 🔁 **端口转发管理**：管理端口转发规则，支持 TCP/UDP 协议，自动获取本机IP，实现灵活的端口映射
 - 🔐 **SSH 跳板机**：通过 SSH 安全连接到容器实例
 - 💻 **Web 终端**：在浏览器中直接操作容器
 - 📊 **资源监控**：实时查看容器状态、日志、CPU/内存使用率、网络 I/O、块设备 I/O、进程数
@@ -266,6 +267,47 @@ jumpbox:
 **前端操作：**
 - 在实例管理页面，点击"SSH连接"按钮
 - 系统会显示SSH连接命令，支持一键复制
+
+#### 6. 端口转发管理
+提供端口转发规则管理功能，支持TCP/UDP协议的端口映射，自动获取本机IP地址。
+
+**功能特性：**
+- ✅ 支持TCP和UDP协议
+- ✅ 自动获取服务器非127.0.0.1的IP地址作为默认源IP
+- ✅ 灵活的端口映射配置（源IP:端口 → 目标IP:端口）
+- ✅ 启用/禁用状态切换
+- ✅ 批量删除支持
+- ✅ 多条件搜索过滤
+- ✅ 规则描述和备注信息
+
+**字段说明：**
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| 源IP地址 | string | ✅ | 监听的IP地址，默认自动获取本机IP |
+| 源端口 | int | ✅ | 监听的端口号（1-65535） |
+| 协议类型 | string | ✅ | TCP或UDP |
+| 目标IP地址 | string | ✅ | 转发到的目标IP地址 |
+| 目标端口 | int | ✅ | 转发到的目标端口（1-65535） |
+| 状态 | bool | ✅ | 是否启用转发 |
+| 规则描述 | string | | 规则说明信息 |
+
+**API接口：**
+
+- `POST /api/portForward/createPortForward` - 创建端口转发规则
+- `DELETE /api/portForward/deletePortForward` - 删除端口转发规则
+- `DELETE /api/portForward/deletePortForwardByIds` - 批量删除端口转发规则
+- `PUT /api/portForward/updatePortForward` - 更新端口转发规则
+- `PUT /api/portForward/updatePortForwardStatus` - 更新规则状态
+- `GET /api/portForward/findPortForward` - 根据ID获取规则
+- `GET /api/portForward/getPortForwardList` - 获取规则列表
+- `GET /api/portForward/getServerIP` - 获取服务器IP地址列表
+
+**使用场景：**
+- 容器服务端口映射
+- 内网服务外网访问
+- 负载均衡配置
+- 服务代理转发
 
 ### 技术栈
 

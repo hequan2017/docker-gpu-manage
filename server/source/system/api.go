@@ -238,6 +238,16 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{ApiGroup: "instance", Method: "POST", Path: "/instance/startContainer", Description: "启动容器"},
 		{ApiGroup: "instance", Method: "POST", Path: "/instance/stopContainer", Description: "停止容器"},
 		{ApiGroup: "instance", Method: "GET", Path: "/instance/terminal", Description: "容器终端WebSocket"},
+
+		// 端口转发API
+		{ApiGroup: "端口转发", Method: "POST", Path: "/portForward/createPortForward", Description: "创建端口转发规则"},
+		{ApiGroup: "端口转发", Method: "DELETE", Path: "/portForward/deletePortForward", Description: "删除端口转发规则"},
+		{ApiGroup: "端口转发", Method: "DELETE", Path: "/portForward/deletePortForwardByIds", Description: "批量删除端口转发规则"},
+		{ApiGroup: "端口转发", Method: "PUT", Path: "/portForward/updatePortForward", Description: "更新端口转发规则"},
+		{ApiGroup: "端口转发", Method: "PUT", Path: "/portForward/updatePortForwardStatus", Description: "更新端口转发规则状态"},
+		{ApiGroup: "端口转发", Method: "GET", Path: "/portForward/findPortForward", Description: "根据ID获取端口转发规则"},
+		{ApiGroup: "端口转发", Method: "GET", Path: "/portForward/getPortForwardList", Description: "获取端口转发规则列表"},
+		{ApiGroup: "端口转发", Method: "GET", Path: "/portForward/getServerIP", Description: "获取服务器IP地址"},
 	}
 	if err := db.Create(&entities).Error; err != nil {
 		return ctx, errors.Wrap(err, sysModel.SysApi{}.TableName()+"表数据初始化失败!")
