@@ -115,6 +115,7 @@ git push
 - ⏰ **定时任务**：自动检查容器状态，保持数据同步
 - 🖴️ **戴尔资产管理**：物理服务器资产全生命周期管理
 - 🤖 **AI Agent**：集成智谱GLM-4.7模型，提供智能对话和AI辅助功能
+- 🧠 **模型微调**：支持LLaMA等大模型的微调任务管理，提供完整的训练流程控制
 
 ### 功能模块
 
@@ -384,6 +385,7 @@ jumpbox:
 - 后端插件：`server/plugin/portforward/`
 - 前端插件：`web/src/plugin/portforward/`
 - 数据模型：`PortForward` (model/port_forward.go)
+- 初始化SQL：`portforward_install.sql`
 - 自动获取本机所有网络接口的非回环IP地址
 - 支持状态实时切换，无需重启服务
 - 实时显示转发器运行状态和活跃连接数
@@ -645,6 +647,173 @@ jumpbox:
 - 初始化SQL：`aiagent_install.sql`
 - 模型：智谱 GLM-4.7 系列
 
+#### 10. 模型微调任务管理
+提供完整的 AI 大模型微调任务管理功能，支持 LLaMA、ChatGLM 等主流大语言模型的微调训练流程控制。
+
+**功能特性：**
+- ✅ 任务全生命周期管理：创建、启动、停止、删除微调任务
+- ✅ 实时任务监控：任务状态、进度、日志实时查看
+- ✅ GPU配置管理：支持CUDA设备选择和多卡并行训练
+- ✅ 训练参数配置：学习率、批次大小、训练轮数、预热步数等
+- ✅ 预设配置模板：快速测试、标准训练、完整微调三种预设
+- ✅ 自定义命令支持：支持使用自定义训练脚本
+- ✅ 统计信息展示：总数、运行中、已完成、失败任务统计
+- ✅ 自动任务刷新：每10秒自动更新任务状态和进度
+- ✅ 日志文件管理：自动记录训练日志，支持日志查看
+
+**任务状态：**
+- `pending`：待执行
+- `running`：执行中
+- `completed`：已完成
+- `failed`：失败
+- `stopped`：已停止
+
+**数据模型：**
+
+**任务表 (gva_finetuning_tasks)**
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| 任务名称 | string | ✅ | 任务名称 |
+| 任务描述 | string | | 任务描述 |
+| 所属用户 | int | | 用户ID |
+| 任务状态 | string | ✅ | pending/running/completed/failed/stopped |
+| 任务进度 | float64 | | 0-100 |
+| 基础模型 | string | ✅ | 基础模型路径或名称 |
+| 数据集路径 | string | ✅ | 数据集路径 |
+| 输出路径 | string | | 输出模型路径 |
+| 训练参数 | json | | 训练参数JSON配置 |
+| GPU配置 | json | | GPU配置（如CUDA_VISIBLE_DEVICES） |
+| 执行命令 | text | | 完整的训练命令 |
+| 日志文件路径 | string | | 日志文件路径 |
+| 错误信息 | text | | 错误信息 |
+| 开始时间 | int64 | | 开始时间戳 |
+| 结束时间 | int64 | | 结束时间戳 |
+| 进程ID | int | | 训练进程ID |
+| 训练指标 | json | | 训练指标（loss、accuracy等） |
+
+**训练参数配置：**
+
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| learning_rate | float64 | 学习率（常用：1e-4 到 1e-5） |
+| batch_size | int | 批次大小（根据GPU显存调整） |
+| num_train_epochs | int | 训练轮数 |
+| max_steps | int | 最大步数（-1表示不限制） |
+| warmup_steps | int | 预热步数 |
+| logging_steps | int | 日志记录间隔 |
+| save_steps | int | 模型保存间隔 |
+
+**预设配置模板：**
+
+1. **快速测试 (quick_test)**
+   - 学习率：0.0001
+   - 批次大小：16
+   - 训练轮数：1
+   - 最大步数：100
+   - 适用场景：快速验证配置和代码
+
+2. **标准训练 (standard)**
+   - 学习率：0.0002
+   - 批次大小：32
+   - 训练轮数：3
+   - 最大步数：-1
+   - 适用场景：日常模型微调
+
+3. **完整微调 (full_finetune)**
+   - 学习率：0.00005
+   - 批次大小：64
+   - 训练轮数：10
+   - 最大步数：-1
+   - 适用场景：生产级模型微调
+
+**前端功能：**
+
+**任务列表页面：**
+- 统计卡片：显示总任务数、运行中、已完成、失败数量
+- 搜索过滤：任务名称、任务状态、基础模型
+- 任务列表：展示所有微调任务
+  - 任务信息：名称、基础模型、状态、进度、创建时间
+  - 状态标签：待执行(灰)、执行中(蓝)、已完成(绿)、失败(红)、已停止(橙)
+  - 进度条：实时显示训练进度
+  - 操作按钮：详情、停止(运行中)、删除
+- 批量操作：批量删除任务
+- 自动刷新：每10秒自动更新任务状态
+
+**创建任务对话框：**
+- **基本信息标签页**：
+  - 任务名称、任务描述
+  - 基础模型：支持本地路径或HuggingFace模型名称
+  - 数据集路径
+  - 输出路径（可选）
+- **GPU配置标签页**：
+  - CUDA设备选择：支持"0,1"或"0-2"格式
+- **训练参数标签页**：
+  - 配置预设选择：快速测试、标准训练、完整微调、自定义
+  - 学习率配置：支持0-1范围，精度到小数点后5位
+  - 批次大小配置：1-1024
+  - 训练轮数配置：1-100
+  - 最大步数配置：-1表示不限制
+  - 预热步数配置
+  - 日志间隔配置
+  - 保存间隔配置
+- **高级设置标签页**：
+  - 自定义命令输入（可选）
+  - 自定义命令将覆盖所有参数配置
+
+**任务详情页面：**
+- 任务基本信息展示
+- 训练参数详情
+- GPU配置信息
+- 实时任务进度
+- 训练日志查看（支持行数和偏移量控制）
+- 任务操作：停止、删除
+
+**API接口：**
+
+- `POST /finetuning/createFinetuningTask` - 创建微调任务
+- `DELETE /finetuning/deleteFinetuningTask` - 删除任务
+- `PUT /finetuning/updateFinetuningTask` - 更新任务
+- `GET /finetuning/findFinetuningTask` - 获取任务详情
+- `GET /finetuning/getFinetuningTaskList` - 获取任务列表（分页）
+- `POST /finetuning/stopFinetuningTask` - 停止任务
+- `GET /finetuning/getTaskLog` - 获取任务日志
+
+**使用说明：**
+
+1. **准备环境**
+   - 确保服务器已安装 Python 和 PyTorch
+   - 准备基础模型（支持本地路径或HuggingFace模型）
+   - 准备训练数据集
+
+2. **创建微调任务**
+   - 进入【模型微调】->【任务列表】
+   - 点击"新建任务"
+   - 填写基本信息（任务名称、基础模型、数据集路径）
+   - 配置GPU设备
+   - 选择训练预设或自定义参数
+   - 点击"确定"创建任务
+
+3. **监控训练进度**
+   - 任务列表实时显示训练状态和进度
+   - 点击"详情"查看详细信息
+   - 在详情页面查看训练日志
+   - 进度条实时更新训练进度
+
+4. **管理任务**
+   - 停止任务：点击"停止"按钮（仅运行中任务）
+   - 删除任务：点击"删除"按钮
+   - 批量删除：选中多个任务后批量删除
+
+**技术实现：**
+- 后端插件：`server/plugin/finetuning/`
+- 前端插件：`web/src/plugin/finetuning/`
+- 数据表：`gva_finetuning_tasks`
+- 初始化SQL：`finetuning_install.sql`
+- 进程管理：使用 `os/exec` 执行训练脚本
+- 日志管理：自动记录训练日志到文件
+- 状态同步：定时检查进程状态并更新数据库
+
 ### 技术栈
 
 **后端技术：**
@@ -759,23 +928,44 @@ go run main.go
 6. 点击"初始化"按钮，系统会自动创建数据库和所有表结构
 7. 初始化完成后，会自动创建默认管理员账号（用户名：`admin`，密码：`123456`）
 
-##### 5. 显存切割镜像制作
-
-1.参考下面的项目,在docker server部署，并制作镜像。
-
-```bash
-git clone https://github.com/Project-HAMi/HAMi-core
-```
-2.制作完成后， 把对应的docker server 实际的HAMi-core目录  填到 算力节点的 HAMi-core目录
-
-
-
-
 **方法二：手动初始化**
 
 如果数据库已存在，系统会在启动时自动执行数据库迁移，创建所有必要的表结构。
 
-##### 5. 启动前端服务
+##### 4.5 插件初始化SQL（可选）
+
+系统已集成插件初始化功能，大部分插件会在首次启动时自动初始化。如果需要手动初始化插件，可以执行以下SQL文件：
+
+- **AI Agent 智能助手**：`server/plugin/aiagent/aiagent_install.sql`
+- **K8s 集群管理**：`server/plugin/k8smanager/k8s_install.sql`
+- **戴尔资产管理**：`server/plugin/dellasset/dellasset_install.sql`
+- **算法微调**：`server/plugin/finetuning/finetuning_install.sql`
+- **端口转发**：`server/plugin/portforward/portforward_install.sql`
+
+执行方式：
+```bash
+# 进入数据库
+mysql -u 用户名 -p 数据库名
+
+# 执行初始化SQL
+source server/plugin/aiagent/aiagent_install.sql
+source server/plugin/finetuning/finetuning_install.sql
+```
+
+**注意**：这些SQL文件包含了数据表创建、菜单配置、API注册和权限设置，一般情况下不需要手动执行。
+
+##### 5. 显存切割镜像制作（可选）
+
+如需使用HAMi显存切分功能，需要先制作显存切分镜像：
+
+1. 参考HAMi项目在Docker服务器上部署：
+```bash
+git clone https://github.com/Project-HAMi/HAMi-core
+```
+
+2. 制作完成后，将对应的Docker服务器实际的HAMi-core目录路径填到算力节点的"HAMi-core目录"字段中。
+
+##### 6. 启动前端服务
 
 ```bash
 cd web
@@ -793,7 +983,7 @@ pnpm dev
 
 前端服务默认运行在 `http://localhost:8080`
 
-##### 6. 访问系统
+##### 7. 访问系统
 
 - 前端地址：`http://localhost:8080`
 - 后端API：`http://localhost:8890`
