@@ -4,6 +4,40 @@
 
 **Docker GPU 算力资源管理平台** 是一个企业级的 GPU 容器化资源管理和调度系统，旨在帮助组织高效、安全地管理和分配 GPU 算力资源。平台采用现代化的微服务架构，提供从资源管理到容器实例全生命周期的完整解决方案。
 
+### 🌐 官方网站
+
+欢迎访问 **[天启算力管理平台官网](./website/index.html)** 了解更多信息！
+
+**快速预览官网：**
+```bash
+# 进入官网目录
+cd website
+
+# 启动本地预览服务器
+python3 -m http.server 8000
+
+# 然后在浏览器中访问
+# http://localhost:8000
+```
+
+**官网特色：**
+- 🎨 **科技风格设计** - 现代化的深色主题，配合青色和紫色的渐变效果
+- ✨ **丰富动画效果** - 粒子背景、3D 卡片旋转、渐入动画等
+- 📱 **完美响应式** - 适配桌面端、平板和移动设备
+- 🚀 **无依赖开发** - 纯 HTML/CSS/JavaScript，无需任何前端框架
+- 🔗 **一键部署** - 支持部署到任何静态托管服务
+
+**部署官网：**
+```bash
+# GitHub Pages
+cp -r website/* docs/website/
+git add docs/website/
+git commit -m "Add official website"
+git push
+
+# 或使用 Netlify/Vercel 等服务直接部署 website/ 目录
+```
+
 ### 🚀 项目图片
 ![系统截图](docs/4.png)
 ![系统截图](docs/1.png)
@@ -79,6 +113,7 @@
 - 👥 **权限管理**：基于角色的访问控制（RBAC）
 - ⚡ **显存切分**：支持GPU显存切分，更灵活地分配GPU资源
 - ⏰ **定时任务**：自动检查容器状态，保持数据同步
+- 🖴️ **戴尔资产管理**：物理服务器资产全生命周期管理
 
 ### 功能模块
 
@@ -433,6 +468,69 @@ jumpbox:
 - 加密算法：AES-256-GCM
 - 连接池：支持 TTL 和自动清理
 
+#### 8. 戴尔物理服务器资产管理
+提供完整的戴尔物理服务器资产全生命周期管理功能，支持服务器硬件配置、网络信息、物理位置、所属部门等多维度管理。
+
+**功能特性：**
+- ✅ 完整的硬件信息记录（CPU、内存、磁盘、网卡）
+- ✅ 物理位置管理（机柜、机架U位）
+- ✅ 服务标签（Service Tag）唯一标识
+- ✅ 多维度搜索过滤
+- ✅ 资产统计仪表盘
+- ✅ 状态管理（在线/离线/维护中）
+- ✅ 保修期管理
+- ✅ 部门/负责人归属
+
+**字段说明：**
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| 主机名 | string | ✅ | 服务器名称 |
+| 服务标签 | string | ✅ | 戴尔唯一标识符 |
+| 资产编号 | string | | 资产编号 |
+| 型号 | string | | 服务器型号 |
+| 序列号 | string | | 序列号 |
+| CPU型号 | string | | CPU型号 |
+| CPU核心数 | int | | CPU核心数 |
+| CPU线程数 | int | | CPU线程数 |
+| 内存容量 | int | | 内存容量(GB) |
+| 磁盘信息 | string | | 磁盘配置详情 |
+| 网卡信息 | string | | 网卡配置详情 |
+| IP地址 | string | | IP地址 |
+| MAC地址 | string | | MAC地址 |
+| 机柜位置 | string | | 机柜编号 |
+| 机架位置 | string | | U位，如U5-U8 |
+| 电源状态 | string | | online/offline |
+| 购买日期 | date | | 购买日期 |
+| 保修到期日 | date | | 保修到期日期 |
+| 操作系统 | string | | 操作系统版本 |
+| 所属部门 | string | | 部门名称 |
+| 负责人 | string | | 负责人 |
+| 状态 | string | | online/offline/maintenance |
+| 备注 | text | | 备注信息 |
+
+**前端功能：**
+- 统计卡片：总数、在线、离线、维护中
+- 搜索过滤：主机名、服务标签、IP地址、状态
+- 多Tab表单：基本信息、硬件配置、网络与位置、其他信息
+- 详情查看：完整的服务器资产信息展示
+- 批量操作：多选删除
+
+**API接口：**
+- `POST /dellAsset/createDellAsset` - 创建资产
+- `DELETE /dellAsset/deleteDellAsset` - 删除资产
+- `DELETE /dellAsset/deleteDellAssetByIds` - 批量删除
+- `PUT /dellAsset/updateDellAsset` - 更新资产
+- `GET /dellAsset/findDellAsset` - 查询单个资产
+- `GET /dellAsset/getDellAssetList` - 获取资产列表
+- `GET /dellAsset/getStatistics` - 获取统计信息
+
+**技术实现：**
+- 后端插件：`server/plugin/dellasset/`
+- 前端插件：`web/src/plugin/dellasset/`
+- 数据表：`gva_dell_asset`
+- 初始化SQL：`dellasset_install.sql`
+
 ### 技术栈
 
 **后端技术：**
@@ -751,12 +849,14 @@ VITE_FILE_API=/uploads/file   # 静态/上传文件基础路径
 │   ├── config/            # 配置文件
 │   └── plugin/            # 插件目录
 │       ├── portforward/   # 端口转发插件
-│       └── k8smanager/    # K8s集群管理插件
+│       ├── k8smanager/    # K8s集群管理插件
+│       └── dellasset/     # 戴尔资产管理插件
 ├── web/                    # 前端代码
 │   ├── src/api/           # API 调用
 │   ├── src/view/          # 页面组件
 │   └── src/plugin/        # 前端插件
 │       ├── portforward/   # 端口转发插件
-│       └── k8smanager/    # K8s集群管理插件
+│       ├── k8smanager/    # K8s集群管理插件
+│       └── dellasset/     # 戴尔资产管理插件
 └── README.md
 ```

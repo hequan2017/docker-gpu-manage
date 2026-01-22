@@ -1,0 +1,11 @@
+# robots.txt for 天启算力管理平台官网
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://gpu-manage.io/sitemap.xml
+
+# Disallow specific directories if needed
+# Disallow: /private/
+# Disallow: /tmp/

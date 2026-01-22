@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="天启算力管理平台 - 企业级 Docker GPU 算力资源管理和调度系统">
+    <meta name="keywords" content="GPU管理,Docker容器,算力调度,云原生,算力平台,AI训练,深度学习,GPU调度">
+    <meta name="author" content="天启算力团队">
+    <meta name="theme-color" content="#0a0e27">
+    <title>天启算力管理平台 - 企业级 GPU 算力资源管理</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta property="og:title" content="天启算力管理平台 - 企业级 GPU 算力资源管理">
+    <meta property="og:description" content="基于 Docker 的智能 GPU 算力资源管理和调度系统，为 AI/ML 团队提供高效、安全、可扩展的算力管理解决方案">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.com/he7555/docker-gpu-manage/raw/main/website/assets/og-image.png">
+</head>
+<body>
+    <!-- 背景动画 -->
+    <div class="bg-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <div class="logo-icon">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <span class="logo-text">天启算力</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">首页</a></li>
+                <li><a href="#features" class="nav-link">核心功能</a></li>
+                <li><a href="#tech" class="nav-link">技术架构</a></li>
+                <li><a href="#scenarios" class="nav-link">应用场景</a></li>
+                <li><a href="#deploy" class="nav-link">快速部署</a></li>
+                <li><a href="https://github.com/he7555/docker-gpu-manage" target="_blank" class="nav-link-github">
+                    <i class="fab fa-github"></i> GitHub
+                </a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主视觉区域 -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    <span class="badge-text">企业级 GPU 算力管理平台</span>
+                </div>
+                <h1 class="hero-title">
+                    <span class="gradient-text">天启算力管理平台</span>
+                </h1>
+                <p class="hero-subtitle">
+                    基于 Docker 的智能 GPU 算力资源管理和调度系统<br>
+                    为 AI/ML 团队、科研机构提供高效、安全、可扩展的算力管理解决方案
+                </p>
+                <div class="hero-actions">
+                    <a href="#features" class="btn btn-primary">
+                        <span>探索功能</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="#deploy" class="btn btn-secondary">
+                        <i class="fas fa-rocket"></i>
+                        <span>快速开始</span>
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="100">0</div>
+                        <div class="stat-label">算力节点</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="1000">0</div>
+                        <div class="stat-label">容器实例</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="99">0</div>
+                        <div class="stat-label">资源利用率 %</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="24">0</div>
+                        <div class="stat-label">小时监控</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="gpu-3d-model">
+                    <div class="gpu-card">
+                        <div class="gpu-fan"></div>
+                        <div class="gpu-light light-1"></div>
+                        <div class="gpu-light light-2"></div>
+                        <div class="gpu-light light-3"></div>
+                    </div>
+                    <div class="floating-element element-1">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="floating-element element-2">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="floating-element element-3">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-mouse">
+                <div class="scroll-wheel"></div>
+            </div>
+            <span>向下滚动</span>
+        </div>
+    </section>
+
+    <!-- 核心功能区域 -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">核心功能</span>
+                <h2 class="section-title">全方位 GPU 算力管理</h2>
+                <p class="section-desc">
+                    提供从资源调度到监控运维的完整解决方案，让 GPU 算力管理变得简单高效
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="feature-icon">
+                        <div class="icon-bg">
+                            <i class="fas fa-cubes"></i>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">容器实例管理</h3>
+                    <p class="feature-desc">
+                        支持 GPU 容器的全生命周期管理，包括创建、启动、停止、重启和删除等操作
+                    </p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 一键部署 GPU 容器</li>
+                        <li><i class="fas fa-check"></i> 灵活的资源配额管理</li>
+                        <li><i class="fas fa-check"></i> 批量操作支持</li>
+                    </ul>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <div class="icon-bg">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">智能资源调度</h3>
+                    <p class="feature-desc">
+                        基于资源需求自动匹配最优算力节点，支持 HAMi 显存切分技术
+                    </p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 自动资源匹配</li>
+                        <li><i class="fas fa-check"></i> 显存智能切分</li>
+                        <li><i class="fas fa-check"></i> 负载均衡优化</li>
+                    </ul>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <div class="icon-bg">
+                            <i class="fas fa-server"></i>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">算力节点管理</h3>
+                    <p class="feature-desc">
+                        统一管理多个 GPU 算力节点，支持 TLS 安全连接和分布式部署
+                    </p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 多节点统一管理</li>
+                        <li><i class="fas fa-check"></i> TLS 安全通信</li>
+                        <li><i class="fas fa-check"></i> 实时状态监控</li>
+                    </ul>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <div class="icon-bg">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">安全访问机制</h3>
+                    <p class="feature-desc">
+                        提供 SSH 跳板机和 Web 终端，内置 RBAC 权限控制和操作审计
+                    </p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> SSH 跳板机</li>
+                        <li><i class="fas fa-check"></i> Web 在线终端</li>
+                        <li><i class="fas fa-check"></i> RBAC 权限控制</li>
+                    </ul>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <div class="icon-bg">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">实时监控运维</h3>
+                    <p class="feature-desc">
+                        全方位监控 CPU、内存、网络等资源，支持日志查看和定时任务
+                    </p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 实时资源监控</li>
+                        <li><i class="fas fa-check"></i> 容器日志查看</li>
+                        <li><i class="fas fa-check"></i> 自动定时同步</li>
+                    </ul>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <div class="icon-bg">
+                            <i class="fas fa-dharmachakra"></i>
+                        </div>
+                    </div>
+                    <h3 class="feature-title">K8s 集群管理</h3>
+                    <p class="feature-desc">
+                        支持多 Kubernetes 集群统一管理，工作负载和 Pod 全生命周期控制
+                    </p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 多集群管理</li>
+                        <li><i class="fas fa-check"></i> 工作负载管理</li>
+                        <li><i class="fas fa-check"></i> Pod 状态监控</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术架构区域 -->
+    <section id="tech" class="tech">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">技术架构</span>
+                <h2 class="section-title">现代化技术栈</h2>
+                <p class="section-desc">
+                    采用云原生架构，前后端分离，高性能、高可用、易扩展
+                </p>
+            </div>
+            <div class="tech-content">
+                <div class="tech-diagram">
+                    <div class="tech-layer frontend-layer">
+                        <h3 class="layer-title">前端技术栈</h3>
+                        <div class="layer-items">
+                            <div class="tech-item">
+                                <div class="tech-icon vue">
+                                    <i class="fab fa-vuejs"></i>
+                                </div>
+                                <span>Vue 3.5</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon vite">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <span>Vite 6</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon element">
+                                    <i class="fas fa-cube"></i>
+                                </div>
+                                <span>Element Plus</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon pinia">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <span>Pinia</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon xterm">
+                                    <i class="fas fa-terminal"></i>
+                                </div>
+                                <span>xterm.js</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tech-layer backend-layer">
+                        <h3 class="layer-title">后端技术栈</h3>
+                        <div class="layer-items">
+                            <div class="tech-item">
+                                <div class="tech-icon go">
+                                    <i class="fab fa-golang"></i>
+                                </div>
+                                <span>Go 1.23</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon gin">
+                                    <i class="fas fa-code-branch"></i>
+                                </div>
+                                <span>Gin</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon gorm">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <span>GORM</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon docker">
+                                    <i class="fab fa-docker"></i>
+                                </div>
+                                <span>Docker API</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon k8s">
+                                    <i class="fas fa-dharmachakra"></i>
+                                </div>
+                                <span>K8s Client</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tech-layer features-layer">
+                        <h3 class="layer-title">核心特性</h3>
+                        <div class="layer-items">
+                            <div class="tech-item">
+                                <div class="tech-icon feature">
+                                    <i class="fas fa-plug"></i>
+                                </div>
+                                <span>插件化架构</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon feature">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <span>RBAC权限</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon feature">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <span>TLS安全</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon feature">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </div>
+                                <span>高性能</span>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon feature">
+                                    <i class="fas fa-expand-arrows-alt"></i>
+                                </div>
+                                <span>易扩展</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 应用场景区域 -->
+    <section id="scenarios" class="scenarios">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">应用场景</span>
+                <h2 class="section-title">广泛的行业应用</h2>
+                <p class="section-desc">
+                    为不同行业的 GPU 算力需求提供专业的管理解决方案
+                </p>
+            </div>
+            <div class="scenarios-grid">
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="scenario-title">AI/ML 团队</h3>
+                    <p class="scenario-desc">
+                        为机器学习团队提供按需 GPU 容器实例，支持模型训练和推理任务
+                    </p>
+                </div>
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3 class="scenario-title">科研机构</h3>
+                    <p class="scenario-desc">
+                        为科学计算提供 GPU 算力资源池，支持大规模并行计算任务
+                    </p>
+                </div>
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3 class="scenario-title">云服务提供商</h3>
+                    <p class="scenario-desc">
+                        作为 GPU 云服务的基础平台，提供容器化 GPU 服务能力
+                    </p>
+                </div>
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="scenario-title">企业 IT 部门</h3>
+                    <p class="scenario-desc">
+                        帮助企业统一管理内部 GPU 资源，提高资源利用效率
+                    </p>
+                </div>
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="scenario-title">教育机构</h3>
+                    <p class="scenario-desc">
+                        为高校和培训机构提供 GPU 教学实验环境管理
+                    </p>
+                </div>
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 class="scenario-title">游戏开发</h3>
+                    <p class="scenario-desc">
+                        支持游戏渲染和 AI 训练任务，提供弹性算力支持
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 快速部署区域 -->
+    <section id="deploy" class="deploy">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">快速开始</span>
+                <h2 class="section-title">3 分钟快速部署</h2>
+                <p class="section-desc">
+                    支持多种部署方式，选择最适合您的方式快速启动
+                </p>
+            </div>
+            <div class="deploy-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="docker">Docker 部署</button>
+                    <button class="tab-btn" data-tab="k8s">Kubernetes 部署</button>
+                    <button class="tab-btn" data-tab="local">本地开发</button>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="docker">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">Docker 快速部署</span>
+                                <button class="copy-btn" data-code="docker-cmd">
+                                    <i class="fas fa-copy"></i>
+                                    <span>复制</span>
+                                </button>
+                            </div>
+                            <pre class="code-content"><code id="docker-cmd"># 1. 克隆项目
+git clone https://github.com/he7555/docker-gpu-manage.git
+cd docker-gpu-manage
+
+# 2. 使用 Docker Compose 启动
+docker-compose up -d
+
+# 3. 访问管理界面
+open http://localhost:8888</code></pre>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="k8s">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">Kubernetes 部署</span>
+                                <button class="copy-btn" data-code="k8s-cmd">
+                                    <i class="fas fa-copy"></i>
+                                    <span>复制</span>
+                                </button>
+                            </div>
+                            <pre class="code-content"><code id="k8s-cmd"># 1. 添加 Helm 仓库
+helm repo add gpu-manage https://charts.gpu-manage.io
+
+# 2. 安装到 Kubernetes 集群
+helm install gpu-manage gpu-manage/gpu-manage \
+  --namespace gpu-manage \
+  --create-namespace
+
+# 3. 等待 Pod 就绪
+kubectl wait --for=condition=ready pod \
+  -l app=gpu-manage \
+  -n gpu-manage \
+  --timeout=300s</code></pre>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="local">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">本地开发环境</span>
+                                <button class="copy-btn" data-code="local-cmd">
+                                    <i class="fas fa-copy"></i>
+                                    <span>复制</span>
+                                </button>
+                            </div>
+                            <pre class="code-content"><code id="local-cmd"># 1. 后端启动
+cd server
+go mod download
+go run main.go
+
+# 2. 前端启动 (新终端)
+cd web
+npm install
+npm run dev
+
+# 3. 访问开发环境
+# 前端: http://localhost:3000
+# 后端: http://localhost:8888</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 区域 -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">准备好开始了吗？</h2>
+                <p class="cta-desc">
+                    立即部署天启算力管理平台，开启高效 GPU 算力管理之旅
+                </p>
+                <div class="cta-actions">
+                    <a href="https://github.com/he7555/docker-gpu-manage" target="_blank" class="btn btn-large btn-primary">
+                        <i class="fab fa-github"></i>
+                        <span>查看源码</span>
+                    </a>
+                    <a href="#deploy" class="btn btn-large btn-secondary">
+                        <i class="fas fa-book"></i>
+                        <span>查看文档</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <span class="logo-text">天启算力</span>
+                    <p class="footer-desc">
+                        企业级 Docker GPU 算力资源管理和调度系统
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-link-group">
+                        <h4>产品</h4>
+                        <ul>
+                            <li><a href="#features">核心功能</a></li>
+                            <li><a href="#tech">技术架构</a></li>
+                            <li><a href="#scenarios">应用场景</a></li>
+                            <li><a href="#deploy">快速部署</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link-group">
+                        <h4>资源</h4>
+                        <ul>
+                            <li><a href="https://github.com/he7555/docker-gpu-manage" target="_blank">GitHub</a></li>
+                            <li><a href="https://github.com/he7555/docker-gpu-manage/issues" target="_blank">问题反馈</a></li>
+                            <li><a href="https://github.com/he7555/docker-gpu-manage/blob/main/README.md" target="_blank">文档</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link-group">
+                        <h4>联系我们</h4>
+                        <ul>
+                            <li><a href="mailto:support@gpu-manage.io">技术支持</a></li>
+                            <li><a href="mailto:business@gpu-manage.io">商务合作</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 天启算力管理平台. 基于 MIT 许可证开源.</p>
+                <div class="footer-social">
+                    <a href="https://github.com/he7555/docker-gpu-manage" target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" target="_blank">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" target="_blank">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<svg width="180" height="180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00f0ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7b2cbf;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="100" height="100" rx="22" fill="#0a0e27"/>
+  <g filter="url(#glow2)">
+    <rect x="22" y="22" width="56" height="56" rx="12" fill="url(#grad2)" opacity="0.3"/>
+    <rect x="30" y="30" width="40" height="40" rx="8" fill="none" stroke="url(#grad2)" stroke-width="2.5"/>
+    <rect x="26" y="17" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="36" y="17" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="46" y="17" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="56" y="17" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="66" y="17" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="26" y="75" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="36" y="75" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="46" y="75" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="56" y="75" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="66" y="75" width="3" height="8" fill="url(#grad2)" rx="1"/>
+    <rect x="17" y="26" width="8" height="3" fill="url(#grad2)" rx="1"/>
+    <rect x="17" y="36" width="8" height="3" fill="url(#grad2)" rx="1"/>
+    <rect x="17" y="46" width="8" height="3" fill="url(#grad2)" rx="1"/>
+    <rect x="17" y="56" width="8" height="3" fill="url(#grad2)" rx="1"/>
+    <rect x="75" y="26" width="8" height="3" fill="url(#grad2)" rx="1"/>
+    <rect x="75" y="36" width="8" height="3" fill="url(#grad2)" rx="1"/>
+    <rect x="75" y="46" width="8" height="3" fill="url(#grad2)" rx="1"/>
+    <rect x="75" y="56" width="8" height="3" fill="url(#grad2)" rx="1"/>
+    <rect x="43" y="43" width="14" height="14" rx="3" fill="url(#grad2)"/>
+  </g>
+</svg>
