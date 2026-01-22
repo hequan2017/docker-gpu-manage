@@ -1,5 +1,6 @@
 {
   "/src/view/about/index.vue": "About",
+  "/src/view/about/project.vue": "Project",
   "/src/view/computenode/computeNode/computeNode.vue": "ComputeNode",
   "/src/view/computenode/computeNode/computeNodeForm.vue": "ComputeNodeForm",
   "/src/view/dashboard/components/banner.vue": "Banner",
@@ -86,6 +87,7 @@
   "/src/plugin/announcement/form/info.vue": "InfoForm",
   "/src/plugin/announcement/view/info.vue": "Info",
   "/src/plugin/email/view/index.vue": "Email",
+  "/src/plugin/k8smanager/view/cluster.vue": "Cluster",
   "/src/plugin/portforward/form/portForward.vue": "PortForwardForm",
   "/src/plugin/portforward/view/portForward.vue": "PortForward"
 }

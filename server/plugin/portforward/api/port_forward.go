@@ -1,7 +1,9 @@
 package api
 
 import (
+	"fmt"
 	"net"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/portforward/model"
@@ -232,3 +234,53 @@ func getLocalIPs() []string {
 
 	return ips
 }
+
+// GetForwarderStatus 获取端口转发状态
+// @Tags PortForward
+// @Summary 获取端口转发运行状态
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param id query string true "规则ID"
+// @Success 200 {object} response.Response{data=map[string]interface{},msg=string} "获取成功"
+// @Router /portForward/getForwarderStatus [get]
+func (a *portForward) GetForwarderStatus(c *gin.Context) {
+	ID := c.Query("ID")
+	if ID == "" {
+		response.FailWithMessage("规则ID不能为空", c)
+		return
+	}
+
+	// 转换ID
+	idUint, err := parseUint(ID)
+	if err != nil {
+		response.FailWithMessage("无效的规则ID", c)
+		return
+	}
+
+	// 获取转发器状态
+	status := servicePortForward.GetForwarderStatus(ID)
+	response.OkWithData(status, c)
+}
+
+// GetAllForwarderStatus 获取所有端口转发状态
+// @Tags PortForward
+// @Summary 获取所有端口转发运行状态
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Success 200 {object} response.Response{data=map[string]interface{},msg=string} "获取成功"
+// @Router /portForward/getAllForwarderStatus [get]
+func (a *portForward) GetAllForwarderStatus(c *gin.Context) {
+	// 获取所有转发器状态
+	status := servicePortForward.GetAllForwarderStatus()
+	response.OkWithData(status, c)
+}
+
+// parseUint 解析uint ID
+func parseUint(s string) (uint, error) {
+	var id uint64
+	_, err := fmt.Sscanf(s, "%d", &id)
+	return uint(id), err
+}
+

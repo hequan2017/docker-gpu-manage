@@ -64,9 +64,9 @@ func (i *initMenuAuthority) InitializeData(ctx context.Context) (next context.Co
 	// 仅选择部分父级菜单及其子菜单
 	var menu8881 []sysModel.SysBaseMenu
 
-	// 添加仪表盘、关于我们和个人信息菜单
+	// 添加仪表盘、项目说明、关于我们和个人信息菜单
 	for _, menu := range allMenus {
-		if menu.ParentId == 0 && (menu.Name == "dashboard" || menu.Name == "about" || menu.Name == "person" || menu.Name == "state") {
+		if menu.ParentId == 0 && (menu.Name == "dashboard" || menu.Name == "project" || menu.Name == "about" || menu.Name == "person" || menu.Name == "state") {
 			menu8881 = append(menu8881, menu)
 		}
 	}

@@ -54,6 +54,7 @@ func (i *initMenu) InitializeData(ctx context.Context) (next context.Context, er
 	// 定义所有菜单
 	allMenus := []SysBaseMenu{
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "dashboard", Name: "dashboard", Component: "view/dashboard/index.vue", Sort: 1, Meta: Meta{Title: "仪表盘", Icon: "odometer"}},
+		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "project", Name: "project", Component: "view/about/project.vue", Sort: 2, Meta: Meta{Title: "项目说明", Icon: "document"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "about", Name: "about", Component: "view/about/index.vue", Sort: 9, Meta: Meta{Title: "关于我们", Icon: "info-filled"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "admin", Name: "superAdmin", Component: "view/superAdmin/index.vue", Sort: 3, Meta: Meta{Title: "超级管理员", Icon: "user"}},
 		{MenuLevel: 0, Hidden: true, ParentId: 0, Path: "person", Name: "person", Component: "view/person/person.vue", Sort: 4, Meta: Meta{Title: "个人信息", Icon: "message"}},

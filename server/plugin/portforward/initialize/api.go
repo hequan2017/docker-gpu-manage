@@ -56,6 +56,18 @@ func Api(ctx context.Context) {
 			ApiGroup:    "端口转发",
 			Method:      "GET",
 		},
+		{
+			Path:        "/portForward/getForwarderStatus",
+			Description: "获取端口转发运行状态",
+			ApiGroup:    "端口转发",
+			Method:      "GET",
+		},
+		{
+			Path:        "/portForward/getAllForwarderStatus",
+			Description: "获取所有端口转发运行状态",
+			ApiGroup:    "端口转发",
+			Method:      "GET",
+		},
 	}
 	utils.RegisterApis(entities...)
 }

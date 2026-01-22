@@ -1,0 +1,2 @@
+2026/01/22 16:36:39 ❌ 无法启动服务器: listen tcp :9999: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+exit status 1

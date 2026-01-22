@@ -21,8 +21,10 @@ func (r *portForward) Init(public *gin.RouterGroup, private *gin.RouterGroup) {
 	}
 	{
 		group := private.Group("portForward")
-		group.GET("findPortForward", apiPortForward.FindPortForward)       // 根据ID获取端口转发规则
-		group.GET("getPortForwardList", apiPortForward.GetPortForwardList) // 获取端口转发规则列表
-		group.GET("getServerIP", apiPortForward.GetServerIP)               // 获取服务器IP地址
+		group.GET("findPortForward", apiPortForward.FindPortForward)           // 根据ID获取端口转发规则
+		group.GET("getPortForwardList", apiPortForward.GetPortForwardList)     // 获取端口转发规则列表
+		group.GET("getServerIP", apiPortForward.GetServerIP)                   // 获取服务器IP地址
+		group.GET("getForwarderStatus", apiPortForward.GetForwarderStatus)     // 获取端口转发运行状态
+		group.GET("getAllForwarderStatus", apiPortForward.GetAllForwarderStatus) // 获取所有端口转发运行状态
 	}
 }
