@@ -155,16 +155,23 @@ func (s *chat) SendMessage(chatReq request.ChatRequest, userID int) (resp reques
 		})
 	}
 
-	temperature := conversation.Temperature
+	// 获取温度参数，优先使用请求中的值
+	var temperature *float64
 	if chatReq.Temperature != nil {
 		temperature = chatReq.Temperature
+	} else {
+		temperature = conversation.Temperature
 	}
 
-	maxTokens := conversation.MaxTokens
+	// 获取最大token数，优先使用请求中的值
+	var maxTokens *int
 	if chatReq.MaxTokens != nil {
 		maxTokens = chatReq.MaxTokens
+	} else {
+		maxTokens = conversation.MaxTokens
 	}
 
+	// 获取模型名称
 	modelName := conversation.Model
 	if chatReq.Model != nil && *chatReq.Model != "" {
 		modelName = *chatReq.Model

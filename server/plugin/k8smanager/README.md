@@ -2,7 +2,7 @@
 
 ## 📦 插件概述
 
-这是一个基于 gin-vue-admin 框架的 Kubernetes 集群管理插件，提供了完整的 K8s 集群管理功能，包括集群连接、Pod 管理、Deployment 管理、Service 管理、Namespace 管理等核心功能。
+这是一个天启算力管理平台的 Kubernetes 集群管理插件，提供了完整的 K8s 集群管理功能，包括集群连接、Pod 管理、Deployment 管理、Service 管理、Namespace 管理等核心功能。
 
 ## ✨ 核心功能
 
@@ -319,8 +319,8 @@ SQL 脚本中已为管理员角色（ID=888）添加了所有权限。
 
 ## 🙏 致谢
 
-感谢 gin-vue-admin 框架和 Kubernetes 社区。
+感谢 Kubernetes 社区。
 
 ---
 
-**注意**：本插件需要与 gin-vue-admin 框架配合使用，请确保框架版本兼容。
+**注意**：本插件需要与天启算力管理平台配合使用，请确保平台版本兼容。
