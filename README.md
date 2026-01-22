@@ -56,14 +56,26 @@
 
 ### 核心功能
 
+**Docker GPU 管理：**
 - 🐳 **容器实例管理**：创建、启动、停止、重启、删除 GPU 容器实例，支持自动删除挂载数据卷
 - 🖥️ **算力节点管理**：管理多个 GPU 算力节点，支持 TLS 安全连接，自动测试 Docker 连接状态
 - 📦 **镜像库管理**：统一管理 Docker 镜像仓库，支持显存切分配置
 - 💰 **产品规格管理**：定义 GPU 产品规格和定价，支持无显卡规格（GPU=0）和显存切分
-- 🔁 **端口转发管理**：管理端口转发规则，支持 TCP/UDP 协议，自动获取本机IP，实现灵活的端口映射
+- 🔁 **端口转发管理**：管理端口转发规则，支持 TCP/UDP 协议，实时连接状态监控，实现灵活的端口映射
 - 🔐 **SSH 跳板机**：通过 SSH 安全连接到容器实例
 - 💻 **Web 终端**：在浏览器中直接操作容器
 - 📊 **资源监控**：实时查看容器状态、日志、CPU/内存使用率、网络 I/O、块设备 I/O、进程数
+
+**Kubernetes 集群管理：**
+- ☸️ **集群管理**：添加、编辑、删除多个 K8s 集群，支持 kubeconfig 加密存储
+- 📦 **工作负载管理**：管理 Deployment、StatefulSet、DaemonSet 等工作负载
+- 🐳 **Pod 管理**：查看 Pod 列表、详情、日志，支持自动刷新
+- 🌐 **Service 管理**：管理集群服务，查看端点信息
+- 📊 **监控指标**：收集集群、节点、Pod 的资源使用指标
+- 🔐 **权限控制**：基于 RBAC 的多级权限管理（全局/集群/命名空间）
+- 📝 **操作审计**：记录所有 K8s 操作日志，支持审计追溯
+
+**系统功能：**
 - 👥 **权限管理**：基于角色的访问控制（RBAC）
 - ⚡ **显存切分**：支持GPU显存切分，更灵活地分配GPU资源
 - ⏰ **定时任务**：自动检查容器状态，保持数据同步
@@ -338,6 +350,88 @@ jumpbox:
 - 数据模型：`PortForward` (model/port_forward.go)
 - 自动获取本机所有网络接口的非回环IP地址
 - 支持状态实时切换，无需重启服务
+- 实时显示转发器运行状态和活跃连接数
+- 支持自动刷新（5秒间隔）
+
+#### 7. Kubernetes 集群管理
+提供完整的 Kubernetes 集群管理功能，支持多集群统一管理，包含工作负载、服务、Pod 等资源的全生命周期管理。
+
+**功能特性：**
+- ✅ 多集群管理，支持添加、编辑、删除 K8s 集群
+- ✅ Kubeconfig 加密存储（AES-256-GCM）
+- ✅ 连接池管理，自动清理过期连接
+- ✅ 工作负载管理（Deployment、StatefulSet、DaemonSet）
+- ✅ Pod 管理（列表、详情、日志、自动刷新）
+- ✅ Service 管理（列表、详情、端点查看）
+- ✅ 监控指标收集（集群、节点、Pod 资源使用率）
+- ✅ 基于角色的权限控制（RBAC）
+- ✅ 操作审计日志
+
+**集群配置：**
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| 名称 | string | ✅ | 集群名称 |
+| Kubeconfig | text | ✅ | K8s 集群配置（加密存储） |
+| 描述 | string | | 集群描述 |
+| 状态 | bool | ✅ | 是否启用 |
+
+**工作负载操作：**
+
+- **Deployment 管理**：
+  - 列表查看（副本数、镜像、运行时间）
+  - 详情查看（YAML、容器配置）
+  - Pods 查看（关联的 Pod 列表）
+  - 扩缩容（调整副本数）
+  - 重启（滚动更新）
+  - 删除
+
+- **Pod 管理**：
+  - 列表查看（状态、IP、节点、重启次数）
+  - 详情查看（YAML、容器配置）
+  - 日志查看（支持配置行数）
+  - 终端连接（开发中）
+  - 删除
+
+- **Service 管理**：
+  - 列表查看（类型、端口、端点）
+  - 详情查看（YAML、端口配置）
+  - 端点查看（NodePort、ClusterIP）
+  - 删除
+
+**监控指标：**
+- 集群级别：节点总数、Pod 总数、资源使用率
+- 节点级别：CPU、内存、磁盘使用率
+- Pod 级别：CPU、内存使用率
+
+**权限控制：**
+- **全局权限**：管理所有集群的所有资源
+- **集群权限**：管理指定集群的所有资源
+- **命名空间权限**：管理指定集群的指定命名空间资源
+
+**API接口：**
+
+- `GET /k8s/cluster/list` - 获取集群列表
+- `POST /k8s/cluster/create` - 创建集群
+- `PUT /k8s/cluster/update` - 更新集群
+- `DELETE /k8s/cluster/delete` - 删除集群
+- `GET /k8s/deployment/list` - 获取 Deployment 列表
+- `GET /k8s/deployment/detail` - 获取 Deployment 详情
+- `POST /k8s/deployment/scale` - 扩缩容 Deployment
+- `POST /k8s/deployment/restart` - 重启 Deployment
+- `GET /k8s/pod/list` - 获取 Pod 列表
+- `GET /k8s/pod/logs` - 获取 Pod 日志
+- `GET /k8s/service/list` - 获取 Service 列表
+- `GET /k8s/metrics/cluster` - 获取集群指标
+- `GET /k8s/metrics/nodes` - 获取节点指标
+- `GET /k8s/metrics/pods` - 获取 Pod 指标
+
+**技术实现：**
+- 后端插件：`server/plugin/k8smanager/`
+- 前端插件：`web/src/plugin/k8smanager/`
+- K8s 客户端：`k8s.io/client-go`
+- 加密算法：AES-256-GCM
+- 连接池：支持 TTL 和自动清理
 
 ### 技术栈
 
@@ -347,6 +441,8 @@ jumpbox:
 - **语言**: Go 1.23+
 - **SSH服务**: golang.org/x/crypto/ssh
 - **Docker客户端**: Docker API (github.com/docker/docker)
+- **K8s客户端**: client-go (k8s.io/client-go)
+- **加密**: AES-256-GCM
 - **定时任务**: gcron (github.com/gogf/gf/v2/os/gcron)
 - **日志**: Zap (高性能日志库)
 - **配置管理**: Viper
@@ -652,9 +748,15 @@ VITE_FILE_API=/uploads/file   # 静态/上传文件基础路径
 │   ├── service/           # 业务逻辑
 │   │   └── jumpbox/       # SSH跳板机服务
 │   ├── router/            # 路由配置
-│   └── config/            # 配置文件
+│   ├── config/            # 配置文件
+│   └── plugin/            # 插件目录
+│       ├── portforward/   # 端口转发插件
+│       └── k8smanager/    # K8s集群管理插件
 ├── web/                    # 前端代码
 │   ├── src/api/           # API 调用
-│   └── src/view/          # 页面组件
+│   ├── src/view/          # 页面组件
+│   └── src/plugin/        # 前端插件
+│       ├── portforward/   # 端口转发插件
+│       └── k8smanager/    # K8s集群管理插件
 └── README.md
 ```
