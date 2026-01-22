@@ -125,3 +125,33 @@ export const getServerIP = () => {
     method: 'get'
   })
 }
+
+// @Tags PortForward
+// @Summary 获取端口转发运行状态
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param id query string true "规则ID"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /portForward/getForwarderStatus [get]
+export const getForwarderStatus = (params) => {
+  return service({
+    url: '/portForward/getForwarderStatus',
+    method: 'get',
+    params
+  })
+}
+
+// @Tags PortForward
+// @Summary 获取所有端口转发运行状态
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /portForward/getAllForwarderStatus [get]
+export const getAllForwarderStatus = () => {
+  return service({
+    url: '/portForward/getAllForwarderStatus',
+    method: 'get'
+  })
+}

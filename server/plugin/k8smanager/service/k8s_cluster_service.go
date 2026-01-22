@@ -8,6 +8,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/utils"
 	"gorm.io/gorm"
 )
 
@@ -33,6 +34,13 @@ func (s *K8sClusterService) CreateK8sCluster(ctx context.Context, cluster *model
 			return err
 		}
 	}
+
+	// 加密 kubeconfig
+	encryptedConfig, err := utils.Encrypt(cluster.KubeConfig)
+	if err != nil {
+		return fmt.Errorf("加密kubeconfig失败: %w", err)
+	}
+	cluster.KubeConfig = encryptedConfig
 
 	// 创建集群记录
 	err = global.GVA_DB.Create(cluster).Error
@@ -140,7 +148,7 @@ func (s *K8sClusterService) UpdateK8sCluster(ctx context.Context, cluster *model
 		}
 	}
 
-	// 获取旧的名称
+	// 获取旧的集群信息
 	var oldCluster model.K8sCluster
 	err = global.GVA_DB.First(&oldCluster, cluster.ID).Error
 	if err != nil {
@@ -153,10 +161,16 @@ func (s *K8sClusterService) UpdateK8sCluster(ctx context.Context, cluster *model
 		RemoveClient(oldName)
 	}
 
+	// 加密 kubeconfig
+	encryptedConfig, err := utils.Encrypt(cluster.KubeConfig)
+	if err != nil {
+		return fmt.Errorf("加密kubeconfig失败: %w", err)
+	}
+
 	// 更新集群信息
 	err = global.GVA_DB.Model(cluster).Updates(map[string]interface{}{
 		"name":        cluster.Name,
-		"kube_config": cluster.KubeConfig,
+		"kube_config": encryptedConfig,
 		"endpoint":    cluster.Endpoint,
 		"description": cluster.Description,
 		"region":      cluster.Region,
@@ -207,6 +221,14 @@ func (s *K8sClusterService) GetK8sCluster(ctx context.Context, id uint) (*model.
 		}
 		return nil, err
 	}
+
+	// 解密 kubeconfig（仅用于返回给前端）
+	decryptedConfig, err := utils.Decrypt(cluster.KubeConfig)
+	if err != nil {
+		return nil, fmt.Errorf("解密kubeconfig失败: %w", err)
+	}
+	cluster.KubeConfig = decryptedConfig
+
 	return &cluster, nil
 }
 
@@ -220,6 +242,14 @@ func (s *K8sClusterService) GetK8sClusterByName(ctx context.Context, name string
 		}
 		return nil, err
 	}
+
+	// 解密 kubeconfig
+	decryptedConfig, err := utils.Decrypt(cluster.KubeConfig)
+	if err != nil {
+		return nil, fmt.Errorf("解密kubeconfig失败: %w", err)
+	}
+	cluster.KubeConfig = decryptedConfig
+
 	return &cluster, nil
 }
 

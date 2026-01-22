@@ -40,4 +40,7 @@ type Server struct {
 
 	// SSH跳板机配置
 	Jumpbox Jumpbox `mapstructure:"jumpbox" json:"jumpbox" yaml:"jumpbox"`
+
+	// K8s管理器配置
+	K8sManager K8sManager `mapstructure:"k8smanager" json:"k8smanager" yaml:"k8smanager"`
 }

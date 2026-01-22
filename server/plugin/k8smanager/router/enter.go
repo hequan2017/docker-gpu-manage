@@ -7,6 +7,8 @@ type RouterGroup struct {
 	K8sServiceRouter
 	K8sNamespaceRouter
 	K8sEventRouter
+	K8sAuditRouter
+	K8sMetricsRouter
 }
 
 var RouterGroupApp = new(RouterGroup)

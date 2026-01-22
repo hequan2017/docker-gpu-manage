@@ -11,6 +11,10 @@ import (
 func Gorm(ctx context.Context) {
 	err := global.GVA_DB.AutoMigrate(
 		&model.K8sCluster{},
+		&model.K8sAuditLog{},
+		&model.K8sPermission{},
+		&model.K8sRolePermission{},
+		&model.K8sUserPermission{},
 	)
 	if err != nil {
 		global.GVA_LOG.Error("k8smanager plugin auto migrate failed", zap.String("error", err.Error()))

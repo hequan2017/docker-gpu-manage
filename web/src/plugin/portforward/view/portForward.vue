@@ -40,9 +40,75 @@
             查询
           </el-button>
           <el-button icon="refresh" @click="onReset"> 重置 </el-button>
+          <el-button
+            icon="refresh"
+            @click="toggleAutoRefresh"
+            :type="autoRefresh ? 'success' : ''"
+          >
+            {{ autoRefresh ? '停止自动刷新' : '自动刷新' }}
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
+
+    <!-- 状态统计卡片 -->
+    <div class="gva-card-box" style="padding: 0 20px; margin-bottom: 20px;">
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: #409eff;">
+                <el-icon><document /></el-icon>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ forwarderStats.total_rules || 0 }}</div>
+                <div class="stat-label">总规则数</div>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: #67c23a;">
+                <el-icon><success-filled /></el-icon>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ forwarderStats.running_forwarders || 0 }}</div>
+                <div class="stat-label">运行中</div>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: #e6a23c;">
+                <el-icon><circle-check /></el-icon>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ forwarderStats.enabled_count || 0 }}</div>
+                <div class="stat-label">已启用</div>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: #909399;">
+                <el-icon><connection /></el-icon>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ totalConnections }}</div>
+                <div class="stat-label">活跃连接</div>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+
     <div class="gva-table-box">
       <div class="gva-btn-list">
         <el-button type="primary" icon="plus" @click="openDialog">
@@ -63,6 +129,7 @@
         tooltip-effect="dark"
         :data="tableData"
         row-key="ID"
+        v-loading="loading"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" />
@@ -75,11 +142,11 @@
 
         <el-table-column align="left" label="源地址" width="180">
           <template #default="scope">
-            {{ scope.row.sourceIP }}:{{ scope.row.sourcePort }}
+            <span class="address-text">{{ scope.row.sourceIP }}:{{ scope.row.sourcePort }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="left" label="协议" prop="protocol" width="80">
+        <el-table-column align="left" label="协议" prop="protocol" width="100">
           <template #default="scope">
             <el-tag :type="scope.row.protocol === 'tcp' ? 'primary' : 'success'">
               {{ scope.row.protocol.toUpperCase() }}
@@ -89,11 +156,39 @@
 
         <el-table-column align="left" label="目标地址" width="180">
           <template #default="scope">
-            {{ scope.row.targetIP }}:{{ scope.row.targetPort }}
+            <span class="address-text">{{ scope.row.targetIP }}:{{ scope.row.targetPort }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="left" label="状态" prop="status" width="100">
+        <el-table-column align="left" label="运行状态" width="120">
+          <template #default="scope">
+            <div v-if="forwarderStatus[scope.row.ID] !== undefined">
+              <el-tag v-if="forwarderStatus[scope.row.ID].running" type="success">
+                运行中
+              </el-tag>
+              <el-tag v-else type="info">
+                已停止
+              </el-tag>
+            </div>
+            <el-tag v-else type="warning">
+              未知
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="left" label="连接数" width="100">
+          <template #default="scope">
+            <span v-if="forwarderStatus[scope.row.ID] !== undefined">
+              <el-tag v-if="forwarderStatus[scope.row.ID].running" type="primary">
+                {{ forwarderStatus[scope.row.ID].conn_count || 0 }}
+              </el-tag>
+              <span v-else>-</span>
+            </span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="left" label="开关状态" prop="status" width="100">
           <template #default="scope">
             <el-switch
               v-model="scope.row.status"
@@ -108,14 +203,21 @@
           align="left"
           label="操作"
           fixed="right"
-          width="200"
+          width="280"
         >
           <template #default="scope">
+            <el-button
+              type="info"
+              link
+              icon="view"
+              @click="viewStatus(scope.row)"
+            >
+              状态
+            </el-button>
             <el-button
               type="primary"
               link
               icon="edit"
-              class="table-button"
               @click="updatePortForwardFunc(scope.row)"
             >
               修改
@@ -143,6 +245,8 @@
         />
       </div>
     </div>
+
+    <!-- 创建/编辑抽屉 -->
     <el-drawer
       v-model="dialogFormVisible"
       destroy-on-close
@@ -226,6 +330,71 @@
         </el-form-item>
       </el-form>
     </el-drawer>
+
+    <!-- 状态详情对话框 -->
+    <el-dialog
+      v-model="statusDialogVisible"
+      title="端口转发状态详情"
+      width="600px"
+    >
+      <div v-if="currentStatus">
+        <el-descriptions :column="2" border>
+          <el-descriptions-item label="规则ID">
+            {{ currentRow?.ID }}
+          </el-descriptions-item>
+          <el-descriptions-item label="运行状态">
+            <el-tag v-if="currentStatus.running" type="success">运行中</el-tag>
+            <el-tag v-else type="info">已停止</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="协议类型">
+            <el-tag :type="currentRow?.protocol === 'tcp' ? 'primary' : 'success'">
+              {{ currentStatus.protocol?.toUpperCase() || currentRow?.protocol?.toUpperCase() }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="活跃连接">
+            <el-tag type="primary">{{ currentStatus.conn_count || 0 }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="源地址" :span="2">
+            {{ currentRow?.sourceIP }}:{{ currentRow?.sourcePort }}
+          </el-descriptions-item>
+          <el-descriptions-item label="目标地址" :span="2">
+            {{ currentRow?.targetIP }}:{{ currentRow?.targetPort }}
+          </el-descriptions-item>
+          <el-descriptions-item label="规则描述" :span="2">
+            {{ currentRow?.description || '-' }}
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <div style="margin-top: 20px;">
+          <h4>连接说明</h4>
+          <el-alert
+            v-if="currentStatus.running"
+            title="端口转发正在运行中"
+            type="success"
+            :closable="false"
+          >
+            <template #default>
+              <p>当前活跃连接数: <strong>{{ currentStatus.conn_count || 0 }}</strong></p>
+              <p>可以通过访问 <code>{{ currentRow?.sourceIP }}:{{ currentRow?.sourcePort }}</code> 来连接到目标地址 <code>{{ currentRow?.targetIP }}:{{ currentRow?.targetPort }}</code></p>
+            </template>
+          </el-alert>
+          <el-alert
+            v-else
+            title="端口转发未运行"
+            type="warning"
+            :closable="false"
+          >
+            <template #default>
+              <p>请确保规则开关状态为"启用"以启动端口转发</p>
+            </template>
+          </el-alert>
+        </div>
+      </div>
+      <template #footer>
+        <el-button @click="statusDialogVisible = false">关闭</el-button>
+        <el-button type="primary" @click="refreshCurrentStatus">刷新状态</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -238,12 +407,20 @@ import {
   findPortForward,
   getPortForwardList,
   updatePortForwardStatus,
-  getServerIP
+  getServerIP,
+  getForwarderStatus,
+  getAllForwarderStatus
 } from '@/plugin/portforward/api/portForward'
 
 import { formatDate } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ref, reactive, onMounted } from 'vue'
+import {
+  Document,
+  SuccessFilled,
+  CircleCheck,
+  Connection
+} from '@element-plus/icons-vue'
+import { ref, reactive, onMounted, onBeforeUnmount, computed } from 'vue'
 
 defineOptions({
   name: 'PortForward'
@@ -282,6 +459,7 @@ const rule = reactive({
 
 const elFormRef = ref()
 const elSearchFormRef = ref()
+const loading = ref(false)
 
 // =========== 表格控制部分 ===========
 const page = ref(1)
@@ -289,6 +467,26 @@ const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
 const searchInfo = ref({})
+
+// 转发器状态
+const forwarderStatus = ref({})
+const forwarderStats = ref({
+  total_rules: 0,
+  running_forwarders: 0,
+  enabled_count: 0,
+  running_ids: []
+})
+
+// 计算总连接数
+const totalConnections = computed(() => {
+  return Object.values(forwarderStatus.value).reduce((sum, status) => {
+    return sum + (status.conn_count || 0)
+  }, 0)
+})
+
+// 自动刷新
+const autoRefresh = ref(false)
+const autoRefreshTimer = ref(null)
 
 // 重置
 const onReset = () => {
@@ -314,18 +512,69 @@ const handleCurrentChange = (val) => {
   getTableData()
 }
 
+// 获取转发器状态
+const getForwarderStatusData = async () => {
+  try {
+    const res = await getAllForwarderStatus()
+    if (res.code === 0) {
+      forwarderStats.value = res.data
+      // 获取每个运行中转发器的详细状态
+      if (res.data.running_ids && res.data.running_ids.length > 0) {
+        for (const id of res.data.running_ids) {
+          try {
+            const statusRes = await getForwarderStatus({ ID: String(id) })
+            if (statusRes.code === 0) {
+              forwarderStatus.value[id] = statusRes.data
+            }
+          } catch (error) {
+            console.error(`获取转发器 ${id} 状态失败:`, error)
+          }
+        }
+      }
+      // 清理已停止的转发器状态
+      const runningIds = (res.data.running_ids || []).map(String)
+      Object.keys(forwarderStatus.value).forEach(id => {
+        if (!runningIds.includes(id)) {
+          delete forwarderStatus.value[id]
+        }
+      })
+    }
+  } catch (error) {
+    console.error('获取转发器状态失败:', error)
+  }
+}
+
 // 查询
 const getTableData = async () => {
-  const table = await getPortForwardList({
-    page: page.value,
-    pageSize: pageSize.value,
-    ...searchInfo.value
-  })
-  if (table.code === 0) {
-    tableData.value = table.data.list
-    total.value = table.data.total
-    page.value = table.data.page
-    pageSize.value = table.data.pageSize
+  loading.value = true
+  try {
+    const table = await getPortForwardList({
+      page: page.value,
+      pageSize: pageSize.value,
+      ...searchInfo.value
+    })
+    if (table.code === 0) {
+      tableData.value = table.data.list
+      total.value = table.data.total
+      page.value = table.data.page
+      pageSize.value = table.data.pageSize
+      // 获取转发器状态
+      await getForwarderStatusData()
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
+// 切换自动刷新
+const toggleAutoRefresh = () => {
+  autoRefresh.value = !autoRefresh.value
+  if (autoRefresh.value) {
+    autoRefreshTimer.value = setInterval(getForwarderStatusData, 5000) // 每5秒刷新
+    ElMessage.success('已开启自动刷新')
+  } else {
+    clearInterval(autoRefreshTimer.value)
+    ElMessage.info('已停止自动刷新')
   }
 }
 
@@ -422,10 +671,8 @@ const openDialog = async () => {
   try {
     const res = await getServerIP()
     if (res.code === 0 && res.data.ips && res.data.ips.length > 0) {
-      // 使用第一个非127.0.0.1的IP地址
       formData.value.sourceIP = res.data.ips[0]
     } else {
-      // 如果获取失败，使用默认值
       formData.value.sourceIP = '0.0.0.0'
     }
   } catch (error) {
@@ -438,7 +685,7 @@ const openDialog = async () => {
 // 关闭弹窗
 const closeDialog = async () => {
   dialogFormVisible.value = false
-  // 获取服务器IP作为默认值
+  // 重置表单数据
   try {
     const res = await getServerIP()
     if (res.code === 0 && res.data.ips && res.data.ips.length > 0) {
@@ -524,11 +771,108 @@ const handleStatusChange = async (row) => {
       type: 'success',
       message: '状态更新成功'
     })
+    // 刷新转发器状态
+    await getForwarderStatusData()
   } else {
     // 如果更新失败，恢复原状态
     row.status = !row.status
   }
 }
+
+// 状态详情对话框
+const statusDialogVisible = ref(false)
+const currentStatus = ref(null)
+const currentRow = ref(null)
+
+// 查看状态
+const viewStatus = async (row) => {
+  currentRow.value = row
+  statusDialogVisible.value = true
+  await refreshCurrentStatus()
+}
+
+// 刷新当前状态
+const refreshCurrentStatus = async () => {
+  if (!currentRow.value) return
+  try {
+    const res = await getForwarderStatus({ ID: String(currentRow.value.ID) })
+    if (res.code === 0) {
+      currentStatus.value = res.data
+    }
+  } catch (error) {
+    console.error('获取转发器状态失败:', error)
+  }
+}
+
+onMounted(() => {
+  // 初始获取状态
+  getForwarderStatusData()
+})
+
+onBeforeUnmount(() => {
+  if (autoRefreshTimer.value) {
+    clearInterval(autoRefreshTimer.value)
+  }
+})
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.gva-search-box {
+  padding: 20px;
+  padding-bottom: 0;
+}
+
+.gva-table-box {
+  padding: 20px;
+}
+
+.gva-card-box {
+  .stat-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      margin-right: 15px;
+    }
+
+    .stat-content {
+      flex: 1;
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: bold;
+        color: #303133;
+        line-height: 1;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: #909399;
+        margin-top: 8px;
+      }
+    }
+  }
+}
+
+.address-text {
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+}
+
+code {
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+}
+</style>
