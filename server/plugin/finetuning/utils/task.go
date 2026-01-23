@@ -20,12 +20,6 @@ type TaskUtil struct{}
 
 // BuildCommandFromRequest 从请求构建命令
 func (tu *TaskUtil) BuildCommandFromRequest(req *request.CreateFinetuningTaskRequest, task *finetuningModel.FinetuningTask) error {
-	// 如果提供了自定义命令，直接使用
-	if req.Command != "" {
-		task.Command = &req.Command
-		return nil
-	}
-
 	// 否则使用默认模板构建命令
 	baseCmd := "python train.py"
 	args := []string{
@@ -38,7 +32,7 @@ func (tu *TaskUtil) BuildCommandFromRequest(req *request.CreateFinetuningTaskReq
 		args = append(args, fmt.Sprintf("--output_dir=%s", req.OutputPath))
 	} else {
 		// 使用默认输出路径
-		defaultOutputPath := filepath.Join(global.GVA_CONFIG.Server.SavePath, "finetuning_outputs",
+		defaultOutputPath := filepath.Join(global.GVA_CONFIG.Local.StorePath, "finetuning_outputs",
 			fmt.Sprintf("%s_%d", req.Name, time.Now().Unix()))
 		task.OutputPath = &defaultOutputPath
 		args = append(args, fmt.Sprintf("--output_dir=%s", defaultOutputPath))
@@ -87,7 +81,7 @@ func (tu *TaskUtil) ValidateRequest(req *request.CreateFinetuningTaskRequest) er
 
 // CreateLogDir 创建日志目录
 func (tu *TaskUtil) CreateLogDir(taskName string) (string, error) {
-	logDir := filepath.Join(global.GVA_CONFIG.Server.SavePath, "finetuning_logs")
+	logDir := filepath.Join(global.GVA_CONFIG.Local.StorePath, "finetuning_logs")
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		return "", fmt.Errorf("创建日志目录失败: %w", err)
 	}

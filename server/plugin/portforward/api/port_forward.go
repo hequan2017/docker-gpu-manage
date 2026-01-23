@@ -251,8 +251,8 @@ func (a *portForward) GetForwarderStatus(c *gin.Context) {
 		return
 	}
 
-	// 转换ID
-	idUint, err := parseUint(ID)
+	// 验证ID格式
+	_, err := parseUint(ID)
 	if err != nil {
 		response.FailWithMessage("无效的规则ID", c)
 		return

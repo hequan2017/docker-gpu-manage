@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model"
 	finetuningModel "github.com/flipped-aurora/gin-vue-admin/server/plugin/finetuning/model"
 	finetuningRequest "github.com/flipped-aurora/gin-vue-admin/server/plugin/finetuning/model/request"
 	"github.com/pkg/errors"
@@ -30,7 +29,7 @@ func (s *FinetuningTaskService) CreateFinetuningTask(ctx context.Context, task *
 	*task.Progress = 0
 
 	// 生成日志文件路径
-	logDir := filepath.Join(global.GVA_CONFIG.Server.SavePath, "finetuning_logs")
+	logDir := filepath.Join(global.GVA_CONFIG.Local.StorePath, "finetuning_logs")
 	if err = os.MkdirAll(logDir, 0755); err != nil {
 		return errors.Wrap(err, "创建日志目录失败")
 	}

@@ -1,9 +1,11 @@
 package router
 
-import "github.com/flipped-aurora/gin-vue-admin/server/plugin/portforward/api"
+import (
+	"github.com/flipped-aurora/gin-vue-admin/server/plugin/portforward/api"
+)
 
 type RouterGroup struct {
-	PortForwardRouter
+	portForward
 }
 
 var RouterGroupApp = new(RouterGroup)

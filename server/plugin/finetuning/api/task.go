@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"strconv"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -9,7 +10,6 @@ import (
 	finetuningModel "github.com/flipped-aurora/gin-vue-admin/server/plugin/finetuning/model"
 	finetuningRequest "github.com/flipped-aurora/gin-vue-admin/server/plugin/finetuning/model/request"
 	finetuningService "github.com/flipped-aurora/gin-vue-admin/server/plugin/finetuning/service"
-	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -35,9 +35,9 @@ func (a *FinetuningTaskApi) CreateFinetuningTask(c *gin.Context) {
 		return
 	}
 
-	// 获取用户ID
-	claims := utils.GetUserInfo(c)
-	userID := claims.ID
+	// 从上下文获取用户ID（uint -> int 转换）
+	userIDUint := c.GetUint("user_id")
+	userID := int(userIDUint)
 
 	// 构建任务对象
 	task := &finetuningModel.FinetuningTask{
@@ -60,7 +60,7 @@ func (a *FinetuningTaskApi) CreateFinetuningTask(c *gin.Context) {
 
 	// 序列化训练参数
 	if len(req.TrainingArgs) > 0 {
-		trainingArgsJSON, err := utils.MarshalNoEscape(req.TrainingArgs)
+		trainingArgsJSON, err := json.Marshal(req.TrainingArgs)
 		if err != nil {
 			global.GVA_LOG.Error("序列化训练参数失败", zap.Error(err))
 			response.FailWithMessage("序列化训练参数失败", c)
@@ -72,7 +72,7 @@ func (a *FinetuningTaskApi) CreateFinetuningTask(c *gin.Context) {
 
 	// 序列化GPU配置
 	if len(req.GPUConfig) > 0 {
-		gpuConfigJSON, err := utils.MarshalNoEscape(req.GPUConfig)
+		gpuConfigJSON, err := json.Marshal(req.GPUConfig)
 		if err != nil {
 			global.GVA_LOG.Error("序列化GPU配置失败", zap.Error(err))
 			response.FailWithMessage("序列化GPU配置失败", c)

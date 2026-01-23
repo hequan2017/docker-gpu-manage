@@ -30,9 +30,9 @@ func (s *K8sEventService) GetEventList(ctx context.Context, req *request.GetEven
 
 	var eventList *corev1.EventList
 	if req.Namespace == "" || req.Namespace == "all" {
-		eventList, err = client.Clientset.CoreV1().Events("").List(ctx, &listOptions)
+		eventList, err = client.Clientset.CoreV1().Events("").List(ctx, listOptions)
 	} else {
-		eventList, err = client.Clientset.CoreV1().Events(req.Namespace).List(ctx, &listOptions)
+		eventList, err = client.Clientset.CoreV1().Events(req.Namespace).List(ctx, listOptions)
 	}
 
 	if err != nil {

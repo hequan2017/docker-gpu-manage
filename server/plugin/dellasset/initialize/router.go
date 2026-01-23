@@ -1,18 +1,14 @@
 package initialize
 
 import (
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/dellasset/router"
 	"github.com/gin-gonic/gin"
 )
 
-type RouterGroup struct {
-	DellAssetRouter
-}
-
-// InitRouter 初始化路由
-func InitRouter(Router *gin.RouterGroup) {
-	routerGroup := new(RouterGroup)
-	{
-		routerGroup.DellAssetRouter.InitDellAssetRouter(Router)
-	}
+func Router(engine *gin.Engine) {
+	private := engine.Group(global.GVA_CONFIG.System.RouterPrefix).Group("")
+	private.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
+	router.RouterGroupApp.DellAssetRouter.InitDellAssetRouter(private)
 }

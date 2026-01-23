@@ -10,6 +10,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/utils"
 	"gorm.io/gorm"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // K8sClusterService 集群服务结构体
@@ -64,7 +65,7 @@ func (s *K8sClusterService) CreateK8sCluster(ctx context.Context, cluster *model
 	}
 
 	// 获取节点数量
-	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, nil)
+	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 	if err == nil {
 		cluster.NodeCount = len(nodes.Items)
 	}
@@ -196,7 +197,7 @@ func (s *K8sClusterService) UpdateK8sCluster(ctx context.Context, cluster *model
 	}
 
 	// 获取节点数量
-	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, nil)
+	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 	nodeCount := 0
 	if err == nil {
 		nodeCount = len(nodes.Items)
@@ -338,7 +339,7 @@ func (s *K8sClusterService) RefreshClusterStatus(ctx context.Context, clusterNam
 	}
 
 	// 获取节点数量
-	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, nil)
+	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 	nodeCount := 0
 	if err == nil {
 		nodeCount = len(nodes.Items)

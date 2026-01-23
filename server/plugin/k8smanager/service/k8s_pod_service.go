@@ -30,9 +30,9 @@ func (s *K8sPodService) GetPodList(ctx context.Context, info *request.K8sPodSear
 
 	var podList *corev1.PodList
 	if info.ShowAll || info.Namespace == "all" {
-		podList, err = client.Clientset.CoreV1().Pods("").List(ctx, &listOptions)
+		podList, err = client.Clientset.CoreV1().Pods("").List(ctx, listOptions)
 	} else {
-		podList, err = client.Clientset.CoreV1().Pods(info.Namespace).List(ctx, &listOptions)
+		podList, err = client.Clientset.CoreV1().Pods(info.Namespace).List(ctx, listOptions)
 	}
 
 	if err != nil {

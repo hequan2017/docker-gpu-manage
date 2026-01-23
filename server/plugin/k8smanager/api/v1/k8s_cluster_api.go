@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	commonRequest "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/service"
@@ -76,14 +77,19 @@ func (a *K8sClusterApi) DeleteK8sCluster(c *gin.Context) {
 // @Success 200 {object} response.Response{msg=string} "删除成功"
 // @Router /k8s/cluster/deleteByIds [delete]
 func (a *K8sClusterApi) DeleteK8sClusterByIds(c *gin.Context) {
-	var req request.IdsReq
+	var req commonRequest.IdsReq
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	err = service.ServiceGroupApp.K8sClusterService.DeleteK8sClusterByIds(c.Request.Context(), req.Ids)
+	// 转换 []int 为 []uint
+	ids := make([]uint, len(req.Ids))
+	for i, id := range req.Ids {
+		ids[i] = uint(id)
+	}
+	err = service.ServiceGroupApp.K8sClusterService.DeleteK8sClusterByIds(c.Request.Context(), ids)
 	if err != nil {
 		global.GVA_LOG.Error("批量删除K8s集群失败!", zap.String("error", err.Error()))
 		response.FailWithMessage("批量删除失败: "+err.Error(), c)
@@ -130,14 +136,14 @@ func (a *K8sClusterApi) UpdateK8sCluster(c *gin.Context) {
 // @Success 200 {object} response.Response{data=model.K8sCluster,msg=string} "获取成功"
 // @Router /k8s/cluster/get [get]
 func (a *K8sClusterApi) GetK8sCluster(c *gin.Context) {
-	var req request.GetById
+	var req commonRequest.GetById
 	err := c.ShouldBindQuery(&req)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	cluster, err := service.ServiceGroupApp.K8sClusterService.GetK8sCluster(c.Request.Context(), req.Id)
+	cluster, err := service.ServiceGroupApp.K8sClusterService.GetK8sCluster(c.Request.Context(), uint(req.ID))
 	if err != nil {
 		global.GVA_LOG.Error("获取K8s集群失败!", zap.String("error", err.Error()))
 		response.FailWithMessage("获取失败: "+err.Error(), c)

@@ -244,6 +244,18 @@ func (i *initCasbin) InitializeData(ctx context.Context) (context.Context, error
 		{Ptype: "p", V0: "888", V1: "/productSpec/findProductSpec", V2: "GET"},
 		{Ptype: "p", V0: "888", V1: "/productSpec/getProductSpecList", V2: "GET"},
 
+		// 端口转发相关权限
+		{Ptype: "p", V0: "888", V1: "/portForward/createPortForward", V2: "POST"},
+		{Ptype: "p", V0: "888", V1: "/portForward/deletePortForward", V2: "DELETE"},
+		{Ptype: "p", V0: "888", V1: "/portForward/deletePortForwardByIds", V2: "DELETE"},
+		{Ptype: "p", V0: "888", V1: "/portForward/updatePortForward", V2: "PUT"},
+		{Ptype: "p", V0: "888", V1: "/portForward/updatePortForwardStatus", V2: "PUT"},
+		{Ptype: "p", V0: "888", V1: "/portForward/findPortForward", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/portForward/getPortForwardList", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/portForward/getServerIP", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/portForward/getForwarderStatus", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/portForward/getAllForwarderStatus", V2: "GET"},
+
 		{Ptype: "p", V0: "8881", V1: "/user/admin_register", V2: "POST"},
 		{Ptype: "p", V0: "8881", V1: "/api/createApi", V2: "POST"},
 		{Ptype: "p", V0: "8881", V1: "/api/getApiList", V2: "POST"},

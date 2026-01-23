@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model"
@@ -56,7 +57,7 @@ func (s *K8sPermissionService) getUserPermissions(userID uint, roleIDs []uint) (
 	err := global.GVA_DB.Table("k8s_permissions").
 		Joins("JOIN k8s_user_permissions ON k8s_user_permissions.permission_id = k8s_permissions.id").
 		Where("k8s_user_permissions.user_id = ?", userID).
-		Where("(k8s_user_permissions.expires_at IS NULL OR k8s_user_permissions.expires_at > ?)", global.GVA_LOCAL_CACHE.Get("current_time")).
+		Where("(k8s_user_permissions.expires_at IS NULL OR k8s_user_permissions.expires_at > ?)", time.Now()).
 		Find(&userPerms).Error
 	if err != nil {
 		return nil, err

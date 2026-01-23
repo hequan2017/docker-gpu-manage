@@ -99,14 +99,13 @@
 import { ref, reactive, onMounted, nextTick, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { UserFilled, ChatDotSquare, Loading } from '@element-plus/icons-vue'
+import { sendMessage as sendMessageApi } from '@/plugin/aiagent/api/chat'
 import {
-  sendMessage as sendMessageApi,
   getConversationList,
   createConversation,
   deleteConversation as deleteConversationApi,
   setConversationActive,
-  getActiveConversation,
-  getMessageList
+  getActiveConversation
 } from '@/plugin/aiagent/api/conversation'
 import { getMessageList as getMessagesApi } from '@/plugin/aiagent/api/message'
 import { formatDate } from '@/utils/format'

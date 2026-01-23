@@ -18,14 +18,12 @@ func K8sPermissionMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 超级管理员跳过权限检查
 		if userID, exists := c.Get("userId"); exists {
-			if uid, ok := userID.(uint); ok {
-				// 这里需要检查用户是否是超级管理员
-				// 假设通过用户服务或Casbin已经做了检查
-				// 如果是超级管理员，直接通过
-				if isSuperAdmin(c) {
-					c.Next()
-					return
-				}
+			// 这里需要检查用户是否是超级管理员
+			// 假设通过用户服务或Casbin已经做了检查
+			// 如果是超级管理员，直接通过
+			if _, ok := userID.(uint); ok && isSuperAdmin(c) {
+				c.Next()
+				return
 			}
 		}
 
@@ -68,9 +66,10 @@ func parsePermissionRequest(c *gin.Context) *model.K8sPermissionCheck {
 
 	// 获取用户角色ID列表
 	var roleIDs []uint
-	if roles, exists := c.Get("authorityId"); exists {
+	if _, exists := c.Get("authorityId"); exists {
 		// 这里需要根据实际情况获取角色ID列表
 		// 假设从Casbin或其他地方获取
+		_ = roleIDs // 避免未使用警告
 	}
 
 	// 从路径解析操作类型和资源类型

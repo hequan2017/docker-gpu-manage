@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
+	"errors"
 	"sync"
 	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model"
 	"go.uber.org/zap"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // K8sMetricsService K8s监控指标服务
@@ -98,7 +100,7 @@ func (s *K8sMetricsService) CollectClusterMetrics(ctx context.Context, clusterNa
 	}
 
 	// 获取节点列表和状态
-	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, nil)
+	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 	if err == nil {
 		metrics.TotalNodes = len(nodes.Items)
 		for _, node := range nodes.Items {
@@ -116,7 +118,7 @@ func (s *K8sMetricsService) CollectClusterMetrics(ctx context.Context, clusterNa
 	}
 
 	// 获取Pod统计
-	pods, err := client.Clientset.CoreV1().Pods("").List(ctx, nil)
+	pods, err := client.Clientset.CoreV1().Pods("").List(ctx, metav1.ListOptions{})
 	if err == nil {
 		metrics.TotalPods = len(pods.Items)
 		for _, pod := range pods.Items {
@@ -126,27 +128,24 @@ func (s *K8sMetricsService) CollectClusterMetrics(ctx context.Context, clusterNa
 		}
 	}
 
-	// 获取节点资源信息
+	// 获取节点资源信息 - 只计算总容量
 	if err == nil {
 		for _, node := range nodes.Items {
-			// CPU
+			// CPU总容量
 			metrics.TotalCpu += node.Status.Capacity.Cpu().AsApproximateFloat64()
-			metrics.UsedCpu += node.Status.Allocated.Cpu().AsApproximateFloat64()
 
-			// 内存
+			// 内存总容量
 			metrics.TotalMemory += node.Status.Capacity.Memory().Value()
-			metrics.UsedMemory += node.Status.Allocated.Memory().Value()
 
-			// 存储
+			// 存储总容量
 			metrics.TotalStorage += node.Status.Capacity.StorageEphemeral().Value()
-			metrics.UsedStorage += node.Status.Allocated.StorageEphemeral().Value()
 		}
 	}
 
 	// 使用metrics客户端获取实时指标
 	if client.MetricsClient != nil {
 		// 获取节点指标
-		nodeMetricsList, err := client.MetricsClient.MetricsV1beta1().NodeMetricses().List(ctx, nil)
+		nodeMetricsList, err := client.MetricsClient.MetricsV1beta1().NodeMetricses().List(ctx, metav1.ListOptions{})
 		if err == nil {
 			for _, nodeMetric := range nodeMetricsList.Items {
 				metrics.UsedCpu += nodeMetric.Usage.Cpu().AsApproximateFloat64()
@@ -174,7 +173,7 @@ func (s *K8sMetricsService) CollectNodeMetrics(ctx context.Context, clusterName 
 	var nodeMetricsList []*NodeMetrics
 
 	// 获取节点列表
-	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, nil)
+	nodes, err := client.Clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +181,7 @@ func (s *K8sMetricsService) CollectNodeMetrics(ctx context.Context, clusterName 
 	// 获取节点指标
 	var metricsList *map[string]interface{}
 	if client.MetricsClient != nil {
-		nodeMetrics, err := client.MetricsClient.MetricsV1beta1().NodeMetricses().List(ctx, nil)
+		nodeMetrics, err := client.MetricsClient.MetricsV1beta1().NodeMetricses().List(ctx, metav1.ListOptions{})
 		if err == nil {
 			metricsMap := make(map[string]interface{})
 			for _, m := range nodeMetrics.Items {
@@ -201,7 +200,7 @@ func (s *K8sMetricsService) CollectNodeMetrics(ctx context.Context, clusterName 
 		}
 
 		// 获取Pod数量
-		pods, err := client.Clientset.CoreV1().Pods("").List(ctx, nil)
+		pods, err := client.Clientset.CoreV1().Pods("").List(ctx, metav1.ListOptions{})
 		if err == nil {
 			for _, pod := range pods.Items {
 				if pod.Spec.NodeName == node.Name {
@@ -217,7 +216,7 @@ func (s *K8sMetricsService) CollectNodeMetrics(ctx context.Context, clusterName 
 		if metricsList != nil {
 			if nodeMetric, ok := (*metricsList)[node.Name]; ok {
 				if nm, ok := nodeMetric.(interface{ GetUsage() interface{} }); ok {
-					usage := nm.GetUsage()
+					_ = nm.GetUsage()
 					// 这里需要根据实际的metrics API结构解析
 					// 简化处理，实际使用时需要完整解析
 				}
@@ -245,14 +244,14 @@ func (s *K8sMetricsService) CollectPodMetrics(ctx context.Context, clusterName, 
 	var podMetricsList []*PodMetrics
 
 	// 获取Pod列表
-	pods, err := client.Clientset.CoreV1().Pods(namespace).List(ctx, nil)
+	pods, err := client.Clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
 	// 获取Pod指标
 	if client.MetricsClient != nil {
-		podMetrics, err := client.MetricsClient.MetricsV1beta1().PodMetricses(namespace).List(ctx, nil)
+		podMetrics, err := client.MetricsClient.MetricsV1beta1().PodMetricses(namespace).List(ctx, metav1.ListOptions{})
 		if err == nil {
 			for _, podMetric := range podMetrics.Items {
 				metrics := &PodMetrics{
@@ -300,7 +299,7 @@ func (s *K8sMetricsService) GetClusterMetrics(clusterName string) (*ClusterMetri
 	if metrics, ok := metricsCollectorInstance.clusterMetrics[clusterName]; ok {
 		return metrics, nil
 	}
-	return nil, global.GVA_ERROR{ErrorMsg: "集群指标不存在"}
+	return nil, errors.New("集群指标不存在")
 }
 
 // GetNodeMetrics 获取缓存的节点指标
@@ -311,7 +310,7 @@ func (s *K8sMetricsService) GetNodeMetrics(clusterName string) ([]*NodeMetrics, 
 	if metrics, ok := metricsCollectorInstance.nodeMetrics[clusterName]; ok {
 		return metrics, nil
 	}
-	return nil, global.GVA_ERROR{ErrorMsg: "节点指标不存在"}
+	return nil, errors.New("节点指标不存在")
 }
 
 // GetPodMetrics 获取缓存的Pod指标
@@ -323,7 +322,7 @@ func (s *K8sMetricsService) GetPodMetrics(clusterName, namespace string) ([]*Pod
 	if metrics, ok := metricsCollectorInstance.podMetrics[key]; ok {
 		return metrics, nil
 	}
-	return nil, global.GVA_ERROR{ErrorMsg: "Pod指标不存在"}
+	return nil, errors.New("Pod指标不存在")
 }
 
 // StartAutoCollector 启动自动收集协程

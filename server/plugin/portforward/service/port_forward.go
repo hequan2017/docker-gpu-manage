@@ -213,7 +213,6 @@ func (s *portForward) GetAllForwarderStatus() map[string]interface{} {
 
 	runningIDs := forwarderMgr.GetRunningForwarders()
 	totalCount := int64(0)
-	runningCount := 0
 
 	// 获取总规则数
 	global.GVA_DB.Model(&model.PortForward{}).Count(&totalCount)

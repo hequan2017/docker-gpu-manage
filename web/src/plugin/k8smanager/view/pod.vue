@@ -144,7 +144,7 @@
 
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { getPodList, deletePod as deletePodApi, getPodLog as getPodLogApi, getAllK8sClusters } from '@/plugin/k8smanager/api/cluster.js'
+import { getPodList as getPodListApi, deletePod as deletePodApi, getPodLog as getPodLogApi, getAllK8sClusters } from '@/plugin/k8smanager/api/cluster.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Connection } from '@element-plus/icons-vue'
 
@@ -193,7 +193,7 @@ const getClusters = async() => {
 const getPodList = async() => {
   loading.value = true
   try {
-    const res = await getPodList({
+    const res = await getPodListApi({
       clusterName: searchInfo.clusterName,
       namespace: searchInfo.namespace,
       label: searchInfo.label,

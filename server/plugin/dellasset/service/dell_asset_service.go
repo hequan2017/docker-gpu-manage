@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/dellasset/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/dellasset/model/request"
 )

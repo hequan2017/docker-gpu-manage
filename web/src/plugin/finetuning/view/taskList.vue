@@ -86,7 +86,7 @@
         <el-button icon="refresh" @click="getTableData">
           刷新
         </el-button>
-      </el-table>
+      </div>
       <el-table
         ref="multipleTable"
         style="width: 100%"

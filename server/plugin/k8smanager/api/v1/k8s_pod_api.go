@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/service"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type K8sPodApi struct{}
@@ -29,7 +30,7 @@ func (a *K8sPodApi) GetPodList(c *gin.Context) {
 
 	podList, err := service.ServiceGroupApp.K8sPodService.GetPodList(c.Request.Context(), &info)
 	if err != nil {
-		global.GVA_LOG.Error("获取Pod列表失败!", err)
+		global.GVA_LOG.Error("获取Pod列表失败!", zap.Error(err))
 		response.FailWithMessage("获取失败: "+err.Error(), c)
 		return
 	}
@@ -60,7 +61,7 @@ func (a *K8sPodApi) GetPod(c *gin.Context) {
 
 	pod, err := service.ServiceGroupApp.K8sPodService.GetPod(c.Request.Context(), clusterName, namespace, podName)
 	if err != nil {
-		global.GVA_LOG.Error("获取Pod详情失败!", err)
+		global.GVA_LOG.Error("获取Pod详情失败!", zap.Error(err))
 		response.FailWithMessage("获取失败: "+err.Error(), c)
 		return
 	}
@@ -87,7 +88,7 @@ func (a *K8sPodApi) DeletePod(c *gin.Context) {
 
 	err = service.ServiceGroupApp.K8sPodService.DeletePod(c.Request.Context(), req.ClusterName, req.Namespace, req.Name)
 	if err != nil {
-		global.GVA_LOG.Error("删除Pod失败!", err)
+		global.GVA_LOG.Error("删除Pod失败!", zap.Error(err))
 		response.FailWithMessage("删除失败: "+err.Error(), c)
 		return
 	}
@@ -114,7 +115,7 @@ func (a *K8sPodApi) GetPodLog(c *gin.Context) {
 
 	log, err := service.ServiceGroupApp.K8sPodService.GetPodLog(c.Request.Context(), &req)
 	if err != nil {
-		global.GVA_LOG.Error("获取Pod日志失败!", err)
+		global.GVA_LOG.Error("获取Pod日志失败!", zap.Error(err))
 		response.FailWithMessage("获取失败: "+err.Error(), c)
 		return
 	}
@@ -145,7 +146,7 @@ func (a *K8sPodApi) GetPodContainers(c *gin.Context) {
 
 	containers, initContainers, err := service.ServiceGroupApp.K8sPodService.GetPodContainers(c.Request.Context(), clusterName, namespace, podName)
 	if err != nil {
-		global.GVA_LOG.Error("获取Pod容器列表失败!", err)
+		global.GVA_LOG.Error("获取Pod容器列表失败!", zap.Error(err))
 		response.FailWithMessage("获取失败: "+err.Error(), c)
 		return
 	}
@@ -181,7 +182,7 @@ func (a *K8sPodApi) GetPodEvents(c *gin.Context) {
 
 	events, err := service.ServiceGroupApp.K8sPodService.GetPodEvents(c.Request.Context(), clusterName, namespace, podName)
 	if err != nil {
-		global.GVA_LOG.Error("获取Pod事件失败!", err)
+		global.GVA_LOG.Error("获取Pod事件失败!", zap.Error(err))
 		response.FailWithMessage("获取失败: "+err.Error(), c)
 		return
 	}

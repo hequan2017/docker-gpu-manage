@@ -1,8 +1,6 @@
 package api
 
 import (
-	"strconv"
-
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/aiagent/model"
@@ -31,8 +29,9 @@ func (a *conversation) CreateConversation(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	// 从上下文获取用户ID
-	userID := c.GetUint("user_id")
+	// 从上下文获取用户ID（uint -> int 转换）
+	userIDUint := c.GetUint("user_id")
+	userID := int(userIDUint)
 	conversation.UserID = &userID
 	err = serviceConversation.CreateConversation(&conversation)
 	if err != nil {

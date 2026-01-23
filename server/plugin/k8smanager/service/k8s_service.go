@@ -29,9 +29,9 @@ func (s *K8sServiceService) GetServiceList(ctx context.Context, info *request.K8
 
 	var svcList *corev1.ServiceList
 	if info.Namespace == "all" {
-		svcList, err = client.Clientset.CoreV1().Services("").List(ctx, &listOptions)
+		svcList, err = client.Clientset.CoreV1().Services("").List(ctx, listOptions)
 	} else {
-		svcList, err = client.Clientset.CoreV1().Services(info.Namespace).List(ctx, &listOptions)
+		svcList, err = client.Clientset.CoreV1().Services(info.Namespace).List(ctx, listOptions)
 	}
 
 	if err != nil {

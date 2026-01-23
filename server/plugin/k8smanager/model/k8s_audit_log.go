@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 )
 
 // K8sAuditLog K8s操作审计日志
@@ -43,7 +44,7 @@ func (K8sAuditLog) TableName() string {
 
 // K8sAuditLogSearch 审计日志搜索条件
 type K8sAuditLogSearch struct {
-	global.PageInfo
+	request.PageInfo
 	StartTime  time.Time `json:"startTime" form:"startTime"`  // 开始时间
 	EndTime    time.Time `json:"endTime" form:"endTime"`      // 结束时间
 	UserID     uint      `json:"userId" form:"userId"`        // 用户ID

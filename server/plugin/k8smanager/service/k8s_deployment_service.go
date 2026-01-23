@@ -30,9 +30,9 @@ func (s *K8sDeploymentService) GetDeploymentList(ctx context.Context, info *requ
 
 	var deployList *appsv1.DeploymentList
 	if info.Namespace == "all" {
-		deployList, err = client.Clientset.AppsV1().Deployments("").List(ctx, &listOptions)
+		deployList, err = client.Clientset.AppsV1().Deployments("").List(ctx, listOptions)
 	} else {
-		deployList, err = client.Clientset.AppsV1().Deployments(info.Namespace).List(ctx, &listOptions)
+		deployList, err = client.Clientset.AppsV1().Deployments(info.Namespace).List(ctx, listOptions)
 	}
 
 	if err != nil {

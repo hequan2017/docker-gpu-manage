@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/service"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type K8sDeploymentApi struct{}
@@ -29,7 +30,7 @@ func (a *K8sDeploymentApi) GetDeploymentList(c *gin.Context) {
 
 	deployList, err := service.ServiceGroupApp.K8sDeploymentService.GetDeploymentList(c.Request.Context(), &info)
 	if err != nil {
-		global.GVA_LOG.Error("获取Deployment列表失败!", err)
+		global.GVA_LOG.Error("获取Deployment列表失败!", zap.Error(err))
 		response.FailWithMessage("获取失败: "+err.Error(), c)
 		return
 	}
@@ -60,7 +61,7 @@ func (a *K8sDeploymentApi) GetDeployment(c *gin.Context) {
 
 	deploy, err := service.ServiceGroupApp.K8sDeploymentService.GetDeployment(c.Request.Context(), clusterName, namespace, name)
 	if err != nil {
-		global.GVA_LOG.Error("获取Deployment详情失败!", err)
+		global.GVA_LOG.Error("获取Deployment详情失败!", zap.Error(err))
 		response.FailWithMessage("获取失败: "+err.Error(), c)
 		return
 	}
@@ -87,7 +88,7 @@ func (a *K8sDeploymentApi) ScaleDeployment(c *gin.Context) {
 
 	deploy, err := service.ServiceGroupApp.K8sDeploymentService.ScaleDeployment(c.Request.Context(), &req)
 	if err != nil {
-		global.GVA_LOG.Error("扩缩容Deployment失败!", err)
+		global.GVA_LOG.Error("扩缩容Deployment失败!", zap.Error(err))
 		response.FailWithMessage("扩缩容失败: "+err.Error(), c)
 		return
 	}
@@ -114,7 +115,7 @@ func (a *K8sDeploymentApi) RestartDeployment(c *gin.Context) {
 
 	err = service.ServiceGroupApp.K8sDeploymentService.RestartDeployment(c.Request.Context(), &req)
 	if err != nil {
-		global.GVA_LOG.Error("重启Deployment失败!", err)
+		global.GVA_LOG.Error("重启Deployment失败!", zap.Error(err))
 		response.FailWithMessage("重启失败: "+err.Error(), c)
 		return
 	}
@@ -141,7 +142,7 @@ func (a *K8sDeploymentApi) DeleteDeployment(c *gin.Context) {
 
 	err = service.ServiceGroupApp.K8sDeploymentService.DeleteDeployment(c.Request.Context(), req.ClusterName, req.Namespace, req.Name)
 	if err != nil {
-		global.GVA_LOG.Error("删除Deployment失败!", err)
+		global.GVA_LOG.Error("删除Deployment失败!", zap.Error(err))
 		response.FailWithMessage("删除失败: "+err.Error(), c)
 		return
 	}
@@ -172,7 +173,7 @@ func (a *K8sDeploymentApi) GetDeploymentPods(c *gin.Context) {
 
 	pods, err := service.ServiceGroupApp.K8sDeploymentService.GetDeploymentPods(c.Request.Context(), clusterName, namespace, name)
 	if err != nil {
-		global.GVA_LOG.Error("获取Deployment Pods失败!", err)
+		global.GVA_LOG.Error("获取Deployment Pods失败!", zap.Error(err))
 		response.FailWithMessage("获取失败: "+err.Error(), c)
 		return
 	}

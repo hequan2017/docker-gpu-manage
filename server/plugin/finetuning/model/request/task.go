@@ -1,7 +1,8 @@
 package request
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/model"
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	commonRequest "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 )
 
 // CreateFinetuningTaskRequest 创建微调任务请求
@@ -18,7 +19,7 @@ type CreateFinetuningTaskRequest struct {
 
 // UpdateFinetuningTaskRequest 更新微调任务请求
 type UpdateFinetuningTaskRequest struct {
-	model.GVA_MODEL
+	global.GVA_MODEL
 	Name        string  `json:"name" form:"name"`         // 任务名称
 	Description *string `json:"description" form:"description"` // 任务描述
 	Status      string  `json:"status" form:"status"`     // 任务状态
@@ -26,7 +27,7 @@ type UpdateFinetuningTaskRequest struct {
 
 // FinetuningTaskSearch 微调任务搜索请求
 type FinetuningTaskSearch struct {
-	model.PageInfo
+	commonRequest.PageInfo
 	Name        string `form:"name" search:"type:contains;column:name;table:gva_finetuning_tasks"`                         // 任务名称(模糊查询)
 	Status      string `form:"status" search:"type:exact;column:status;table:gva_finetuning_tasks"`                        // 任务状态
 	BaseModel   string `form:"baseModel" search:"type:contains;column:base_model;table:gva_finetuning_tasks"`              // 基础模型

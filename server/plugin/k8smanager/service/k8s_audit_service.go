@@ -8,7 +8,6 @@ import (
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model"
-	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model/request"
 	"go.uber.org/zap"
 )
 

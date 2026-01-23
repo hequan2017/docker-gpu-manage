@@ -27,7 +27,7 @@ func (s *K8sNamespaceService) GetNamespaceList(ctx context.Context, info *reques
 		listOptions.FieldSelector = info.Field
 	}
 
-	namespaceList, err := client.Clientset.CoreV1().Namespaces().List(ctx, &listOptions)
+	namespaceList, err := client.Clientset.CoreV1().Namespaces().List(ctx, listOptions)
 	if err != nil {
 		return nil, fmt.Errorf("获取Namespace列表失败: %w", err)
 	}
