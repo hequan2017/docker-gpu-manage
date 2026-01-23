@@ -50,6 +50,12 @@ func Api(ctx context.Context) {
 			ApiGroup:    "戴尔资产管理",
 			Method:      "POST",
 		},
+		{
+			Path:        "/dellAsset/getStatistics",
+			Description: "获取资产统计信息",
+			ApiGroup:    "戴尔资产管理",
+			Method:      "GET",
+		},
 	}
 	utils.RegisterApis(entities...)
 }
