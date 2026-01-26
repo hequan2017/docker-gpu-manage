@@ -4,39 +4,6 @@
 
 **Docker GPU 算力资源管理平台** 是一个企业级的 GPU 容器化资源管理和调度系统，旨在帮助组织高效、安全地管理和分配 GPU 算力资源。平台采用现代化的微服务架构，提供从资源管理到容器实例全生命周期的完整解决方案。
 
-### 🌐 官方网站
-
-欢迎访问 **[天启算力管理平台官网](./website/index.html)** 了解更多信息！
-
-**快速预览官网：**
-```bash
-# 进入官网目录
-cd website
-
-# 启动本地预览服务器
-python3 -m http.server 8000
-
-# 然后在浏览器中访问
-# http://localhost:8000
-```
-
-**官网特色：**
-- 🎨 **科技风格设计** - 现代化的深色主题，配合青色和紫色的渐变效果
-- ✨ **丰富动画效果** - 粒子背景、3D 卡片旋转、渐入动画等
-- 📱 **完美响应式** - 适配桌面端、平板和移动设备
-- 🚀 **无依赖开发** - 纯 HTML/CSS/JavaScript，无需任何前端框架
-- 🔗 **一键部署** - 支持部署到任何静态托管服务
-
-**部署官网：**
-```bash
-# GitHub Pages
-cp -r website/* docs/website/
-git add docs/website/
-git commit -m "Add official website"
-git push
-
-# 或使用 Netlify/Vercel 等服务直接部署 website/ 目录
-```
 
 ### 🚀 项目图片
 ![系统截图](docs/4.png)
@@ -45,208 +12,6 @@ git push
 ![系统截图](docs/3.png)
 ![系统截图](docs/5.png)
 
-### 🏗️ 系统架构
-
-```mermaid
-graph TB
-    subgraph "前端层 Frontend"
-        A1[Vue 3 + Vite]
-        A2[Element Plus UI]
-        A3[Pinia 状态管理]
-        A4[Web Terminal]
-        A5[Dashboard]
-    end
-
-    subgraph "API 网关层 Gateway"
-        B1[Gin Router]
-        B2[JWT 认证]
-        B3[RBAC 权限]
-        B4[操作审计]
-    end
-
-    subgraph "业务服务层 Business Services"
-        C1[Docker GPU 管理]
-        C2[K8s 集群管理]
-        C3[系统管理]
-    end
-
-    subgraph "Docker GPU 管理模块"
-        D1[容器实例管理]
-        D2[算力节点管理]
-        D3[镜像库管理]
-        D4[产品规格管理]
-        D5[端口转发管理]
-        D6[SSH 跳板机]
-    end
-
-    subgraph "K8s 管理模块"
-        E1[集群管理]
-        E2[Pod 管理]
-        E3[工作负载管理]
-        E4[Service 管理]
-        E5[监控指标]
-        E6[权限审计]
-    end
-
-    subgraph "系统功能模块"
-        F1[权限管理 RBAC]
-        F2[定时任务]
-        F3[戴尔资产管理]
-        F4[AI Agent]
-        F5[模型微调]
-    end
-
-    subgraph "基础设施层 Infrastructure"
-        G1[(MySQL/PostgreSQL)]
-        G2[(Redis 缓存)]
-        G3[Docker 引擎]
-        G4[Kubernetes API]
-        G5[GPU 算力节点]
-    end
-
-    A1 --> B1
-    A2 --> B1
-    A3 --> B1
-    A4 --> B1
-    A5 --> B1
-
-    B1 --> C1
-    B1 --> C2
-    B1 --> C3
-
-    C1 --> D1
-    C1 --> D2
-    C1 --> D3
-    C1 --> D4
-    C1 --> D5
-    C1 --> D6
-
-    C2 --> E1
-    C2 --> E2
-    C2 --> E3
-    C2 --> E4
-    C2 --> E5
-    C2 --> E6
-
-    C3 --> F1
-    C3 --> F2
-    C3 --> F3
-    C3 --> F4
-    C3 --> F5
-
-    D1 --> G3
-    D1 --> G5
-    D2 --> G3
-    D2 --> G5
-
-    E1 --> G4
-    E2 --> G4
-    E3 --> G4
-
-    F1 --> G1
-    F2 --> G1
-    F3 --> G1
-    F4 --> G1
-    F5 --> G1
-
-    B2 --> G1
-    B3 --> G1
-    B4 --> G1
-
-    style A1 fill:#42b983,stroke:#2c3e50,color:#fff
-    style A2 fill:#409EFF,stroke:#2c3e50,color:#fff
-    style C1 fill:#f9f,stroke:#333,stroke-width:2px
-    style C2 fill:#bbf,stroke:#333,stroke-width:2px
-    style C3 fill:#bfb,stroke:#333,stroke-width:2px
-    style G3 fill:#2496ED,stroke:#2c3e50,color:#fff
-    style G4 fill:#326CE5,stroke:#2c3e50,color:#fff
-    style G5 fill:#76B900,stroke:#2c3e50,color:#fff
-```
-
-### 📊 功能模块架构
-
-```mermaid
-graph LR
-    subgraph "用户界面"
-        U1[🖥️ Web 控制台]
-        U2[📱 移动端<br/>自适应]
-        U3[💻 SSH 终端]
-        U4[🔌 API 接口]
-    end
-
-    subgraph "核心功能"
-        H1[🐳 GPU 容器管理]
-        H2[☸️ K8s 集群管理]
-        H3[🤖 AI 能力]
-        H4[🔧 运维工具]
-    end
-
-    subgraph "GPU 容器管理"
-        I1[实例生命周期]
-        I2[智能资源调度]
-        I3[显存切分 HAMi]
-        I4[端口转发]
-        I5[Web 终端]
-    end
-
-    subgraph "K8s 集群管理"
-        J1[多集群管理]
-        J2[工作负载管理]
-        J3[服务发现]
-        J4[监控告警]
-        J5[权限审计]
-    end
-
-    subgraph "AI 能力"
-        K1[GLM-4.7 对话]
-        K2[模型微调]
-        K3[智能调度]
-    end
-
-    subgraph "运维工具"
-        L1[资产管理]
-        L2[定时任务]
-        L3[日志审计]
-        L4[权限管理]
-    end
-
-    U1 --> H1
-    U1 --> H2
-    U1 --> H3
-    U1 --> H4
-    U3 --> H1
-
-    U4 --> H1
-    U4 --> H2
-    U4 --> H3
-    U4 --> H4
-
-    H1 --> I1
-    H1 --> I2
-    H1 --> I3
-    H1 --> I4
-    H1 --> I5
-
-    H2 --> J1
-    H2 --> J2
-    H2 --> J3
-    H2 --> J4
-    H2 --> J5
-
-    H3 --> K1
-    H3 --> K2
-    H3 --> K3
-
-    H4 --> L1
-    H4 --> L2
-    H4 --> L3
-    H4 --> L4
-
-    style H1 fill:#e1f5ff,stroke:#0277bd
-    style H2 fill:#e8f5e9,stroke:#2e7d32
-    style H3 fill:#f3e5f5,stroke:#7b1fa2
-    style H4 fill:#fff3e0,stroke:#ef6c00
-```
 
 ### 🎯 项目目标
 
@@ -1368,4 +1133,240 @@ VITE_FILE_API=/uploads/file   # 静态/上传文件基础路径
 │       ├── dellasset/     # 戴尔资产管理插件
 │       └── aiagent/       # AI Agent智能助手插件
 └── README.md
+```
+### 🌐 官方网站
+
+欢迎访问 **[天启算力管理平台官网](./website/index.html)** 了解更多信息！
+
+**快速预览官网：**
+```bash
+# 进入官网目录
+cd website
+
+# 启动本地预览服务器
+python3 -m http.server 8000
+
+# 然后在浏览器中访问
+# http://localhost:8000
+```
+
+**官网特色：**
+- 🎨 **科技风格设计** - 现代化的深色主题，配合青色和紫色的渐变效果
+- ✨ **丰富动画效果** - 粒子背景、3D 卡片旋转、渐入动画等
+- 📱 **完美响应式** - 适配桌面端、平板和移动设备
+- 🚀 **无依赖开发** - 纯 HTML/CSS/JavaScript，无需任何前端框架
+- 🔗 **一键部署** - 支持部署到任何静态托管服务
+
+**部署官网：**
+```bash
+# GitHub Pages
+cp -r website/* docs/website/
+git add docs/website/
+git commit -m "Add official website"
+git push
+
+# 或使用 Netlify/Vercel 等服务直接部署 website/ 目录
+```
+
+### 🏗️ 系统架构
+
+```mermaid
+graph TB
+    subgraph "前端层 Frontend"
+        A1[Vue 3 + Vite]
+        A2[Element Plus UI]
+        A3[Pinia 状态管理]
+        A4[Web Terminal]
+        A5[Dashboard]
+    end
+
+    subgraph "API 网关层 Gateway"
+        B1[Gin Router]
+        B2[JWT 认证]
+        B3[RBAC 权限]
+        B4[操作审计]
+    end
+
+    subgraph "业务服务层 Business Services"
+        C1[Docker GPU 管理]
+        C2[K8s 集群管理]
+        C3[系统管理]
+    end
+
+    subgraph "Docker GPU 管理模块"
+        D1[容器实例管理]
+        D2[算力节点管理]
+        D3[镜像库管理]
+        D4[产品规格管理]
+        D5[端口转发管理]
+        D6[SSH 跳板机]
+    end
+
+    subgraph "K8s 管理模块"
+        E1[集群管理]
+        E2[Pod 管理]
+        E3[工作负载管理]
+        E4[Service 管理]
+        E5[监控指标]
+        E6[权限审计]
+    end
+
+    subgraph "系统功能模块"
+        F1[权限管理 RBAC]
+        F2[定时任务]
+        F3[戴尔资产管理]
+        F4[AI Agent]
+        F5[模型微调]
+    end
+
+    subgraph "基础设施层 Infrastructure"
+        G1[(MySQL/PostgreSQL)]
+        G2[(Redis 缓存)]
+        G3[Docker 引擎]
+        G4[Kubernetes API]
+        G5[GPU 算力节点]
+    end
+
+    A1 --> B1
+    A2 --> B1
+    A3 --> B1
+    A4 --> B1
+    A5 --> B1
+
+    B1 --> C1
+    B1 --> C2
+    B1 --> C3
+
+    C1 --> D1
+    C1 --> D2
+    C1 --> D3
+    C1 --> D4
+    C1 --> D5
+    C1 --> D6
+
+    C2 --> E1
+    C2 --> E2
+    C2 --> E3
+    C2 --> E4
+    C2 --> E5
+    C2 --> E6
+
+    C3 --> F1
+    C3 --> F2
+    C3 --> F3
+    C3 --> F4
+    C3 --> F5
+
+    D1 --> G3
+    D1 --> G5
+    D2 --> G3
+    D2 --> G5
+
+    E1 --> G4
+    E2 --> G4
+    E3 --> G4
+
+    F1 --> G1
+    F2 --> G1
+    F3 --> G1
+    F4 --> G1
+    F5 --> G1
+
+    B2 --> G1
+    B3 --> G1
+    B4 --> G1
+
+    style A1 fill:#42b983,stroke:#2c3e50,color:#fff
+    style A2 fill:#409EFF,stroke:#2c3e50,color:#fff
+    style C1 fill:#f9f,stroke:#333,stroke-width:2px
+    style C2 fill:#bbf,stroke:#333,stroke-width:2px
+    style C3 fill:#bfb,stroke:#333,stroke-width:2px
+    style G3 fill:#2496ED,stroke:#2c3e50,color:#fff
+    style G4 fill:#326CE5,stroke:#2c3e50,color:#fff
+    style G5 fill:#76B900,stroke:#2c3e50,color:#fff
+```
+
+### 📊 功能模块架构
+
+```mermaid
+graph LR
+    subgraph "用户界面"
+        U1[🖥️ Web 控制台]
+        U2[📱 移动端<br/>自适应]
+        U3[💻 SSH 终端]
+        U4[🔌 API 接口]
+    end
+
+    subgraph "核心功能"
+        H1[🐳 GPU 容器管理]
+        H2[☸️ K8s 集群管理]
+        H3[🤖 AI 能力]
+        H4[🔧 运维工具]
+    end
+
+    subgraph "GPU 容器管理"
+        I1[实例生命周期]
+        I2[智能资源调度]
+        I3[显存切分 HAMi]
+        I4[端口转发]
+        I5[Web 终端]
+    end
+
+    subgraph "K8s 集群管理"
+        J1[多集群管理]
+        J2[工作负载管理]
+        J3[服务发现]
+        J4[监控告警]
+        J5[权限审计]
+    end
+
+    subgraph "AI 能力"
+        K1[GLM-4.7 对话]
+        K2[模型微调]
+        K3[智能调度]
+    end
+
+    subgraph "运维工具"
+        L1[资产管理]
+        L2[定时任务]
+        L3[日志审计]
+        L4[权限管理]
+    end
+
+    U1 --> H1
+    U1 --> H2
+    U1 --> H3
+    U1 --> H4
+    U3 --> H1
+
+    U4 --> H1
+    U4 --> H2
+    U4 --> H3
+    U4 --> H4
+
+    H1 --> I1
+    H1 --> I2
+    H1 --> I3
+    H1 --> I4
+    H1 --> I5
+
+    H2 --> J1
+    H2 --> J2
+    H2 --> J3
+    H2 --> J4
+    H2 --> J5
+
+    H3 --> K1
+    H3 --> K2
+    H3 --> K3
+
+    H4 --> L1
+    H4 --> L2
+    H4 --> L3
+    H4 --> L4
+
+    style H1 fill:#e1f5ff,stroke:#0277bd
+    style H2 fill:#e8f5e9,stroke:#2e7d32
+    style H3 fill:#f3e5f5,stroke:#7b1fa2
+    style H4 fill:#fff3e0,stroke:#ef6c00
 ```
