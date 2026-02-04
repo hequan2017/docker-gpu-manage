@@ -1,1098 +1,322 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="天启算力管理平台 - 企业级 Docker GPU 算力资源管理和调度系统">
-    <meta name="keywords" content="GPU管理,Docker容器,算力调度,云原生,算力平台,AI训练,深度学习,GPU调度">
-    <meta name="author" content="天启算力团队">
-    <meta name="theme-color" content="#0a0e27">
-    <title>天启算力管理平台 - 企业级 GPU 算力资源管理</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta property="og:title" content="天启算力管理平台 - 企业级 GPU 算力资源管理">
-    <meta property="og:description" content="基于 Docker 的智能 GPU 算力资源管理和调度系统，为 AI/ML 团队提供高效、安全、可扩展的算力管理解决方案">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://github.com/he7555/docker-gpu-manage/raw/main/website/assets/og-image.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="天启智教 - AI 时代的职业成长星路与技能生态平台">
+  <title>天启智教 · 成长星路</title>
+  <link rel="icon" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- 背景动画 -->
-    <div class="bg-animation">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="grid-overlay"></div>
+  <div class="space-bg">
+    <div class="stars"></div>
+    <div class="nebula"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container nav-wrapper">
+      <div class="brand">
+        <span class="brand-icon"><i class="fas fa-leaf"></i></span>
+        <div>
+          <div class="brand-title">TIANQI</div>
+          <div class="brand-subtitle">天启智教</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#growth">成长星路</a>
+        <a href="#works">作品广场</a>
+        <a href="#inspire">灵感创作</a>
+        <a href="#practice">实训平台</a>
+        <a href="#courses">课程中心</a>
+        <a href="#cert">技能评定</a>
+        <a href="#events">赛事专题</a>
+        <a href="#jobs">就业服务</a>
+      </nav>
+      <a class="login-link" href="#login">登录 | 注册</a>
     </div>
+  </header>
 
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <div class="logo-icon">
-                    <i class="fas fa-microchip"></i>
-                </div>
-                <span class="logo-text">天启算力</span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link active">首页</a></li>
-                <li><a href="#features" class="nav-link">核心功能</a></li>
-                <li><a href="#finetuning" class="nav-link">模型微调</a></li>
-                <li><a href="#ai-agent" class="nav-link">AI Agent</a></li>
-                <li><a href="#tech" class="nav-link">技术架构</a></li>
-                <li><a href="#scenarios" class="nav-link">应用场景</a></li>
-                <li><a href="#deploy" class="nav-link">快速部署</a></li>
-                <li><a href="https://github.com/he7555/docker-gpu-manage" target="_blank" class="nav-link-github">
-                    <i class="fab fa-github"></i> GitHub
-                </a></li>
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div class="hero-card">
+          <p>看，这片 AI 时代的职业星空，</p>
+          <p>「专业为基，AI 为翼」的双引擎已为你启动。</p>
+          <p>听，未来已在低语：我们在此，为你引航，</p>
+          <p>直至你成为最亮的那颗星。</p>
+          <button class="primary-btn" data-scroll="#growth">寻找我的星路</button>
+        </div>
+        <div class="hero-visual">
+          <div class="planet">
+            <div class="planet-ring"></div>
+          </div>
+          <div class="mascot">
+            <div class="mascot-visor"></div>
+            <div class="mascot-body"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="growth" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">成长星路</span>
+          <h2>从入门到进阶的 AI 职业成长路线图</h2>
+          <p>围绕专业能力、AI 应用、项目实战三条主线，打造可视化成长路径。</p>
+        </div>
+        <div class="grid three">
+          <article class="card">
+            <h3>启航阶段</h3>
+            <p>完成职业兴趣测评，锁定方向与目标岗位。</p>
+            <ul>
+              <li>能力画像</li>
+              <li>成长建议</li>
+              <li>基础课程</li>
             </ul>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+          </article>
+          <article class="card">
+            <h3>加速阶段</h3>
+            <p>以项目为主线，补齐 AI 工具与行业应用能力。</p>
+            <ul>
+              <li>AI 工具训练营</li>
+              <li>岗位任务挑战</li>
+              <li>导师指导</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>跃迁阶段</h3>
+            <p>完成高阶作品集，直通赛事与就业机会。</p>
+            <ul>
+              <li>实战作品沉淀</li>
+              <li>技能认证</li>
+              <li>就业服务</li>
+            </ul>
+          </article>
         </div>
-    </nav>
-
-    <!-- 主视觉区域 -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <span class="badge-dot"></span>
-                    <span class="badge-text">企业级 GPU 算力管理平台</span>
-                </div>
-                <h1 class="hero-title">
-                    <span class="gradient-text">天启算力管理平台</span>
-                </h1>
-                <p class="hero-subtitle">
-                    基于 Docker 的智能 GPU 算力资源管理和调度系统<br>
-                    为 AI/ML 团队、科研机构提供高效、安全、可扩展的算力管理解决方案
-                </p>
-                <div class="hero-actions">
-                    <a href="#features" class="btn btn-primary">
-                        <span>探索功能</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                    <a href="#deploy" class="btn btn-secondary">
-                        <i class="fas fa-rocket"></i>
-                        <span>快速开始</span>
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="100">0</div>
-                        <div class="stat-label">算力节点</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="1000">0</div>
-                        <div class="stat-label">容器实例</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="99">0</div>
-                        <div class="stat-label">资源利用率 %</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="24">0</div>
-                        <div class="stat-label">小时监控</div>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="gpu-3d-model">
-                    <div class="gpu-card">
-                        <div class="gpu-fan"></div>
-                        <div class="gpu-light light-1"></div>
-                        <div class="gpu-light light-2"></div>
-                        <div class="gpu-light light-3"></div>
-                    </div>
-                    <div class="floating-element element-1">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="floating-element element-2">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <div class="floating-element element-3">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <div class="scroll-mouse">
-                <div class="scroll-wheel"></div>
-            </div>
-            <span>向下滚动</span>
-        </div>
+      </div>
     </section>
 
-    <!-- 核心功能区域 -->
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">核心功能</span>
-                <h2 class="section-title">全方位 GPU 算力管理</h2>
-                <p class="section-desc">
-                    提供从资源调度到监控运维的完整解决方案，让 GPU 算力管理变得简单高效
-                </p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card" data-aos="fade-up">
-                    <div class="feature-icon">
-                        <div class="icon-bg">
-                            <i class="fas fa-cubes"></i>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">容器实例管理</h3>
-                    <p class="feature-desc">
-                        支持 GPU 容器的全生命周期管理，包括创建、启动、停止、重启和删除等操作
-                    </p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> 一键部署 GPU 容器</li>
-                        <li><i class="fas fa-check"></i> 灵活的资源配额管理</li>
-                        <li><i class="fas fa-check"></i> 批量操作支持</li>
-                    </ul>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon">
-                        <div class="icon-bg">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">智能资源调度</h3>
-                    <p class="feature-desc">
-                        基于资源需求自动匹配最优算力节点，支持 HAMi 显存切分技术
-                    </p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> 自动资源匹配</li>
-                        <li><i class="fas fa-check"></i> 显存智能切分</li>
-                        <li><i class="fas fa-check"></i> 负载均衡优化</li>
-                    </ul>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="feature-icon">
-                        <div class="icon-bg">
-                            <i class="fas fa-server"></i>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">算力节点管理</h3>
-                    <p class="feature-desc">
-                        统一管理多个 GPU 算力节点，支持 TLS 安全连接和分布式部署
-                    </p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> 多节点统一管理</li>
-                        <li><i class="fas fa-check"></i> TLS 安全通信</li>
-                        <li><i class="fas fa-check"></i> 实时状态监控</li>
-                    </ul>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="feature-icon">
-                        <div class="icon-bg">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">安全访问机制</h3>
-                    <p class="feature-desc">
-                        提供 SSH 跳板机和 Web 终端，内置 RBAC 权限控制和操作审计
-                    </p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> SSH 跳板机</li>
-                        <li><i class="fas fa-check"></i> Web 在线终端</li>
-                        <li><i class="fas fa-check"></i> RBAC 权限控制</li>
-                    </ul>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
-                    <div class="feature-icon">
-                        <div class="icon-bg">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">实时监控运维</h3>
-                    <p class="feature-desc">
-                        全方位监控 CPU、内存、网络等资源，支持日志查看和定时任务
-                    </p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> 实时资源监控</li>
-                        <li><i class="fas fa-check"></i> 容器日志查看</li>
-                        <li><i class="fas fa-check"></i> 自动定时同步</li>
-                    </ul>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
-                    <div class="feature-icon">
-                        <div class="icon-bg">
-                            <i class="fas fa-dharmachakra"></i>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">K8s 集群管理</h3>
-                    <p class="feature-desc">
-                        支持多 Kubernetes 集群统一管理，工作负载和 Pod 全生命周期控制
-                    </p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> 多集群管理</li>
-                        <li><i class="fas fa-check"></i> 工作负载管理</li>
-                        <li><i class="fas fa-check"></i> Pod 状态监控</li>
-                    </ul>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
-                    <div class="feature-icon">
-                        <div class="icon-bg">
-                            <i class="fas fa-exchange-alt"></i>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">端口转发管理</h3>
-                    <p class="feature-desc">
-                        灵活的网络端口转发规则管理，支持 TCP/UDP 协议和实时状态监控
-                    </p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> TCP/UDP 转发支持</li>
-                        <li><i class="fas fa-check"></i> 自动获取服务器IP</li>
-                        <li><i class="fas fa-check"></i> 实时连接状态监控</li>
-                    </ul>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="700">
-                    <div class="feature-icon">
-                        <div class="icon-bg">
-                            <i class="fas fa-server"></i>
-                        </div>
-                    </div>
-                    <h3 class="feature-title">戴尔资产管理</h3>
-                    <p class="feature-desc">
-                        物理服务器资产全生命周期管理，包括硬件配置、位置信息和保修期管理
-                    </p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> 硬件信息记录</li>
-                        <li><i class="fas fa-check"></i> 物理位置管理</li>
-                        <li><i class="fas fa-check"></i> 保修期跟踪</li>
-                    </ul>
-                </div>
-            </div>
+    <section id="works" class="section alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">作品广场</span>
+          <h2>展示 AI 创作与项目成果的作品库</h2>
+          <p>优秀作品公开展示，支持收藏、点赞、点评与改进建议。</p>
         </div>
+        <div class="grid four">
+          <article class="card">
+            <h3>职业案例集</h3>
+            <p>覆盖教育、设计、营销、工程等行业真实案例。</p>
+          </article>
+          <article class="card">
+            <h3>创意作品集</h3>
+            <p>AI 海报、视频、交互作品，让灵感被看见。</p>
+          </article>
+          <article class="card">
+            <h3>团队协作</h3>
+            <p>支持团队组队，共创项目与成果汇报。</p>
+          </article>
+          <article class="card">
+            <h3>作品点评</h3>
+            <p>导师点评 + AI 评分，快速提升质量。</p>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- 模型微调专区 -->
-    <section id="finetuning" class="finetuning">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">模型微调</span>
-                <h2 class="section-title">AI 大模型微调任务管理</h2>
-                <p class="section-desc">
-                    支持 LLaMA、ChatGLM 等主流大语言模型的微调训练流程控制，让模型训练更简单
-                </p>
-            </div>
-
-            <div class="finetuning-hero">
-                <div class="finetuning-visual">
-                    <div class="model-cards">
-                        <div class="model-card card-1">
-                            <i class="fas fa-brain"></i>
-                            <span>LLaMA</span>
-                        </div>
-                        <div class="model-card card-2">
-                            <i class="fas fa-comments"></i>
-                            <span>ChatGLM</span>
-                        </div>
-                        <div class="model-card card-3">
-                            <i class="fas fa-robot"></i>
-                            <span>Qwen</span>
-                        </div>
-                    </div>
-                    <div class="training-pulse">
-                        <div class="pulse-wave wave-1"></div>
-                        <div class="pulse-wave wave-2"></div>
-                        <div class="pulse-wave wave-3"></div>
-                    </div>
-                </div>
-                <div class="finetuning-content">
-                    <h3 class="finetuning-title">完整的微调训练流程</h3>
-                    <p class="finetuning-desc">
-                        提供从任务创建、训练执行到结果分析的全流程管理，支持多种预设配置模板，
-                        让大模型微调变得简单高效。
-                    </p>
-                    <div class="finetuning-stats">
-                        <div class="fstat-item">
-                            <div class="fstat-icon">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <div class="fstat-info">
-                                <div class="fstat-value">任务管理</div>
-                                <div class="fstat-label">全生命周期</div>
-                            </div>
-                        </div>
-                        <div class="fstat-item">
-                            <div class="fstat-icon">
-                                <i class="fas fa-microchip"></i>
-                            </div>
-                            <div class="fstat-info">
-                                <div class="fstat-value">GPU 配置</div>
-                                <div class="fstat-label">灵活调度</div>
-                            </div>
-                        </div>
-                        <div class="fstat-item">
-                            <div class="fstat-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="fstat-info">
-                                <div class="fstat-value">实时监控</div>
-                                <div class="fstat-label">训练进度</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="finetuning-features">
-                <div class="ft-feature-card">
-                    <div class="ft-icon">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <h4 class="ft-title">预设配置模板</h4>
-                    <p class="ft-desc">
-                        提供快速测试、标准训练、完整微调三种预设配置，
-                        一键应用专业的训练参数
-                    </p>
-                    <ul class="ft-list">
-                        <li><i class="fas fa-check"></i> 快速测试：1轮训练，100步</li>
-                        <li><i class="fas fa-check"></i> 标准训练：3轮训练，平衡配置</li>
-                        <li><i class="fas fa-check"></i> 完整微调：10轮训练，生产级</li>
-                    </ul>
-                </div>
-
-                <div class="ft-feature-card">
-                    <div class="ft-icon">
-                        <i class="fas fa-sliders-h"></i>
-                    </div>
-                    <h4 class="ft-title">灵活参数配置</h4>
-                    <p class="ft-desc">
-                        支持学习率、批次大小、训练轮数等核心参数的精细配置，
-                        满足不同场景的训练需求
-                    </p>
-                    <ul class="ft-list">
-                        <li><i class="fas fa-check"></i> 学习率：1e-4 到 1e-5</li>
-                        <li><i class="fas fa-check"></i> 批次大小：1-1024</li>
-                        <li><i class="fas fa-check"></i> 自定义训练命令</li>
-                    </ul>
-                </div>
-
-                <div class="ft-feature-card">
-                    <div class="ft-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h4 class="ft-title">实时任务监控</h4>
-                    <p class="ft-desc">
-                        任务状态实时更新，训练进度可视化展示，
-                        支持日志查看和任务控制
-                    </p>
-                    <ul class="ft-list">
-                        <li><i class="fas fa-check"></i> 任务状态：待执行/执行中/已完成</li>
-                        <li><i class="fas fa-check"></i> 进度条实时更新</li>
-                        <li><i class="fas fa-check"></i> 训练日志在线查看</li>
-                    </ul>
-                </div>
-
-                <div class="ft-feature-card">
-                    <div class="ft-icon">
-                        <i class="fas fa-hdd"></i>
-                    </div>
-                    <h4 class="ft-title">GPU 资源管理</h4>
-                    <p class="ft-desc">
-                        支持 CUDA 设备选择和多卡并行训练，
-                        充分利用 GPU 资源加速训练
-                    </p>
-                    <ul class="ft-list">
-                        <li><i class="fas fa-check"></i> CUDA 设备配置</li>
-                        <li><i class="fas fa-check"></i> 多卡并行支持</li>
-                        <li><i class="fas fa-check"></i> 资源利用率优化</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="finetuning-workflow">
-                <div class="section-header">
-                    <span class="section-tag">训练流程</span>
-                    <h2 class="section-title">微调任务执行流程</h2>
-                </div>
-                <div class="ft-steps">
-                    <div class="ft-step">
-                        <div class="ft-step-number">01</div>
-                        <div class="ft-step-icon">
-                            <i class="fas fa-plus-circle"></i>
-                        </div>
-                        <h4 class="ft-step-title">创建任务</h4>
-                        <p class="ft-step-desc">配置基础模型、数据集和训练参数</p>
-                    </div>
-                    <div class="ft-step-arrow">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                    <div class="ft-step">
-                        <div class="ft-step-number">02</div>
-                        <div class="ft-step-icon">
-                            <i class="fas fa-play-circle"></i>
-                        </div>
-                        <h4 class="ft-step-title">执行训练</h4>
-                        <p class="ft-step-desc">异步执行训练任务，实时更新进度</p>
-                    </div>
-                    <div class="ft-step-arrow">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                    <div class="ft-step">
-                        <div class="ft-step-number">03</div>
-                        <div class="ft-step-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <h4 class="ft-step-title">监控进度</h4>
-                        <p class="ft-step-desc">查看训练日志和资源使用情况</p>
-                    </div>
-                    <div class="ft-step-arrow">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                    <div class="ft-step">
-                        <div class="ft-step-number">04</div>
-                        <div class="ft-step-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <h4 class="ft-step-title">获取模型</h4>
-                        <p class="ft-step-desc">训练完成，获取微调后的模型</p>
-                    </div>
-                </div>
-            </div>
+    <section id="inspire" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">灵感创作</span>
+          <h2>AI 灵感工坊，快速生成创意方案</h2>
+          <p>提供模板、素材与模型，让创作更有方向。</p>
         </div>
+        <div class="grid three">
+          <article class="card">
+            <h3>灵感素材库</h3>
+            <p>分类素材与提示词库，快速触发创意。</p>
+          </article>
+          <article class="card">
+            <h3>协作白板</h3>
+            <p>多人同步创作，记录灵感演进过程。</p>
+          </article>
+          <article class="card">
+            <h3>AI 生成助手</h3>
+            <p>文本、图像、视频一体化生成。</p>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- AI Agent 智能化区域 -->
-    <section id="ai-agent" class="ai-agent">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">AI Agent</span>
-                <h2 class="section-title">智能化 GPU 管理</h2>
-                <p class="section-desc">
-                    融合 AI 技术，实现智能运维、自动调度和预测性分析，让 GPU 资源管理更智能、更高效
-                </p>
-            </div>
-
-            <!-- AI Agent 核心能力 -->
-            <div class="ai-hero">
-                <div class="ai-brain">
-                    <div class="brain-core">
-                        <div class="brain-ring ring-1"></div>
-                        <div class="brain-ring ring-2"></div>
-                        <div class="brain-ring ring-3"></div>
-                        <div class="brain-icon">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                    </div>
-                    <div class="ai-particles">
-                        <div class="ai-particle particle-1"></div>
-                        <div class="ai-particle particle-2"></div>
-                        <div class="ai-particle particle-3"></div>
-                        <div class="ai-particle particle-4"></div>
-                        <div class="ai-particle particle-5"></div>
-                        <div class="ai-particle particle-6"></div>
-                    </div>
-                </div>
-                <div class="ai-description">
-                    <h3 class="ai-title">AI 驱动的智能算力调度引擎</h3>
-                    <p class="ai-text">
-                        基于机器学习算法，实时分析资源使用模式，智能预测需求趋势，
-                        自动优化资源分配策略，实现 GPU 算力的最大化利用。
-                    </p>
-                    <div class="ai-metrics">
-                        <div class="metric-item">
-                            <div class="metric-value">85%</div>
-                            <div class="metric-label">资源利用率提升</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-value">90%</div>
-                            <div class="metric-label">故障预测准确率</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-value">60%</div>
-                            <div class="metric-label">运维成本降低</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI Agent 功能模块 -->
-            <div class="ai-modules">
-                <div class="ai-module-card" data-module="scheduler">
-                    <div class="module-visual">
-                        <div class="module-icon">
-                            <i class="fas fa-project-diagram"></i>
-                        </div>
-                        <div class="module-animation">
-                            <div class="node node-1"></div>
-                            <div class="node node-2"></div>
-                            <div class="node node-3"></div>
-                            <div class="connection conn-1"></div>
-                            <div class="connection conn-2"></div>
-                            <div class="connection conn-3"></div>
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <h4 class="module-title">智能资源调度</h4>
-                        <p class="module-desc">
-                            基于实时负载预测和资源需求分析，自动选择最优算力节点，
-                            实现资源的动态分配和负载均衡
-                        </p>
-                        <ul class="module-features">
-                            <li><i class="fas fa-bolt"></i> 实时负载感知</li>
-                            <li><i class="fas fa-chart-line"></i> 需求预测分析</li>
-                            <li><i class="fas fa-balance-scale"></i> 智能负载均衡</li>
-                            <li><i class="fas fa-cogs"></i> 动态资源调整</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="ai-module-card" data-module="ops">
-                    <div class="module-visual">
-                        <div class="module-icon">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="module-animation">
-                            <div class="gear gear-1"></div>
-                            <div class="gear gear-2"></div>
-                            <div class="gear gear-3"></div>
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <h4 class="module-title">自动化运维</h4>
-                        <p class="module-desc">
-                            AI Agent 自动处理日常运维任务，包括容器状态监控、
-                            异常检测、自动扩缩容和故障自愈
-                        </p>
-                        <ul class="module-features">
-                            <li><i class="fas fa-eye"></i> 7x24小时监控</li>
-                            <li><i class="fas fa-exclamation-triangle"></i> 异常智能检测</li>
-                            <li><i class="fas fa-expand-arrows-alt"></i> 自动弹性伸缩</li>
-                            <li><i class="fas fa-medkit"></i> 故障自动恢复</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="ai-module-card" data-module="optimize">
-                    <div class="module-visual">
-                        <div class="module-icon">
-                            <i class="fas fa-tachometer-alt"></i>
-                        </div>
-                        <div class="module-animation">
-                            <div class="bar bar-1"></div>
-                            <div class="bar bar-2"></div>
-                            <div class="bar bar-3"></div>
-                            <div class="bar bar-4"></div>
-                            <div class="bar bar-5"></div>
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <h4 class="module-title">性能优化建议</h4>
-                        <p class="module-desc">
-                            基于历史数据和实时监控，AI Agent 提供性能优化建议，
-                            帮助用户提升应用性能和资源利用率
-                        </p>
-                        <ul class="module-features">
-                            <li><i class="fas fa-lightbulb"></i> 智能优化建议</li>
-                            <li><i class="fas fa-database"></i> 历史数据分析</li>
-                            <li><i class="fas fa-sliders-h"></i> 参数调优推荐</li>
-                            <li><i class="fas fa-file-alt"></i> 性能评估报告</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="ai-module-card" data-module="security">
-                    <div class="module-visual">
-                        <div class="module-icon">
-                            <i class="fas fa-shield-virus"></i>
-                        </div>
-                        <div class="module-animation">
-                            <div class="shield"></div>
-                            <div class="scan-line"></div>
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <h4 class="module-title">智能安全防护</h4>
-                        <p class="module-desc">
-                            AI 驱动的安全威胁检测和防护，实时监控异常行为，
-                            自动识别潜在安全风险并采取防护措施
-                        </p>
-                        <ul class="module-features">
-                            <li><i class="fas fa-user-shield"></i> 异常行为检测</li>
-                            <li><i class="fas fa-search"></i> 威胁智能识别</li>
-                            <li><i class="fas fa-lock"></i> 自动安全加固</li>
-                            <li><i class="fas fa-bell"></i> 实时告警通知</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="ai-module-card" data-module="predict">
-                    <div class="module-visual">
-                        <div class="module-icon">
-                            <i class="fas fa-chart-area"></i>
-                        </div>
-                        <div class="module-animation">
-                            <div class="chart-line"></div>
-                            <div class="chart-point point-1"></div>
-                            <div class="chart-point point-2"></div>
-                            <div class="chart-point point-3"></div>
-                            <div class="chart-area"></div>
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <h4 class="module-title">预测性分析</h4>
-                        <p class="module-desc">
-                            利用机器学习模型预测资源需求趋势、容量规划、
-                            故障风险，为决策提供数据支持
-                        </p>
-                        <ul class="module-features">
-                            <li><i class="fas fa-calendar-alt"></i> 资源需求预测</li>
-                            <li><i class="fas fa-expand"></i> 容量规划建议</li>
-                            <li><i class="fas fa-heartbeat"></i> 故障风险预警</li>
-                            <li><i class="fas fa-coins"></i> 成本优化分析</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="ai-module-card" data-module="chat">
-                    <div class="module-visual">
-                        <div class="module-icon">
-                            <i class="fas fa-comments"></i>
-                        </div>
-                        <div class="module-animation">
-                            <div class="chat-bubble bubble-1"></div>
-                            <div class="chat-bubble bubble-2"></div>
-                            <div class="chat-bubble bubble-3"></div>
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <h4 class="module-title">智能运维助手</h4>
-                        <p class="module-desc">
-                            自然语言交互的 AI 运维助手，回答问题、执行命令、
-                            提供操作建议，降低运维门槛
-                        </p>
-                        <ul class="module-features">
-                            <li><i class="fas fa-question-circle"></i> 智能问答系统</li>
-                            <li><i class="fas fa-terminal"></i> 命令自动执行</li>
-                            <li><i class="fas fa-book-reader"></i> 文档智能检索</li>
-                            <li><i class="fas fa-graduation-cap"></i> 运维知识学习</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI Agent 工作流程 -->
-            <div class="ai-workflow">
-                <div class="section-header">
-                    <span class="section-tag">工作流程</span>
-                    <h2 class="section-title">AI Agent 智能化流程</h2>
-                </div>
-                <div class="workflow-steps">
-                    <div class="workflow-step">
-                        <div class="step-number">01</div>
-                        <div class="step-icon">
-                            <i class="fas fa-search-plus"></i>
-                        </div>
-                        <h4 class="step-title">数据采集</h4>
-                        <p class="step-desc">实时采集容器、节点、集群的多维度监控数据</p>
-                    </div>
-                    <div class="workflow-arrow">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                    <div class="workflow-step">
-                        <div class="step-number">02</div>
-                        <div class="step-icon">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <h4 class="step-title">AI 分析</h4>
-                        <p class="step-desc">机器学习模型分析数据，识别模式和异常</p>
-                    </div>
-                    <div class="workflow-arrow">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                    <div class="workflow-step">
-                        <div class="step-number">03</div>
-                        <div class="step-icon">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
-                        <h4 class="step-title">智能决策</h4>
-                        <p class="step-desc">基于分析结果，生成优化策略和决策建议</p>
-                    </div>
-                    <div class="workflow-arrow">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                    <div class="workflow-step">
-                        <div class="step-number">04</div>
-                        <div class="step-icon">
-                            <i class="fas fa-cogs"></i>
-                        </div>
-                        <h4 class="step-title">自动执行</h4>
-                        <p class="step-desc">自动执行优化操作，持续改进系统性能</p>
-                    </div>
-                </div>
-            </div>
+    <section id="practice" class="section alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">实训平台</span>
+          <h2>线上实训基地，沉浸式模拟岗位任务</h2>
+          <p>真实任务驱动，帮助学生完成岗位能力跃升。</p>
         </div>
+        <div class="grid three">
+          <article class="card">
+            <h3>岗位实训</h3>
+            <p>对接企业岗位需求，模拟任务分解与产出。</p>
+          </article>
+          <article class="card">
+            <h3>实训评估</h3>
+            <p>自动评分 + 导师复盘，形成成长报告。</p>
+          </article>
+          <article class="card">
+            <h3>协作管理</h3>
+            <p>团队分工、进度管理、资源共享。</p>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- 技术架构区域 -->
-    <section id="tech" class="tech">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">技术架构</span>
-                <h2 class="section-title">现代化技术栈</h2>
-                <p class="section-desc">
-                    采用云原生架构，前后端分离，高性能、高可用、易扩展
-                </p>
-            </div>
-            <div class="tech-content">
-                <div class="tech-diagram">
-                    <div class="tech-layer frontend-layer">
-                        <h3 class="layer-title">前端技术栈</h3>
-                        <div class="layer-items">
-                            <div class="tech-item">
-                                <div class="tech-icon vue">
-                                    <i class="fab fa-vuejs"></i>
-                                </div>
-                                <span>Vue 3.5</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon vite">
-                                    <i class="fas fa-bolt"></i>
-                                </div>
-                                <span>Vite 6</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon element">
-                                    <i class="fas fa-cube"></i>
-                                </div>
-                                <span>Element Plus</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon pinia">
-                                    <i class="fas fa-store"></i>
-                                </div>
-                                <span>Pinia</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon xterm">
-                                    <i class="fas fa-terminal"></i>
-                                </div>
-                                <span>xterm.js</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tech-layer backend-layer">
-                        <h3 class="layer-title">后端技术栈</h3>
-                        <div class="layer-items">
-                            <div class="tech-item">
-                                <div class="tech-icon go">
-                                    <i class="fab fa-golang"></i>
-                                </div>
-                                <span>Go 1.23</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon gin">
-                                    <i class="fas fa-code-branch"></i>
-                                </div>
-                                <span>Gin</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon gorm">
-                                    <i class="fas fa-database"></i>
-                                </div>
-                                <span>GORM</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon docker">
-                                    <i class="fab fa-docker"></i>
-                                </div>
-                                <span>Docker API</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon k8s">
-                                    <i class="fas fa-dharmachakra"></i>
-                                </div>
-                                <span>K8s Client</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tech-layer features-layer">
-                        <h3 class="layer-title">核心特性</h3>
-                        <div class="layer-items">
-                            <div class="tech-item">
-                                <div class="tech-icon feature">
-                                    <i class="fas fa-plug"></i>
-                                </div>
-                                <span>插件化架构</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon feature">
-                                    <i class="fas fa-lock"></i>
-                                </div>
-                                <span>RBAC权限</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon feature">
-                                    <i class="fas fa-key"></i>
-                                </div>
-                                <span>TLS安全</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon feature">
-                                    <i class="fas fa-tachometer-alt"></i>
-                                </div>
-                                <span>高性能</span>
-                            </div>
-                            <div class="tech-item">
-                                <div class="tech-icon feature">
-                                    <i class="fas fa-expand-arrows-alt"></i>
-                                </div>
-                                <span>易扩展</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section id="courses" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">课程中心</span>
+          <h2>AI + 专业课程一体化体系</h2>
+          <p>从基础到进阶，配套课程资源与学习任务。</p>
         </div>
+        <div class="grid four">
+          <article class="card">
+            <h3>必修课</h3>
+            <p>职业通识与 AI 核心能力必修课程。</p>
+          </article>
+          <article class="card">
+            <h3>选修课</h3>
+            <p>行业专题与工具训练，提升岗位适配度。</p>
+          </article>
+          <article class="card">
+            <h3>微课资源</h3>
+            <p>短视频 + 任务卡片，灵活碎片化学习。</p>
+          </article>
+          <article class="card">
+            <h3>学习档案</h3>
+            <p>学习轨迹与成果自动归档。</p>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- 应用场景区域 -->
-    <section id="scenarios" class="scenarios">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">应用场景</span>
-                <h2 class="section-title">广泛的行业应用</h2>
-                <p class="section-desc">
-                    为不同行业的 GPU 算力需求提供专业的管理解决方案
-                </p>
-            </div>
-            <div class="scenarios-grid">
-                <div class="scenario-card">
-                    <div class="scenario-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h3 class="scenario-title">AI/ML 团队</h3>
-                    <p class="scenario-desc">
-                        为机器学习团队提供按需 GPU 容器实例，支持模型训练和推理任务
-                    </p>
-                </div>
-                <div class="scenario-card">
-                    <div class="scenario-icon">
-                        <i class="fas fa-flask"></i>
-                    </div>
-                    <h3 class="scenario-title">科研机构</h3>
-                    <p class="scenario-desc">
-                        为科学计算提供 GPU 算力资源池，支持大规模并行计算任务
-                    </p>
-                </div>
-                <div class="scenario-card">
-                    <div class="scenario-icon">
-                        <i class="fas fa-cloud"></i>
-                    </div>
-                    <h3 class="scenario-title">云服务提供商</h3>
-                    <p class="scenario-desc">
-                        作为 GPU 云服务的基础平台，提供容器化 GPU 服务能力
-                    </p>
-                </div>
-                <div class="scenario-card">
-                    <div class="scenario-icon">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <h3 class="scenario-title">企业 IT 部门</h3>
-                    <p class="scenario-desc">
-                        帮助企业统一管理内部 GPU 资源，提高资源利用效率
-                    </p>
-                </div>
-                <div class="scenario-card">
-                    <div class="scenario-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3 class="scenario-title">教育机构</h3>
-                    <p class="scenario-desc">
-                        为高校和培训机构提供 GPU 教学实验环境管理
-                    </p>
-                </div>
-                <div class="scenario-card">
-                    <div class="scenario-icon">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <h3 class="scenario-title">游戏开发</h3>
-                    <p class="scenario-desc">
-                        支持游戏渲染和 AI 训练任务，提供弹性算力支持
-                    </p>
-                </div>
-            </div>
+    <section id="cert" class="section alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">技能评定</span>
+          <h2>多维评定体系，量化 AI 能力成长</h2>
+          <p>测评、认证与成长档案一站式管理。</p>
         </div>
+        <div class="grid three">
+          <article class="card">
+            <h3>能力测评</h3>
+            <p>在线测评 + AI 反馈，定位能力短板。</p>
+          </article>
+          <article class="card">
+            <h3>等级认证</h3>
+            <p>证书与徽章体系，展示个人能力标签。</p>
+          </article>
+          <article class="card">
+            <h3>成长档案</h3>
+            <p>自动生成成长报告与能力画像。</p>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- 快速部署区域 -->
-    <section id="deploy" class="deploy">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">快速开始</span>
-                <h2 class="section-title">3 分钟快速部署</h2>
-                <p class="section-desc">
-                    支持多种部署方式，选择最适合您的方式快速启动
-                </p>
-            </div>
-            <div class="deploy-tabs">
-                <div class="tab-buttons">
-                    <button class="tab-btn active" data-tab="docker">Docker 部署</button>
-                    <button class="tab-btn" data-tab="k8s">Kubernetes 部署</button>
-                    <button class="tab-btn" data-tab="local">本地开发</button>
-                </div>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="docker">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-title">Docker 快速部署</span>
-                                <button class="copy-btn" data-code="docker-cmd">
-                                    <i class="fas fa-copy"></i>
-                                    <span>复制</span>
-                                </button>
-                            </div>
-                            <pre class="code-content"><code id="docker-cmd"># 1. 克隆项目
-git clone https://github.com/he7555/docker-gpu-manage.git
-cd docker-gpu-manage
-
-# 2. 使用 Docker Compose 启动
-docker-compose up -d
-
-# 3. 访问管理界面
-open http://localhost:8888</code></pre>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="k8s">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-title">Kubernetes 部署</span>
-                                <button class="copy-btn" data-code="k8s-cmd">
-                                    <i class="fas fa-copy"></i>
-                                    <span>复制</span>
-                                </button>
-                            </div>
-                            <pre class="code-content"><code id="k8s-cmd"># 1. 添加 Helm 仓库
-helm repo add gpu-manage https://charts.gpu-manage.io
-
-# 2. 安装到 Kubernetes 集群
-helm install gpu-manage gpu-manage/gpu-manage \
-  --namespace gpu-manage \
-  --create-namespace
-
-# 3. 等待 Pod 就绪
-kubectl wait --for=condition=ready pod \
-  -l app=gpu-manage \
-  -n gpu-manage \
-  --timeout=300s</code></pre>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="local">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-title">本地开发环境</span>
-                                <button class="copy-btn" data-code="local-cmd">
-                                    <i class="fas fa-copy"></i>
-                                    <span>复制</span>
-                                </button>
-                            </div>
-                            <pre class="code-content"><code id="local-cmd"># 1. 后端启动
-cd server
-go mod download
-go run main.go
-
-# 2. 前端启动 (新终端)
-cd web
-npm install
-npm run dev
-
-# 3. 访问开发环境
-# 前端: http://localhost:3000
-# 后端: http://localhost:8888</code></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section id="events" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">赛事专题</span>
+          <h2>赛事与挑战赛入口，实战拉升</h2>
+          <p>竞赛项目、专家评审、成果展示一体化。</p>
         </div>
+        <div class="grid three">
+          <article class="card">
+            <h3>赛题库</h3>
+            <p>行业真实问题、AI 应用赛题。</p>
+          </article>
+          <article class="card">
+            <h3>赛事日历</h3>
+            <p>赛事日程提醒，报名与组队功能。</p>
+          </article>
+          <article class="card">
+            <h3>成果展示</h3>
+            <p>赛事成果展示与行业评审推荐。</p>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- CTA 区域 -->
-    <section class="cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2 class="cta-title">准备好开始了吗？</h2>
-                <p class="cta-desc">
-                    立即部署天启算力管理平台，开启高效 GPU 算力管理之旅
-                </p>
-                <div class="cta-actions">
-                    <a href="https://github.com/he7555/docker-gpu-manage" target="_blank" class="btn btn-large btn-primary">
-                        <i class="fab fa-github"></i>
-                        <span>查看源码</span>
-                    </a>
-                    <a href="#deploy" class="btn btn-large btn-secondary">
-                        <i class="fas fa-book"></i>
-                        <span>查看文档</span>
-                    </a>
-                </div>
-            </div>
+    <section id="jobs" class="section alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">就业服务</span>
+          <h2>一站式就业服务通道</h2>
+          <p>简历、岗位、面试辅导与企业对接。</p>
         </div>
+        <div class="grid four">
+          <article class="card">
+            <h3>岗位推荐</h3>
+            <p>基于能力画像推荐合适岗位。</p>
+          </article>
+          <article class="card">
+            <h3>简历优化</h3>
+            <p>AI 简历诊断与行业模板。</p>
+          </article>
+          <article class="card">
+            <h3>模拟面试</h3>
+            <p>智能面试官 + 反馈建议。</p>
+          </article>
+          <article class="card">
+            <h3>企业对接</h3>
+            <p>企业实习与就业直通车。</p>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- 页脚 -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="logo-icon">
-                        <i class="fas fa-microchip"></i>
-                    </div>
-                    <span class="logo-text">天启算力</span>
-                    <p class="footer-desc">
-                        企业级 Docker GPU 算力资源管理和调度系统
-                    </p>
-                </div>
-                <div class="footer-links">
-                    <div class="footer-link-group">
-                        <h4>产品</h4>
-                        <ul>
-                            <li><a href="#features">核心功能</a></li>
-                            <li><a href="#tech">技术架构</a></li>
-                            <li><a href="#scenarios">应用场景</a></li>
-                            <li><a href="#deploy">快速部署</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-link-group">
-                        <h4>资源</h4>
-                        <ul>
-                            <li><a href="https://github.com/he7555/docker-gpu-manage" target="_blank">GitHub</a></li>
-                            <li><a href="https://github.com/he7555/docker-gpu-manage/issues" target="_blank">问题反馈</a></li>
-                            <li><a href="https://github.com/he7555/docker-gpu-manage/blob/main/README.md" target="_blank">文档</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-link-group">
-                        <h4>联系我们</h4>
-                        <ul>
-                            <li><a href="mailto:support@gpu-manage.io">技术支持</a></li>
-                            <li><a href="mailto:business@gpu-manage.io">商务合作</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 天启算力管理平台. 基于 MIT 许可证开源.</p>
-                <div class="footer-social">
-                    <a href="https://github.com/he7555/docker-gpu-manage" target="_blank">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="#" target="_blank">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" target="_blank">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                </div>
-            </div>
+    <section id="login" class="section cta">
+      <div class="container">
+        <h2>准备好开启你的 AI 职业星路了吗？</h2>
+        <p>创建账号即可解锁完整功能板块、成长路径与 AI 实训资源。</p>
+        <div class="cta-actions">
+          <button class="primary-btn">立即登录</button>
+          <button class="ghost-btn">申请试用</button>
         </div>
-    </footer>
+      </div>
+    </section>
+  </main>
 
-    <script src="js/main.js"></script>
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-title">TIANQI</div>
+        <p>天启智教 · AI 时代职业成长平台</p>
+      </div>
+      <div>
+        <h4>快速入口</h4>
+        <ul>
+          <li><a href="#growth">成长星路</a></li>
+          <li><a href="#courses">课程中心</a></li>
+          <li><a href="#practice">实训平台</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>服务支持</h4>
+        <ul>
+          <li><a href="#jobs">就业服务</a></li>
+          <li><a href="#cert">技能评定</a></li>
+          <li><a href="https://work.weixin.qq.com/kfid/kfcb9fa0c0ca3e63f2a" target="_blank" rel="noreferrer">在线咨询</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 天启智教 · 保留所有权利</div>
+  </footer>
+
+  <script src="js/main.js"></script>
 </body>
 </html>
