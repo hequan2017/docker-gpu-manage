@@ -99,6 +99,24 @@ mcp:
     url_prefix: ""
     addr: 8889
     separate: false
+pcdn:
+    enabled: true
+    version: v2-canary
+    stable-version: v1
+    release-state: canary
+    canary:
+        regions: ["华东", "华北"]
+        isps: ["电信", "联通"]
+        user-hash-percentage: 10
+    circuit-breaker:
+        failure-rate-threshold: 0.3
+        latency-threshold-ms: 800
+        min-samples: 10
+    score-weight:
+        gpu: 0.4
+        cpu: 0.25
+        memory: 0.25
+        disk: 0.1
 jumpbox:
     enabled: true
     port: 2026

@@ -43,4 +43,7 @@ type Server struct {
 
 	// K8s管理器配置
 	K8sManager K8sManager `mapstructure:"k8smanager" json:"k8smanager" yaml:"k8smanager"`
+
+	// PCDN调度配置
+	PCDN PCDN `mapstructure:"pcdn" json:"pcdn" yaml:"pcdn"`
 }
