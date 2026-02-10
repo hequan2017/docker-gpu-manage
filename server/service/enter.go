@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/service/example"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/imageregistry"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/instance"
+	"github.com/flipped-aurora/gin-vue-admin/server/service/pcdn"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/product"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/system"
 )
@@ -18,4 +19,5 @@ type ServiceGroup struct {
 	ComputenodeServiceGroup   computenode.ServiceGroup
 	ProductServiceGroup       product.ServiceGroup
 	InstanceServiceGroup      instance.ServiceGroup
+	PcdnServiceGroup          pcdn.ServiceGroup
 }

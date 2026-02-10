@@ -29,4 +29,8 @@ func initBizRouter(routers ...*gin.RouterGroup) {
 		instanceRouter := router.RouterGroupApp.Instance
 		instanceRouter.InitInstanceRouter(privateGroup, publicGroup)
 	}
+	{
+		pcdnRouter := router.RouterGroupApp.Pcdn
+		pcdnRouter.InitPcdnRouter(privateGroup)
+	}
 }

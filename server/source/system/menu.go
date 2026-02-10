@@ -68,6 +68,7 @@ func (i *initMenu) InitializeData(ctx context.Context) (next context.Context, er
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "computeNode", Name: "computeNode", Component: "view/computenode/computeNode/computeNode.vue", Sort: 0, Meta: Meta{Title: "算力节点", Icon: "chicken"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "productSpec", Name: "productSpec", Component: "view/product/productSpec/productSpec.vue", Sort: 0, Meta: Meta{Title: "产品规格", Icon: "baseball"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "instance", Name: "instance", Component: "view/instance/instance/instance.vue", Sort: 0, Meta: Meta{Title: "实例管理", Icon: "briefcase"}},
+		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "pcdn", Name: "pcdn", Component: "view/routerHolder.vue", Sort: 0, Meta: Meta{Title: "PCDN管理", Icon: "connection"}},
 	}
 
 	// 先创建父级菜单（ParentId = 0 的菜单）
@@ -115,6 +116,11 @@ func (i *initMenu) InitializeData(ctx context.Context) (next context.Context, er
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["plugin"], Path: "pubPlug", Name: "pubPlug", Component: "view/systemTools/pubPlug/pubPlug.vue", Sort: 3, Meta: Meta{Title: "打包插件", Icon: "files"}},
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["plugin"], Path: "plugin-email", Name: "plugin-email", Component: "plugin/email/view/index.vue", Sort: 4, Meta: Meta{Title: "邮件插件", Icon: "message"}},
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["plugin"], Path: "anInfo", Name: "anInfo", Component: "plugin/announcement/view/info.vue", Sort: 5, Meta: Meta{Title: "公告管理[示例]", Icon: "scaleToOriginal"}},
+
+		// pcdn子菜单
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["pcdn"], Path: "pcdnNode", Name: "pcdnNode", Component: "view/pcdn/node/index.vue", Sort: 1, Meta: Meta{Title: "节点管理", Icon: "coin"}},
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["pcdn"], Path: "pcdnPolicy", Name: "pcdnPolicy", Component: "view/pcdn/policy/index.vue", Sort: 2, Meta: Meta{Title: "策略管理", Icon: "set-up"}},
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["pcdn"], Path: "pcdnTask", Name: "pcdnTask", Component: "view/pcdn/task/index.vue", Sort: 3, Meta: Meta{Title: "调度任务", Icon: "tickets"}},
 
 		// portForward子菜单
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["portForward"], Path: "portForwardRules", Name: "portForwardRules", Component: "plugin/portforward/view/portForward.vue", Sort: 1, Meta: Meta{Title: "转发规则", Icon: "list"}},
