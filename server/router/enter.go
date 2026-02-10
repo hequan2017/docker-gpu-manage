@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/router/example"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/imageregistry"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/instance"
+	"github.com/flipped-aurora/gin-vue-admin/server/router/pcdn"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/product"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/system"
 )
@@ -18,4 +19,5 @@ type RouterGroup struct {
 	Computenode   computenode.RouterGroup
 	Product       product.RouterGroup
 	Instance      instance.RouterGroup
+	Pcdn          pcdn.RouterGroup
 }

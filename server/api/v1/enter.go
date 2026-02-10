@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/example"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/imageregistry"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/instance"
+	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/pcdn"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/product"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/system"
 )
@@ -18,4 +19,5 @@ type ApiGroup struct {
 	ComputenodeApiGroup   computenode.ApiGroup
 	ProductApiGroup       product.ApiGroup
 	InstanceApiGroup      instance.ApiGroup
+	PcdnApiGroup          pcdn.ApiGroup
 }
