@@ -228,6 +228,23 @@ func (i *initCasbin) InitializeData(ctx context.Context) (context.Context, error
 		{Ptype: "p", V0: "888", V1: "/computeNode/findComputeNode", V2: "GET"},
 		{Ptype: "p", V0: "888", V1: "/computeNode/getComputeNodeList", V2: "GET"},
 
+		// PCDN相关权限
+		{Ptype: "p", V0: "888", V1: "/pcdn/node/create", V2: "POST"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/node/delete", V2: "DELETE"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/node/update", V2: "PUT"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/node/find", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/node/list", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/node/online", V2: "PUT"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/node/weight", V2: "PUT"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/policy/create", V2: "POST"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/policy/delete", V2: "DELETE"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/policy/update", V2: "PUT"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/policy/find", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/policy/list", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/policy/grayRelease", V2: "PUT"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/policy/switch", V2: "PUT"},
+		{Ptype: "p", V0: "888", V1: "/pcdn/task/list", V2: "GET"},
+
 		// 镜像库相关权限
 		{Ptype: "p", V0: "888", V1: "/imageRegistry/createImageRegistry", V2: "POST"},
 		{Ptype: "p", V0: "888", V1: "/imageRegistry/deleteImageRegistry", V2: "DELETE"},

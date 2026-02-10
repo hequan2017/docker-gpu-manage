@@ -237,7 +237,23 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{ApiGroup: "instance", Method: "POST", Path: "/instance/restartContainer", Description: "重启容器"},
 		{ApiGroup: "instance", Method: "POST", Path: "/instance/startContainer", Description: "启动容器"},
 		{ApiGroup: "instance", Method: "POST", Path: "/instance/stopContainer", Description: "停止容器"},
-		{ApiGroup: "instance", Method: "GET", Path: "/instance/terminal", Description: "容器终端WebSocket"},
+		{ApiGroup: "PCDN节点", Method: "POST", Path: "/pcdn/node/create", Description: "创建PCDN节点"},
+		{ApiGroup: "PCDN节点", Method: "DELETE", Path: "/pcdn/node/delete", Description: "删除PCDN节点"},
+		{ApiGroup: "PCDN节点", Method: "PUT", Path: "/pcdn/node/update", Description: "更新PCDN节点"},
+		{ApiGroup: "PCDN节点", Method: "GET", Path: "/pcdn/node/find", Description: "查询PCDN节点"},
+		{ApiGroup: "PCDN节点", Method: "GET", Path: "/pcdn/node/list", Description: "获取PCDN节点列表"},
+		{ApiGroup: "PCDN节点", Method: "PUT", Path: "/pcdn/node/online", Description: "PCDN节点上下线"},
+		{ApiGroup: "PCDN节点", Method: "PUT", Path: "/pcdn/node/weight", Description: "调整PCDN节点权重"},
+
+		{ApiGroup: "PCDN策略", Method: "POST", Path: "/pcdn/policy/create", Description: "创建PCDN策略"},
+		{ApiGroup: "PCDN策略", Method: "DELETE", Path: "/pcdn/policy/delete", Description: "删除PCDN策略"},
+		{ApiGroup: "PCDN策略", Method: "PUT", Path: "/pcdn/policy/update", Description: "更新PCDN策略"},
+		{ApiGroup: "PCDN策略", Method: "GET", Path: "/pcdn/policy/find", Description: "查询PCDN策略"},
+		{ApiGroup: "PCDN策略", Method: "GET", Path: "/pcdn/policy/list", Description: "获取PCDN策略列表"},
+		{ApiGroup: "PCDN策略", Method: "PUT", Path: "/pcdn/policy/grayRelease", Description: "PCDN策略灰度发布"},
+		{ApiGroup: "PCDN策略", Method: "PUT", Path: "/pcdn/policy/switch", Description: "PCDN策略启停"},
+
+		{ApiGroup: "PCDN调度", Method: "GET", Path: "/pcdn/task/list", Description: "查询PCDN调度任务"},
 
 		// 端口转发API
 		{ApiGroup: "端口转发", Method: "POST", Path: "/portForward/createPortForward", Description: "创建端口转发规则"},
