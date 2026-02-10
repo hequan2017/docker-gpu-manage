@@ -68,6 +68,7 @@ func (i *initMenu) InitializeData(ctx context.Context) (next context.Context, er
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "computeNode", Name: "computeNode", Component: "view/computenode/computeNode/computeNode.vue", Sort: 0, Meta: Meta{Title: "算力节点", Icon: "chicken"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "productSpec", Name: "productSpec", Component: "view/product/productSpec/productSpec.vue", Sort: 0, Meta: Meta{Title: "产品规格", Icon: "baseball"}},
 		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "instance", Name: "instance", Component: "view/instance/instance/instance.vue", Sort: 0, Meta: Meta{Title: "实例管理", Icon: "briefcase"}},
+		{MenuLevel: 0, Hidden: false, ParentId: 0, Path: "pcdn", Name: "pcdn", Component: "view/routerHolder.vue", Sort: 11, Meta: Meta{Title: "PCDN管理", Icon: "histogram"}},
 	}
 
 	// 先创建父级菜单（ParentId = 0 的菜单）
@@ -118,6 +119,12 @@ func (i *initMenu) InitializeData(ctx context.Context) (next context.Context, er
 
 		// portForward子菜单
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["portForward"], Path: "portForwardRules", Name: "portForwardRules", Component: "plugin/portforward/view/portForward.vue", Sort: 1, Meta: Meta{Title: "转发规则", Icon: "list"}},
+
+		// pcdn子菜单
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["pcdn"], Path: "pcdnDashboard", Name: "pcdnDashboard", Component: "view/pcdn/dashboard.vue", Sort: 1, Meta: Meta{Title: "PCDN概览", Icon: "data-analysis"}},
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["pcdn"], Path: "pcdnNodeManagement", Name: "pcdnNodeManagement", Component: "view/pcdn/nodeManagement.vue", Sort: 2, Meta: Meta{Title: "节点管理", Icon: "cpu"}},
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["pcdn"], Path: "pcdnPolicyManagement", Name: "pcdnPolicyManagement", Component: "view/pcdn/policyManagement.vue", Sort: 3, Meta: Meta{Title: "策略管理", Icon: "set-up"}},
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["pcdn"], Path: "pcdnDispatchTasks", Name: "pcdnDispatchTasks", Component: "view/pcdn/dispatchTasks.vue", Sort: 4, Meta: Meta{Title: "调度任务", Icon: "list"}},
 	}
 
 	// 创建子菜单

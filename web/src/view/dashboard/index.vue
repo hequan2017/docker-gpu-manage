@@ -78,7 +78,8 @@ const quickNavs = ref([
   { name: '镜像库', icon: '📦', desc: '镜像管理', path: 'imageRegistry' },
   { name: '产品规格', icon: '💎', desc: '规格配置', path: 'productSpec' },
   { name: '端口转发', icon: '🔁', desc: '转发规则', path: 'portForward' },
-  { name: 'K8s集群', icon: '☸️', desc: '集群管理', path: 'k8sCluster' }
+  { name: 'K8s集群', icon: '☸️', desc: '集群管理', path: 'k8sCluster' },
+  { name: 'PCDN管理', icon: '🌐', desc: '节点/策略/调度', path: 'pcdnDashboard' }
 ])
 
 // 核心功能
