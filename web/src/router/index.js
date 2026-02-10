@@ -24,6 +24,35 @@ const routes = [
     },
     component: () => import('@/view/example/upload/scanUpload.vue')
   },
+
+  {
+    path: '/pcdn',
+    name: 'Pcdn',
+    component: () => import('@/view/layout/index.vue'),
+    redirect: '/pcdn/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        name: 'pcdnDashboard',
+        component: () => import('@/view/pcdn/dashboard.vue')
+      },
+      {
+        path: 'node-management',
+        name: 'pcdnNodeManagement',
+        component: () => import('@/view/pcdn/nodeManagement.vue')
+      },
+      {
+        path: 'policy-management',
+        name: 'pcdnPolicyManagement',
+        component: () => import('@/view/pcdn/policyManagement.vue')
+      },
+      {
+        path: 'dispatch-tasks',
+        name: 'pcdnDispatchTasks',
+        component: () => import('@/view/pcdn/dispatchTasks.vue')
+      }
+    ]
+  },
   {
     path: '/:catchAll(.*)',
     meta: {
