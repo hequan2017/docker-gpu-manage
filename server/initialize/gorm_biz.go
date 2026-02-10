@@ -5,12 +5,23 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/computenode"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/imageregistry"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/instance"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/pcdn"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/product"
 )
 
 func bizModel() error {
 	db := global.GVA_DB
-	err := db.AutoMigrate(imageregistry.ImageRegistry{}, computenode.ComputeNode{}, product.ProductSpec{}, instance.Instance{})
+	err := db.AutoMigrate(
+		imageregistry.ImageRegistry{},
+		computenode.ComputeNode{},
+		product.ProductSpec{},
+		instance.Instance{},
+		pcdn.PcdnNode{},
+		pcdn.PcdnResource{},
+		pcdn.PcdnPolicy{},
+		pcdn.PcdnDispatchTask{},
+		pcdn.PcdnMetricSnapshot{},
+	)
 	if err != nil {
 		return err
 	}
