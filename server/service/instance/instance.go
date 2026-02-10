@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/computenode"
@@ -417,7 +418,9 @@ type AvailableNode struct {
 }
 
 // GetAvailableNodes 根据产品规格获取可用的算力节点
-func (instanceService *InstanceService) GetAvailableNodes(ctx context.Context, specIdStr string) (nodes []AvailableNode, err error) {
+func (instanceService *InstanceService) GetAvailableNodes(ctx context.Context, specIdStr string, meta SchedulingRequestMeta) (nodes []AvailableNode, err error) {
+	startAt := time.Now()
+	strategyVersion, strategyState, hitRule, forceStable := chooseStrategy(meta)
 	specId, err := strconv.ParseUint(specIdStr, 10, 64)
 	if err != nil {
 		return nil, err
@@ -985,6 +988,17 @@ func (instanceService *InstanceService) GetAvailableNodes(ctx context.Context, s
 		nodes = append(nodes, availableNode)
 	}
 
+	breakerOn := pcdnSchedulerRuntime.isCircuitOpened()
+	nodes, scoreDetails := scoreAndSortNodes(nodes, strategyVersion, strategyState, hitRule, breakerOn)
+	if forceStable && len(nodes) == 0 {
+		fallback := pcdnSchedulerRuntime.stableFallbackNodes()
+		if len(fallback) > 0 {
+			nodes = fallback
+			hitRule += "_snapshot"
+		}
+	}
+	pcdnSchedulerRuntime.recordAndEvaluate(strategyVersion, strategyState, nodes, nil, time.Since(startAt))
+	writeSchedulingTraceLog(specIdStr, strategyVersion, strategyState, hitRule, meta, scoreDetails, len(nodes), nil)
 	return nodes, nil
 }
 

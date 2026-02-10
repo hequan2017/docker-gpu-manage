@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	instanceModel "github.com/flipped-aurora/gin-vue-admin/server/model/instance"
 	instanceReq "github.com/flipped-aurora/gin-vue-admin/server/model/instance/request"
+	instanceServicePkg "github.com/flipped-aurora/gin-vue-admin/server/service/instance"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -264,7 +265,12 @@ func (instanceApi *InstanceApi) GetAvailableNodes(c *gin.Context) {
 		return
 	}
 
-	nodes, err := instanceService.GetAvailableNodes(ctx, specId)
+	meta := instanceServicePkg.SchedulingRequestMeta{
+		Region:   c.Query("region"),
+		ISP:      c.Query("isp"),
+		UserHash: c.Query("userHash"),
+	}
+	nodes, err := instanceService.GetAvailableNodes(ctx, specId, meta)
 	if err != nil {
 		global.GVA_LOG.Error("查询可用节点失败!", zap.Error(err))
 		response.FailWithMessage("查询可用节点失败:"+err.Error(), c)
