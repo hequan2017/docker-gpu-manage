@@ -32,6 +32,20 @@ func Timer() {
 
 		// 其他定时任务定在这里 参考上方使用方法
 
+		_, err = global.GVA_Timer.AddTaskByFuncWithSecond("PCDNDispatch", "*/10 * * * * *", func() {
+			task.ProcessPcdnDispatchTasks()
+		}, "PCDN调度任务执行", option...)
+		if err != nil {
+			fmt.Println("add PCDN dispatch timer error:", err)
+		}
+
+		_, err = global.GVA_Timer.AddTaskByFuncWithSecond("PCDNDispatch", "*/12 * * * * *", func() {
+			task.SyncPcdnDispatchStatus()
+		}, "PCDN调度状态同步", option...)
+		if err != nil {
+			fmt.Println("add PCDN sync timer error:", err)
+		}
+
 		//_, err := global.GVA_Timer.AddTaskByFunc("定时任务标识", "corn表达式", func() {
 		//	具体执行内容...
 		//  ......
