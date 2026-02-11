@@ -3,8 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager/model/response"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -13,7 +15,7 @@ import (
 type K8sNodeService struct{}
 
 // GetNodeList 获取Node列表
-func (s *K8sNodeService) GetNodeList(ctx context.Context, clusterName string) (*corev1.NodeList, error) {
+func (s *K8sNodeService) GetNodeList(ctx context.Context, clusterName string) ([]response.NodeListResponse, error) {
 	client, err := GetClusterClient(clusterName)
 	if err != nil {
 		return nil, err
@@ -24,7 +26,59 @@ func (s *K8sNodeService) GetNodeList(ctx context.Context, clusterName string) (*
 		return nil, fmt.Errorf("获取Node列表失败: %w", err)
 	}
 
-	return nodeList, nil
+	var resp []response.NodeListResponse
+	for _, node := range nodeList.Items {
+		// 提取状态
+		status := "NotReady"
+		for _, condition := range node.Status.Conditions {
+			if condition.Type == "Ready" && condition.Status == "True" {
+				status = "Ready"
+				break
+			}
+		}
+
+		// 提取角色
+		var roles []string
+		for k := range node.Labels {
+			if strings.HasPrefix(k, "node-role.kubernetes.io/") {
+				roles = append(roles, strings.TrimPrefix(k, "node-role.kubernetes.io/"))
+			}
+		}
+		if len(roles) == 0 {
+			roles = append(roles, "worker")
+		}
+
+		// 提取InternalIP
+		internalIP := ""
+		for _, addr := range node.Status.Addresses {
+			if addr.Type == "InternalIP" {
+				internalIP = addr.Address
+				break
+			}
+		}
+
+		// 提取GPU
+		gpu := "0"
+		if val, ok := node.Status.Capacity["nvidia.com/gpu"]; ok {
+			gpu = val.String()
+		}
+
+		resp = append(resp, response.NodeListResponse{
+			Name:          node.Name,
+			Status:        status,
+			Unschedulable: node.Spec.Unschedulable,
+			Roles:         strings.Join(roles, ", "),
+			Version:       node.Status.NodeInfo.KubeletVersion,
+			InternalIP:    internalIP,
+			CPU:           node.Status.Capacity.Cpu().String(),
+			Memory:        node.Status.Capacity.Memory().String(),
+			GPU:           gpu,
+			CreatedAt:     node.CreationTimestamp.Time,
+			Labels:        node.Labels,
+		})
+	}
+
+	return resp, nil
 }
 
 // GetNode 获取单个Node详情

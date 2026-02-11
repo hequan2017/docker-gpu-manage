@@ -263,3 +263,44 @@ export const getDeploymentPods = (params) => {
     params: params
   })
 }
+
+// ==================== Node 管理 ====================
+
+/**
+ * 获取Node列表
+ * @param {Object} params 查询参数
+ * @returns {Promise} Node列表
+ */
+export const getNodeList = (params) => {
+  return service({
+    url: '/k8s/node/list',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 获取Node详情
+ * @param {Object} params 查询参数
+ * @returns {Promise} Node详情
+ */
+export const getNode = (params) => {
+  return service({
+    url: '/k8s/node/get',
+    method: 'get',
+    params: params
+  })
+}
+
+/**
+ * 设置Node调度状态
+ * @param {Object} data 请求参数
+ * @returns {Promise} 操作结果
+ */
+export const cordonNode = (data) => {
+  return service({
+    url: '/k8s/node/cordon',
+    method: 'post',
+    data: data
+  })
+}

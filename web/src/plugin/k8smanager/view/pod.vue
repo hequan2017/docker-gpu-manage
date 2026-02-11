@@ -64,16 +64,16 @@
           </template>
         </el-table-column>
         <el-table-column prop="age" label="运行时间" width="150" />
-        <el-table-column label="操作" fixed="right" min-width="350">
-          <template #default="scope">
-            <el-button icon="view" type="primary" link @click="getPodDetail(scope.row)">详情</el-button>
-            <el-button icon="document" type="primary" link @click="getPodLog(scope.row)">日志</el-button>
-            <el-button icon="monitor" type="success" link @click="diagnosePod(scope.row)">AI诊断</el-button>
-            <el-button icon="terminal" type="primary" link @click="openTerminal(scope.row)">终端</el-button>
-            <el-button icon="delete" type="danger" link @click="deletePod(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-table-column label="操作" fixed="right" min-width="350">
+        <template #default="scope">
+          <el-button icon="view" type="primary" link @click="getPodDetail(scope.row)">详情</el-button>
+          <el-button icon="document" type="primary" link @click="getPodLog(scope.row)">日志</el-button>
+          <el-button icon="monitor" type="success" link @click="diagnosePod(scope.row)">AI诊断</el-button>
+          <el-button icon="terminal" type="primary" link @click="openTerminal(scope.row)">终端</el-button>
+          <el-button icon="delete" type="danger" link @click="deletePod(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
     </div>
 
     <!-- Pod 详情对话框 -->

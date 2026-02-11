@@ -8,7 +8,7 @@ import (
 type K8sCluster struct {
 	global.GVA_MODEL
 	Name        string `json:"name" gorm:"type:varchar(100);not null;uniqueIndex;comment:集群名称" binding:"required"` // 集群名称
-	KubeConfig  string `json:"kubeConfig" gorm:"type:text;comment:kubeconfig配置内容" binding:"required"`               // kubeconfig配置内容
+	KubeConfig  string `json:"kubeConfig" gorm:"type:longtext;comment:kubeconfig配置内容" binding:"required"`               // kubeconfig配置内容
 	Endpoint    string `json:"endpoint" gorm:"type:varchar(500);comment:API Server地址"`                                // API Server地址
 	Version     string `json:"version" gorm:"type:varchar(50);comment:K8s版本"`                                          // K8s版本
 	Status      string `json:"status" gorm:"type:varchar(20);default:unknown;comment:集群状态"`                          // 集群状态: online, offline, unknown

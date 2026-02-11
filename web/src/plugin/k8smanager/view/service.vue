@@ -47,7 +47,7 @@
         <el-table-column prop="clusterIP" label="Cluster IP" width="150" />
         <el-table-column prop="externalIP" label="External IP" width="150">
           <template #default="scope">
-            <span v-if="scope.row.externalIP === '<pending>'"">
+            <span v-if="scope.row.externalIP === '<pending>'">
               <el-tag type="warning">待分配</el-tag>
             </span>
             <span v-else>{{ scope.row.externalIP || '-' }}</span>

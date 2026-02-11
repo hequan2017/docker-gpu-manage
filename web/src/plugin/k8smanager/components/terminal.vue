@@ -87,11 +87,12 @@ const initTerminal = () => {
   fitAddon.fit()
 
   // 连接WebSocket
-  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
-  const host = window.location.host
+  // const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
+  const protocol = 'ws'
+  const host = '127.0.0.1:8890'
   // 注意：需要确保后端API路径正确，且包含鉴权token（如果需要）
   const token = userStore.token
-  const url = `${protocol}://${host}/api/k8s/pod/exec?clusterName=${props.clusterName}&namespace=${props.namespace}&podName=${props.podName}&container=${props.containerName}&command=/bin/sh&x-token=${token}`
+  const url = `${protocol}://${host}/k8s/pod/exec?clusterName=${props.clusterName}&namespace=${props.namespace}&podName=${props.podName}&container=${props.containerName}&command=/bin/sh&x-token=${token}`
   
   socket = new WebSocket(url)
 

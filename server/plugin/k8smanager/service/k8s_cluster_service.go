@@ -52,8 +52,8 @@ func (s *K8sClusterService) CreateK8sCluster(ctx context.Context, cluster *model
 	// 验证集群连接并获取版本信息
 	client, err := createClient(cluster)
 	if err != nil {
-		// 连接失败，更新状态为offline
-		global.GVA_DB.Model(cluster).Update("status", "offline")
+		// 连接失败，删除刚才创建的记录（硬删除），以便用户重试
+		global.GVA_DB.Unscoped().Delete(cluster)
 		return fmt.Errorf("集群连接验证失败: %w", err)
 	}
 

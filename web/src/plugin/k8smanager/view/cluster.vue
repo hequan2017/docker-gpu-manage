@@ -177,6 +177,7 @@ const searchInfo = ref({})
 const dialogFormVisible = ref(false)
 const dialogTitle = ref('新增集群')
 const type = ref('')
+const clusterForm = ref(null)
 const formData = reactive({
   name: '',
   kubeConfig: '',
@@ -266,7 +267,6 @@ const closeDialog = () => {
 
 // 确认操作
 const enterDialog = async() => {
-  const clusterForm = ref(null)
   await clusterForm.value.validate()
   let res
   if (type.value === 'create') {
