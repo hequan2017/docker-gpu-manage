@@ -120,28 +120,15 @@ export const getPodList = (params) => {
 }
 
 /**
- * 获取Pod详情
- * @param {Object} params 查询参数
- * @returns {Promise} Pod详情
- */
-export const getPod = (params) => {
-  return service({
-    url: '/k8s/pod/get',
-    method: 'get',
-    params: params
-  })
-}
-
-/**
  * 删除Pod
- * @param {Object} data 删除参数
+ * @param {Object} params 删除参数
  * @returns {Promise} 删除结果
  */
-export const deletePod = (data) => {
+export const deletePod = (params) => {
   return service({
     url: '/k8s/pod/delete',
     method: 'delete',
-    data: data
+    params: params
   })
 }
 
@@ -180,6 +167,19 @@ export const getPodEvents = (params) => {
   return service({
     url: '/k8s/pod/events',
     method: 'get',
+    params: params
+  })
+}
+
+/**
+ * AI诊断Pod
+ * @param {Object} params 查询参数
+ * @returns {Promise} 诊断结果
+ */
+export const diagnosePod = (params) => {
+  return service({
+    url: '/k8s/pod/diagnose',
+    method: 'post',
     params: params
   })
 }
@@ -261,128 +261,5 @@ export const getDeploymentPods = (params) => {
     url: '/k8s/deployment/pods',
     method: 'get',
     params: params
-  })
-}
-
-// ==================== Service 管理 ====================
-
-/**
- * 获取Service列表
- * @param {Object} params 查询参数
- * @returns {Promise} Service列表
- */
-export const getServiceList = (params) => {
-  return service({
-    url: '/k8s/service/list',
-    method: 'get',
-    params: params
-  })
-}
-
-/**
- * 获取Service详情
- * @param {Object} params 查询参数
- * @returns {Promise} Service详情
- */
-export const getService = (params) => {
-  return service({
-    url: '/k8s/service/get',
-    method: 'get',
-    params: params
-  })
-}
-
-/**
- * 删除Service
- * @param {Object} data 删除参数
- * @returns {Promise} 删除结果
- */
-export const deleteService = (data) => {
-  return service({
-    url: '/k8s/service/delete',
-    method: 'delete',
-    data: data
-  })
-}
-
-/**
- * 获取Service的Endpoints
- * @param {Object} params 查询参数
- * @returns {Promise} Endpoints
- */
-export const getServiceEndpoints = (params) => {
-  return service({
-    url: '/k8s/service/endpoints',
-    method: 'get',
-    params: params
-  })
-}
-
-// ==================== Namespace 管理 ====================
-
-/**
- * 获取Namespace列表
- * @param {Object} params 查询参数
- * @returns {Promise} Namespace列表
- */
-export const getNamespaceList = (params) => {
-  return service({
-    url: '/k8s/namespace/list',
-    method: 'get',
-    params: params
-  })
-}
-
-/**
- * 获取Namespace详情
- * @param {Object} params 查询参数
- * @returns {Promise} Namespace详情
- */
-export const getNamespace = (params) => {
-  return service({
-    url: '/k8s/namespace/get',
-    method: 'get',
-    params: params
-  })
-}
-
-/**
- * 创建Namespace
- * @param {Object} data 创建参数
- * @returns {Promise} 创建结果
- */
-export const createNamespace = (data) => {
-  return service({
-    url: '/k8s/namespace/create',
-    method: 'post',
-    data: data
-  })
-}
-
-/**
- * 删除Namespace
- * @param {Object} data 删除参数
- * @returns {Promise} 删除结果
- */
-export const deleteNamespace = (data) => {
-  return service({
-    url: '/k8s/namespace/delete',
-    method: 'delete',
-    data: data
-  })
-}
-
-// ==================== Event 管理 ====================
-
-/**
- * 获取Event列表
- * @param {Object} data 查询参数
- * @returns {Promise} Event列表
- */
-export const getEventList = (data) => {
-  return service({
-    url: '/k8s/event/list',
-    method: 'post',
-    data: data
   })
 }

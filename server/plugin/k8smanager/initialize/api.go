@@ -19,6 +19,11 @@ func Api(ctx context.Context) {
 		{Path: "/k8s/cluster/refresh", Description: "刷新K8s集群状态", ApiGroup: "K8s集群", Method: "POST"},
 		{Path: "/k8s/cluster/all", Description: "获取所有K8s集群", ApiGroup: "K8s集群", Method: "GET"},
 
+		// Node相关API
+		{Path: "/k8s/node/list", Description: "获取Node列表", ApiGroup: "K8s Node", Method: "GET"},
+		{Path: "/k8s/node/get", Description: "获取Node详情", ApiGroup: "K8s Node", Method: "GET"},
+		{Path: "/k8s/node/cordon", Description: "设置Node调度状态", ApiGroup: "K8s Node", Method: "POST"},
+
 		// Pod相关API
 		{Path: "/k8s/pod/list", Description: "获取Pod列表", ApiGroup: "K8s Pod", Method: "GET"},
 		{Path: "/k8s/pod/get", Description: "获取Pod详情", ApiGroup: "K8s Pod", Method: "GET"},

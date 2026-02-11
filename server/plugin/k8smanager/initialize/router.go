@@ -26,4 +26,5 @@ func Router(engine *gin.Engine) {
 	router.RouterGroupApp.K8sEventRouter.InitK8sEventRouter(private)
 	router.RouterGroupApp.K8sAuditRouter.InitK8sAuditRouter(private)     // 审计日志路由
 	router.RouterGroupApp.K8sMetricsRouter.InitK8sMetricsRouter(private) // 监控指标路由
+	router.RouterGroupApp.K8sNodeRouter.InitK8sNodeRouter(private)       // Node管理路由
 }

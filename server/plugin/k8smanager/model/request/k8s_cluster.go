@@ -99,6 +99,13 @@ type GetPodLogRequest struct {
 	SinceSeconds int64 `json:"sinceSeconds"`                     // 返回最近多少秒的日志
 }
 
+// CordonNodeRequest 设置Node调度状态请求
+type CordonNodeRequest struct {
+	ClusterName   string `json:"clusterName" binding:"required"`   // 集群名称
+	NodeName      string `json:"nodeName" binding:"required"`      // Node名称
+	Unschedulable bool   `json:"unschedulable"`                    // 是否不可调度 (true=Cordon, false=Uncordon)
+}
+
 // ExecPodRequest 在Pod中执行命令请求
 type ExecPodRequest struct {
 	ClusterName string   `json:"clusterName" binding:"required"` // 集群名称

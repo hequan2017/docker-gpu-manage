@@ -10,6 +10,7 @@ type ServiceGroup struct {
 	K8sAuditService
 	K8sPermissionService
 	K8sMetricsService
+	K8sNodeService
 }
 
 var ServiceGroupApp = new(ServiceGroup)

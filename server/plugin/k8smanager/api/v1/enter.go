@@ -9,6 +9,7 @@ type ApiGroup struct {
 	K8sEventApi
 	K8sAuditApi
 	K8sMetricsApi
+	K8sNodeApi
 }
 
 var ApiGroupApp = new(ApiGroup)

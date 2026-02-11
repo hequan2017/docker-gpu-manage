@@ -18,5 +18,6 @@ func (r *K8sPodRouter) InitK8sPodRouter(Router *gin.RouterGroup) {
 		podRouter.POST("log", podApi.GetPodLog)            // 获取Pod日志
 		podRouter.GET("containers", podApi.GetPodContainers) // 获取Pod容器列表
 		podRouter.GET("events", podApi.GetPodEvents)       // 获取Pod事件
+		podRouter.GET("exec", podApi.ExecPod)              // 在Pod中执行命令
 	}
 }

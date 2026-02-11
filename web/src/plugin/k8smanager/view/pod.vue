@@ -51,6 +51,12 @@
         </el-table-column>
         <el-table-column prop="ip" label="Pod IP" width="150" />
         <el-table-column prop="node" label="节点" width="150" />
+        <el-table-column label="GPU资源" width="100">
+          <template #default="scope">
+            <el-tag v-if="scope.row.gpu > 0" type="success">{{ scope.row.gpu }}</el-tag>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="restarts" label="重启次数" width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.restarts > 0" type="warning">{{ scope.row.restarts }}</el-tag>
@@ -62,6 +68,7 @@
           <template #default="scope">
             <el-button icon="view" type="primary" link @click="getPodDetail(scope.row)">详情</el-button>
             <el-button icon="document" type="primary" link @click="getPodLog(scope.row)">日志</el-button>
+            <el-button icon="monitor" type="success" link @click="diagnosePod(scope.row)">AI诊断</el-button>
             <el-button icon="terminal" type="primary" link @click="openTerminal(scope.row)">终端</el-button>
             <el-button icon="delete" type="danger" link @click="deletePod(scope.row)">删除</el-button>
           </template>
@@ -139,14 +146,38 @@
         </div>
       </div>
     </el-dialog>
+
+    <!-- AI诊断结果对话框 -->
+    <el-dialog v-model="diagnosisDialogVisible" title="AI 智能诊断" width="60%" top="5vh">
+      <div v-loading="diagnosisLoading" element-loading-text="AI正在分析Pod状态，请稍候...">
+        <div class="diagnosis-content" v-if="diagnosisResult">
+          <pre class="diagnosis-text">{{ diagnosisResult }}</pre>
+        </div>
+        <div v-else-if="!diagnosisLoading" class="empty-diagnosis">
+          暂无诊断结果
+        </div>
+      </div>
+    </el-dialog>
+    <!-- Web Terminal -->
+    <Terminal
+      v-if="terminalDialogVisible"
+      v-model="terminalDialogVisible"
+      :cluster-name="searchInfo.clusterName"
+      :namespace="currentPod?.namespace"
+      :pod-name="currentPod?.name"
+      :container-name="currentPod?.raw?.spec?.containers[0]?.name"
+      @close="closeTerminal"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { getPodList as getPodListApi, deletePod as deletePodApi, getPodLog as getPodLogApi, getAllK8sClusters } from '@/plugin/k8smanager/api/cluster.js'
+import { getPodList as getPodListApi, deletePod as deletePodApi, getPodLog as getPodLogApi, getAllK8sClusters, diagnosePod as diagnosePodApi } from '@/plugin/k8smanager/api/cluster.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Connection } from '@element-plus/icons-vue'
+
+import Terminal from '@/plugin/k8smanager/components/terminal.vue'
 
 defineOptions({
   name: 'K8sPod'
@@ -166,6 +197,9 @@ const logDialogVisible = ref(false)
 const podLog = ref('')
 const detailDialogVisible = ref(false)
 const terminalDialogVisible = ref(false)
+const diagnosisDialogVisible = ref(false)
+const diagnosisResult = ref('')
+const diagnosisLoading = ref(false)
 const podDetail = ref(null)
 const podDetailYaml = ref('')
 const currentPod = ref(null)
@@ -209,12 +243,28 @@ const getPodList = async() => {
         node: item.spec.nodeName || '-',
         restarts: getContainerRestartCount(item),
         age: calculateAge(item.metadata.creationTimestamp),
+        gpu: getGPURequest(item),
         raw: item
       }))
     }
   } finally {
     loading.value = false
   }
+}
+
+// 获取Pod GPU请求量
+const getGPURequest = (pod) => {
+  let gpu = 0
+  if (pod.spec?.containers) {
+    pod.spec.containers.forEach(c => {
+      if (c.resources?.limits && c.resources.limits['nvidia.com/gpu']) {
+        gpu += parseInt(c.resources.limits['nvidia.com/gpu'])
+      } else if (c.resources?.requests && c.resources.requests['nvidia.com/gpu']) {
+        gpu += parseInt(c.resources.requests['nvidia.com/gpu'])
+      }
+    })
+  }
+  return gpu
 }
 
 // 获取容器重启次数
@@ -312,6 +362,29 @@ const getPodLog = async(row) => {
     }
   } finally {
     loading.value = false
+  }
+}
+
+// AI诊断
+const diagnosePod = async(row) => {
+  diagnosisResult.value = ''
+  diagnosisDialogVisible.value = true
+  diagnosisLoading.value = true
+  try {
+    const res = await diagnosePodApi({
+      clusterName: searchInfo.clusterName,
+      namespace: row.namespace,
+      podName: row.name
+    })
+    if (res.code === 0) {
+      diagnosisResult.value = res.data
+    } else {
+      diagnosisResult.value = '诊断失败: ' + res.msg
+    }
+  } catch (error) {
+    diagnosisResult.value = '诊断出错: ' + error
+  } finally {
+    diagnosisLoading.value = false
   }
 }
 
@@ -457,6 +530,23 @@ export default {
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   margin-top: 20px;
+}
+
+.diagnosis-text {
+  white-space: pre-wrap;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+.empty-diagnosis {
+  text-align: center;
+  color: #999;
+  padding: 40px 0;
 }
 
 :deep(.el-table .error-row) {

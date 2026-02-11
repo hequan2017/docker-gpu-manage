@@ -20,6 +20,8 @@
 - ✅ Pod 日志查看
 - ✅ Pod 容器列表
 - ✅ Pod 事件查看
+- ✅ Pod 终端 (Web Terminal)
+- ✅ Pod AI 智能诊断
 
 ### 3. Deployment 管理
 - ✅ Deployment 列表查询
@@ -223,6 +225,18 @@ yarn dev
 3. 设置日志参数（行数、是否跟踪等）
 4. 查看实时日志
 
+### 5. Web Terminal
+1. 在 Pod 列表中点击 "终端"
+2. 系统会自动连接到 Pod 的默认容器
+3. 支持 xterm.js 完整交互体验
+4. 支持自动调整终端大小
+
+### 6. AI 智能诊断
+1. 在 Pod 列表中点击 "AI诊断"
+2. 系统会自动收集 Pod 状态、事件和日志
+3. 调用 AI Agent 进行智能分析
+4. 给出故障排查建议和解决方案
+
 ## 🔧 API 接口文档
 
 所有 API 都有完整的 Swagger 文档注解，启动后端服务后访问：
@@ -307,7 +321,7 @@ SQL 脚本中已为管理员角色（ID=888）添加了所有权限。
 - [ ] ConfigMap/Secret 管理
 - [ ] PVC/PV 管理
 - [ ] Ingress 管理
-- [ ] Pod 终端（WebSocket）
+- [x] Pod 终端（WebSocket）
 - [ ] 实时监控指标
 - [ ] YAML 编辑器
 - [ ] Helm Chart 支持

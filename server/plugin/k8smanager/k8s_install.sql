@@ -90,6 +90,8 @@ VALUES
 (NOW(), NOW(), '/k8s/pod/log', '获取Pod日志', 'K8s Pod', 'POST'),
 (NOW(), NOW(), '/k8s/pod/containers', '获取Pod容器列表', 'K8s Pod', 'GET'),
 (NOW(), NOW(), '/k8s/pod/events', '获取Pod事件', 'K8s Pod', 'GET'),
+(NOW(), NOW(), '/k8s/pod/exec', '在Pod中执行命令', 'K8s Pod', 'GET'),
+(NOW(), NOW(), '/k8s/pod/diagnose', '使用AI诊断Pod', 'K8s Pod', 'POST'),
 
 -- Deployment相关API (6个)
 (NOW(), NOW(), '/k8s/deployment/list', '获取Deployment列表', 'K8s Deployment', 'GET'),
@@ -161,6 +163,8 @@ VALUES
 (NULL, 'p', '888', '/k8s/pod/log', 'POST', '', '', '', ''),
 (NULL, 'p', '888', '/k8s/pod/containers', 'GET', '', '', '', ''),
 (NULL, 'p', '888', '/k8s/pod/events', 'GET', '', '', '', ''),
+(NULL, 'p', '888', '/k8s/pod/exec', 'GET', '', '', '', ''),
+(NULL, 'p', '888', '/k8s/pod/diagnose', 'POST', '', '', '', ''),
 
 -- Deployment API
 (NULL, 'p', '888', '/k8s/deployment/list', 'GET', '', '', '', ''),
