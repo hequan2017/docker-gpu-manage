@@ -94,6 +94,38 @@ export const getMsDiscussionList = (params) => {
     params
   })
 }
+
+// @Tags MsDiscussion
+// @Summary 点赞社区讨论
+// @Security ApiKeyAuth
+// @Accept application/json
+// @Produce application/json
+// @Param data body model.MsDiscussion true "点赞社区讨论"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"点赞成功"}"
+// @Router /discussion/likeMsDiscussion [post]
+export const likeMsDiscussion = (params) => {
+  return service({
+    url: '/discussion/likeMsDiscussion',
+    method: 'post',
+    params
+  })
+}
+
+// @Tags MsDiscussion
+// @Summary 增加浏览量
+// @Security ApiKeyAuth
+// @Accept application/json
+// @Produce application/json
+// @Param data body model.MsDiscussion true "增加浏览量"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"操作成功"}"
+// @Router /discussion/viewMsDiscussion [post]
+export const viewMsDiscussion = (params) => {
+  return service({
+    url: '/discussion/viewMsDiscussion',
+    method: 'post',
+    params
+  })
+}
 // @Tags MsDiscussion
 // @Summary 获取数据源
 // @Security ApiKeyAuth

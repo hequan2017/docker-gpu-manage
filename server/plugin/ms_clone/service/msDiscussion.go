@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/ms_clone/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/ms_clone/model/request"
+	"gorm.io/gorm"
 )
 
 var MsDiscussion = new(msDiscussion)
@@ -15,7 +16,30 @@ type msDiscussion struct{}
 // CreateMsDiscussion 创建社区讨论记录
 // Author [yourname](https://github.com/yourname)
 func (s *msDiscussion) CreateMsDiscussion(ctx context.Context, discussion *model.MsDiscussion) (err error) {
-	err = global.GVA_DB.Create(discussion).Error
+	err = global.GVA_DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(discussion).Error; err != nil {
+			return err
+		}
+		// 如果是回复(有父ID)，则增加父帖子的回复数
+		if discussion.Pid != nil && *discussion.Pid > 0 {
+			if err := tx.Model(&model.MsDiscussion{}).Where("id = ?", *discussion.Pid).UpdateColumn("reply_count", gorm.Expr("reply_count + ?", 1)).Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return err
+}
+
+// LikeMsDiscussion 点赞社区讨论
+func (s *msDiscussion) LikeMsDiscussion(ctx context.Context, ID string) (err error) {
+	err = global.GVA_DB.Model(&model.MsDiscussion{}).Where("id = ?", ID).UpdateColumn("like_count", gorm.Expr("like_count + ?", 1)).Error
+	return err
+}
+
+// ViewMsDiscussion 增加浏览量
+func (s *msDiscussion) ViewMsDiscussion(ctx context.Context, ID string) (err error) {
+	err = global.GVA_DB.Model(&model.MsDiscussion{}).Where("id = ?", ID).UpdateColumn("view_count", gorm.Expr("view_count + ?", 1)).Error
 	return err
 }
 
