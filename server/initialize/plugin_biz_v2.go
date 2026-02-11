@@ -8,6 +8,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/pcdn"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/portforward"
+	"github.com/flipped-aurora/gin-vue-admin/server/plugin/server_lifecycle"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils/plugin/v2"
 	"github.com/gin-gonic/gin"
 )
@@ -19,4 +20,5 @@ func PluginInitV2(group *gin.Engine, plugins ...plugin.Plugin) {
 }
 func bizPluginV2(engine *gin.Engine) {
 	PluginInitV2(engine, announcement.Plugin, aiagent.Plugin, finetuning.Plugin, dellasset.Plugin, portforward.Plugin, k8smanager.Plugin, pcdn.Plugin)
+	PluginInitV2(engine, server_lifecycle.Plugin)
 }
