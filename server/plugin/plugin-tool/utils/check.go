@@ -24,6 +24,9 @@ func RegisterApis(apis ...system.SysApi) {
 }
 
 func RegisterMenus(menus ...system.SysBaseMenu) {
+	if len(menus) == 0 {
+		return
+	}
 	var count int64
 	var menuNames []string
 	parentMenu := menus[0]

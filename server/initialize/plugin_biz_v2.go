@@ -8,6 +8,8 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/finetuning"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/k8smanager"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/llm_model"
+	"github.com/flipped-aurora/gin-vue-admin/server/plugin/ms_clone"
+	"github.com/flipped-aurora/gin-vue-admin/server/plugin/openclaw"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/pcdn"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/portforward"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/server_lifecycle"
@@ -25,4 +27,6 @@ func bizPluginV2(engine *gin.Engine) {
 	PluginInitV2(engine, server_lifecycle.Plugin)
 	PluginInitV2(engine, llm_model.Plugin)
 	PluginInitV2(engine, approval_flow.Plugin)
+	PluginInitV2(engine, ms_clone.Plugin)
+	PluginInitV2(engine, openclaw.Plugin)
 }

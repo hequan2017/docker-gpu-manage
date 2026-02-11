@@ -120,7 +120,9 @@
             <template #default="scope">
             <el-button v-auth="btnAuth.info" type="primary" link class="table-button" @click="getDetails(scope.row)"><el-icon style="margin-right: 5px"><InfoFilled /></el-icon>查看</el-button>
             <el-button v-auth="btnAuth.edit" type="primary" link icon="edit" class="table-button" @click="updateApprovalProcessFunc(scope.row)">编辑</el-button>
-            <el-button  v-auth="btnAuth.delete" type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
+            <el-button v-auth="btnAuth.delete" type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
+            <el-button v-if="scope.row.status === 50" type="success" link icon="check" @click="approveRequestFunc(scope.row)">通过</el-button>
+            <el-button v-if="scope.row.status === 50" type="danger" link icon="close" @click="rejectRequestFunc(scope.row)">驳回</el-button>
             </template>
         </el-table-column>
         </el-table>
@@ -222,7 +224,9 @@ import {
   deleteApprovalProcessByIds,
   updateApprovalProcess,
   findApprovalProcess,
-  getApprovalProcessList
+  getApprovalProcessList,
+  approveRequest,
+  rejectRequest
 } from '@/plugin/approval_flow/api/approval_flow'
 // 富文本组件
 import RichEdit from '@/components/richtext/rich-edit.vue'
@@ -464,6 +468,43 @@ const deleteApprovalProcessFunc = async (row) => {
         getTableData()
     }
 }
+
+// 批准申请
+const approveRequestFunc = async (row) => {
+    ElMessageBox.confirm('确定要批准此申请吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(async () => {
+        const res = await approveRequest(row)
+        if (res.code === 0) {
+            ElMessage({
+                type: 'success',
+                message: '批准成功'
+            })
+            getTableData()
+        }
+    })
+}
+
+// 驳回申请
+const rejectRequestFunc = async (row) => {
+    ElMessageBox.confirm('确定要驳回此申请吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(async () => {
+        const res = await rejectRequest(row)
+        if (res.code === 0) {
+            ElMessage({
+                type: 'success',
+                message: '驳回成功'
+            })
+            getTableData()
+        }
+    })
+}
+
 
 // 弹窗控制标记
 const dialogFormVisible = ref(false)

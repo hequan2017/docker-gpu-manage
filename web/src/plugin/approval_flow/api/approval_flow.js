@@ -94,6 +94,39 @@ export const getApprovalProcessList = (params) => {
     params
   })
 }
+
+// @Tags ApprovalProcess
+// @Summary 批准发版申请
+// @Security ApiKeyAuth
+// @Accept application/json
+// @Produce application/json
+// @Param data body model.ApprovalProcess true "批准发版申请"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"操作成功"}"
+// @Router /approval/approveRequest [put]
+export const approveRequest = (data) => {
+  return service({
+    url: '/approval/approveRequest',
+    method: 'put',
+    data
+  })
+}
+
+// @Tags ApprovalProcess
+// @Summary 驳回发版申请
+// @Security ApiKeyAuth
+// @Accept application/json
+// @Produce application/json
+// @Param data body model.ApprovalProcess true "驳回发版申请"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"操作成功"}"
+// @Router /approval/rejectRequest [put]
+export const rejectRequest = (data) => {
+  return service({
+    url: '/approval/rejectRequest',
+    method: 'put',
+    data
+  })
+}
+
 // @Tags ApprovalProcess
 // @Summary 不需要鉴权的发版申请接口
 // @Accept application/json

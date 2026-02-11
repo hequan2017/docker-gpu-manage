@@ -100,3 +100,18 @@ func (s *approval) GetApprovalProcessInfoList(ctx context.Context, info request.
 func (s *approval)GetApprovalProcessPublic(ctx context.Context) {
 
 }
+
+// ApproveRequest 批准发版申请
+func (s *approval) ApproveRequest(ctx context.Context, approvalProcess *model.ApprovalProcess) (err error) {
+    // status: 60 = Approved/Executing
+    err = global.GVA_DB.WithContext(ctx).Model(&model.ApprovalProcess{}).Where("id = ?", approvalProcess.ID).Update("status", 60).Error
+    return err
+}
+
+// RejectRequest 驳回发版申请
+func (s *approval) RejectRequest(ctx context.Context, approvalProcess *model.ApprovalProcess) (err error) {
+    // status: 70 = Rejected
+    err = global.GVA_DB.WithContext(ctx).Model(&model.ApprovalProcess{}).Where("id = ?", approvalProcess.ID).Update("status", 70).Error
+    return err
+}
+

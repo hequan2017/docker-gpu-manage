@@ -184,3 +184,56 @@ func (a *approval) GetApprovalProcessPublic(c *gin.Context) {
     serviceApprovalProcess.GetApprovalProcessPublic(ctx)
     response.OkWithDetailed(gin.H{"info": "不需要鉴权的发版申请接口信息"}, "获取成功", c)
 }
+
+// ApproveRequest 批准发版申请
+// @Tags ApprovalProcess
+// @Summary 批准发版申请
+// @Security ApiKeyAuth
+// @Accept application/json
+// @Produce application/json
+// @Param data body model.ApprovalProcess true "批准发版申请"
+// @Success 200 {object} response.Response{msg=string} "操作成功"
+// @Router /approval/approveRequest [put]
+func (a *approval) ApproveRequest(c *gin.Context) {
+    ctx := c.Request.Context()
+    var info model.ApprovalProcess
+    err := c.ShouldBindJSON(&info)
+    if err != nil {
+        response.FailWithMessage(err.Error(), c)
+        return
+    }
+    err = serviceApprovalProcess.ApproveRequest(ctx, &info)
+    if err != nil {
+        global.GVA_LOG.Error("操作失败!", zap.Error(err))
+        response.FailWithMessage("操作失败:" + err.Error(), c)
+        return
+    }
+    response.OkWithMessage("操作成功", c)
+}
+
+// RejectRequest 驳回发版申请
+// @Tags ApprovalProcess
+// @Summary 驳回发版申请
+// @Security ApiKeyAuth
+// @Accept application/json
+// @Produce application/json
+// @Param data body model.ApprovalProcess true "驳回发版申请"
+// @Success 200 {object} response.Response{msg=string} "操作成功"
+// @Router /approval/rejectRequest [put]
+func (a *approval) RejectRequest(c *gin.Context) {
+    ctx := c.Request.Context()
+    var info model.ApprovalProcess
+    err := c.ShouldBindJSON(&info)
+    if err != nil {
+        response.FailWithMessage(err.Error(), c)
+        return
+    }
+    err = serviceApprovalProcess.RejectRequest(ctx, &info)
+    if err != nil {
+        global.GVA_LOG.Error("操作失败!", zap.Error(err))
+        response.FailWithMessage("操作失败:" + err.Error(), c)
+        return
+    }
+    response.OkWithMessage("操作成功", c)
+}
+
