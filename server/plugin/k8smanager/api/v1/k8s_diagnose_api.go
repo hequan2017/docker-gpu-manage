@@ -84,12 +84,13 @@ Events:
 	}
 
 	// 创建临时会话
+	userID := int(utils.GetUserID(c))
 	conversation := aiagentModel.Conversation{
 		Title:     fmt.Sprintf("诊断 Pod: %s", podName),
 		Model:     config.Model,
 		IsActive:  true,
 		MaxTokens: &config.MaxTokens,
-		UserID:    utils.GetUserID(c),
+		UserID:    &userID,
 	}
 	err = aiagentService.Conversation.CreateConversation(&conversation)
 	if err != nil {
