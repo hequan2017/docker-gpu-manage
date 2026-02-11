@@ -39,7 +39,7 @@
   const router = useRouter()
   const route = useRoute()
 
-  const url = route.query.url || 'https://www.tianqi.com'
+  const url = route.query.url || ''
 
   onMounted(() => {
     // 挂载一些通用的事件

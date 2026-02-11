@@ -1,6 +1,8 @@
 package initialize
 
 import (
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/aiagent"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/announcement"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/approval_flow"
@@ -29,4 +31,11 @@ func bizPluginV2(engine *gin.Engine) {
 	PluginInitV2(engine, approval_flow.Plugin)
 	PluginInitV2(engine, ms_clone.Plugin)
 	PluginInitV2(engine, openclaw.Plugin)
+	cleanUpTianqiMenu()
+}
+
+func cleanUpTianqiMenu() {
+	// 移除插件市场菜单
+	global.GVA_DB.Where("path = ?", "https://plugin.tianqi.com/").Delete(&system.SysBaseMenu{})
+	global.GVA_DB.Where("name = ?", "https://plugin.tianqi.com/").Delete(&system.SysBaseMenu{})
 }
