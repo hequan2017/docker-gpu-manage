@@ -15,6 +15,9 @@ func CreatePcdnPlug() *PcdnPlugin {
 }
 
 func (*PcdnPlugin) Register(group *gin.Engine) {
+	initialize.Gorm(nil)
+	initialize.Api(nil)
+	initialize.Menu(nil)
 	router.Router.InitPcdnNodeRouter(group.Group(""))
 }
 

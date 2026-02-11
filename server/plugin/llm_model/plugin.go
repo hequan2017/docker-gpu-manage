@@ -1,8 +1,8 @@
-package server_lifecycle
+package llm_model
 
 import (
 	"context"
-	"github.com/flipped-aurora/gin-vue-admin/server/plugin/server_lifecycle/initialize"
+	"github.com/flipped-aurora/gin-vue-admin/server/plugin/llm_model/initialize"
 	interfaces "github.com/flipped-aurora/gin-vue-admin/server/utils/plugin/v2"
 	"github.com/gin-gonic/gin"
 )

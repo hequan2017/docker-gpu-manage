@@ -9,25 +9,25 @@ import (
 func Menu(ctx context.Context) {
 	entities := []model.SysBaseMenu{
 		{
-			Path:      "server_lifecycle",
-			Name:      "server_lifecycle",
+			Path:      "approval_flow",
+			Name:      "approval_flow",
 			Hidden:    false,
 			Component: "view/routerHolder.vue",
-			Sort:      10,
+			Sort:      12,
 			Meta: model.Meta{
-				Title: "服务器生命周期",
-				Icon:  "monitor",
+				Title: "审批流管理",
+				Icon:  "stamp",
 			},
 		},
 		{
-			Path:      "serverAsset",
-			Name:      "serverAsset",
+			Path:      "approvalProcess",
+			Name:      "approvalProcess",
 			Hidden:    false,
-			Component: "plugin/server_lifecycle/view/server_lifecycle.vue",
+			Component: "plugin/approval_flow/view/approvalprocess.vue",
 			Sort:      1,
 			Meta: model.Meta{
-				Title: "服务器资产",
-				Icon:  "menu",
+				Title: "发版申请",
+				Icon:  "document",
 			},
 		},
 	}

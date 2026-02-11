@@ -9,24 +9,24 @@ import (
 func Menu(ctx context.Context) {
 	entities := []model.SysBaseMenu{
 		{
-			Path:      "server_lifecycle",
-			Name:      "server_lifecycle",
+			Path:      "llm_model",
+			Name:      "llm_model",
 			Hidden:    false,
 			Component: "view/routerHolder.vue",
-			Sort:      10,
+			Sort:      11,
 			Meta: model.Meta{
-				Title: "服务器生命周期",
-				Icon:  "monitor",
+				Title: "大模型管理",
+				Icon:  "box",
 			},
 		},
 		{
-			Path:      "serverAsset",
-			Name:      "serverAsset",
+			Path:      "llmModel",
+			Name:      "llmModel",
 			Hidden:    false,
-			Component: "plugin/server_lifecycle/view/server_lifecycle.vue",
+			Component: "plugin/llm_model/view/llm_model.vue",
 			Sort:      1,
 			Meta: model.Meta{
-				Title: "服务器资产",
+				Title: "模型列表",
 				Icon:  "menu",
 			},
 		},
