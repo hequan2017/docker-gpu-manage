@@ -7,7 +7,7 @@ aliyun-oss:
     base-path: yourBasePath
 autocode:
     web: web/src
-    root: D:\devops\test\docker-gpu-manage
+    root: /workspace
     server: server
     module: github.com/flipped-aurora/gin-vue-admin/server
     ai-path: ""
@@ -83,46 +83,32 @@ hua-wei-obs:
     endpoint: you-endpoint
     access-key: you-access-key
     secret-key: you-secret-key
+jumpbox:
+    enabled: true
+    port: 2026
+    server-ip: 192.168.112.148
+    host-key: ""
+    banner: "欢迎使用SSH跳板机服务\r\n"
 jwt:
-    signing-key: 30dc84ff-2c21-487f-ad33-37b92d8e9818
+    signing-key: 47546f26-141b-47fb-be8b-85d0959197f8
     expires-time: 7d
     buffer-time: 1d
     issuer: qmPlus
+k8smanager:
+    encryption-key: ""
+    client-ttl: 0
+    max-clients: 0
 local:
     path: uploads/file
     store-path: uploads/file
 mcp:
-    name: TIANQI_MCP
+    name: GVA_MCP
     version: v2025.12.30
     sse_path: /sse
     message_path: /message
     url_prefix: ""
     addr: 8889
     separate: false
-pcdn:
-    enabled: true
-    version: v2-canary
-    stable-version: v1
-    release-state: canary
-    canary:
-        regions: ["华东", "华北"]
-        isps: ["电信", "联通"]
-        user-hash-percentage: 10
-    circuit-breaker:
-        failure-rate-threshold: 0.3
-        latency-threshold-ms: 800
-        min-samples: 10
-    score-weight:
-        gpu: 0.4
-        cpu: 0.25
-        memory: 0.25
-        disk: 0.1
-jumpbox:
-    enabled: true
-    port: 2026
-    server-ip: "192.168.112.148"
-    host-key: ""
-    banner: "欢迎使用SSH跳板机服务\r\n"
 minio:
     endpoint: yourEndpoint
     access-key-id: yourAccessKeyId
@@ -162,12 +148,12 @@ mssql:
     log-zap: false
 mysql:
     prefix: ""
-    port: "3307"
+    port: "3306"
     config: charset=utf8mb4&parseTime=True&loc=Local
     db-name: docker-gpu
-    username: hequan
+    username: gva
     password: "123456"
-    path: 192.168.112.155
+    path: 127.0.0.1
     engine: ""
     log-mode: error
     max-idle-conns: 10
@@ -188,6 +174,28 @@ oracle:
     max-open-conns: 100
     singular: false
     log-zap: false
+pcdn:
+    enabled: true
+    version: v2-canary
+    release-state: canary
+    canary:
+        regions:
+            - 华东
+            - 华北
+        isps:
+            - 电信
+            - 联通
+        user-hash-percentage: 10
+    circuit-breaker:
+        failure-rate-threshold: 0.3
+        latency-threshold-ms: 800
+        min-samples: 10
+    score-weight:
+        gpu: 0.4
+        cpu: 0.25
+        memory: 0.25
+        disk: 0.1
+    stable-version: v1
 pgsql:
     prefix: ""
     port: ""
@@ -265,7 +273,7 @@ tencent-cos:
     path-prefix: github.com/flipped-aurora/gin-vue-admin/server
 zap:
     level: info
-    prefix: '[tianqi]'
+    prefix: '[github.com/flipped-aurora/gin-vue-admin/server]'
     format: console
     director: log
     encode-level: LowercaseColorLevelEncoder

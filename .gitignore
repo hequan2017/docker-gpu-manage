@@ -44,3 +44,4 @@ web/pnpm-lock.yaml
 *.sqlite3
 server/server.exe~
 nul
+server/server-bin

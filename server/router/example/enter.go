@@ -6,12 +6,12 @@ import (
 
 type RouterGroup struct {
 	CustomerRouter
-	FileUploadAndDownloadRouter
 	AttachmentCategoryRouter
+	FileUploadAndDownloadRouter
 }
 
 var (
 	exaCustomerApi              = api.ApiGroupApp.ExampleApiGroup.CustomerApi
-	exaFileUploadAndDownloadApi = api.ApiGroupApp.ExampleApiGroup.FileUploadAndDownloadApi
 	attachmentCategoryApi       = api.ApiGroupApp.ExampleApiGroup.AttachmentCategoryApi
+	exaFileUploadAndDownloadApi = api.ApiGroupApp.ExampleApiGroup.FileUploadAndDownloadApi
 )
