@@ -127,7 +127,10 @@ func (tu *TaskUtil) CalculateProgress(task *finetuningModel.FinetuningTask) floa
 		if task.Status == finetuningModel.TaskStatusCompleted {
 			return 100.0
 		}
-		return task.Progress != nil ? *task.Progress : 0
+		if task.Progress != nil {
+			return *task.Progress
+		}
+		return 0
 	}
 
 	// 如果有开始时间，基于时间估算进度（仅作参考）
