@@ -1,3 +1,7 @@
+//go:generate go mod tidy
+//go:generate go mod download
+//go:generate go run gen.go
+
 package main
 
 import (
@@ -8,10 +12,7 @@ import (
 
 func main() {
 	g := gen.NewGenerator(gen.Config{OutPath: filepath.Join("..", "..", "..", "ms_clone", "blender", "model", "dao"), Mode: gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface})
-	g.ApplyBasic(new(model.MsModel), new(model.MsDataset), new(model.MsSpace), //go:generate go mod tidy
-		//go:generate go mod download
-		//go:generate go run gen.go
-
+	g.ApplyBasic(new(model.MsModel), new(model.MsDataset), new(model.MsSpace),
 		new(model.MsDiscussion),
 	)
 	g.Execute()
