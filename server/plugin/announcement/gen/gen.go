@@ -1,10 +1,12 @@
+//go:generate go mod tidy
+//go:generate go mod download
+//go:generate go run gen.go
+
 package main
 
 import (
 	"gorm.io/gen"
-	"path/filepath" //go:generate go mod tidy
-	//go:generate go mod download
-	//go:generate go run gen.go
+	"path/filepath"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/announcement/model"
 )
 
